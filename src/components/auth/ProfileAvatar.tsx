@@ -11,13 +11,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePrivy, useLogin } from '@privy-io/react-auth';
 import Link from 'next/link';
-import { Wallet } from 'lucide-react';
+import { Wallet, ChevronDown } from 'lucide-react';
 import createUser from '@/utils/createUser';
 import Swal from 'sweetalert2';
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getAvatar } from '../ui/users/getAvatarImg';
 import { useFetchUserProfile } from '@/hooks/useFetchUser';
 import ZupassButton from '../layout/ZupassButton';
+import Image from 'next/image';
+import ZupassLogo from '@/../../public/zupass.webp';
+import ShinyButton from '../ui/ShinyButton';
 
 const ProfileAvatar = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
@@ -73,6 +76,40 @@ const ProfileAvatar = () => {
     return (
         <>
             {authenticated ? (
+                <>
+                                    {/* Mobile view */}
+                                    <div className="lg:hidden">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="secondary" className="px-2 font-bold mr-1 flex items-center" asChild>
+                                                    <div className="flex items-center space-x-2">
+                                                        <Image src={ZupassLogo} alt="Zupass logo" className="w-6 h-6 rounded-full flex-shrink-0" />
+                                                        <ChevronDown className="w-5 h-5 flex-shrink-0" />
+                                                    </div>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="flex flex-column justify-center items-center">
+                                                <DropdownMenuItem>
+                                                    {zupassUser ? (
+                                                        <span>Zupass connected 🎉</span>
+                                                    ) : (
+                                                        <ZupassButton />
+                                                    )}
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+
+                                    {/* Desktop view */}
+                                    <div className="hidden lg:block px-2">
+                                        {zupassUser ? (
+                                            <Button variant="secondary" className="px-2 font-bold mr-1" disabled>
+                                                Zupass connected 🎉
+                                            </Button>
+                                        ) : (
+                                            <ZupassButton />
+                                        )}
+                                    </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="secondary" size="icon" className="rounded-full">
@@ -93,16 +130,6 @@ const ProfileAvatar = () => {
                         <DropdownMenuItem asChild>
                             <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer'>Support</a>
                         </DropdownMenuItem>
-                        {zupassUser ? (
-                            <DropdownMenuItem disabled={true}>
-                                Zupass connected 🎉
-                            </DropdownMenuItem>
-                        ) : (
-                            <DropdownMenuItem>
-                                <ZupassButton />
-                            </DropdownMenuItem>
-                        )}
-
 
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={logout} className='cursor-pointer'>
@@ -110,11 +137,11 @@ const ProfileAvatar = () => {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+                </>
             ) : (
-                <button disabled={disableLogin} onClick={login}>
-                    <Wallet className='h-5 w-5 lg:hidden' />
-                    <p className='hidden lg:flex border border-gray-200 bg-gray-50 font-medium px-4 py-2 rounded-full cursor-pointer items-center'>Sign in</p>
-                </button>
+                <ShinyButton onClick={login}>
+                    <p className='flex items-center flex-row whitespace-nowrap'>Sign in <Wallet className='h-5 w-5 ml-2' /></p>
+                </ShinyButton>
             )}
         </>
     );

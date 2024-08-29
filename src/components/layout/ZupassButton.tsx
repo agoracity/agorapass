@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { showLoadingAlert } from "@/utils/alertUtils";
+import ShinyButton from "@/components/ui/ShinyButton";
 export default function ZupassButton() {
 
     const [loading, setLoading] = useState(false);
@@ -36,6 +37,6 @@ export default function ZupassButton() {
 
     return (
         // <Button onClick={loginHandler} className="bg-accentdark hover:bg-accentdarker text-[#19473f] font-semibold font-[Tahoma]">Connect Zupass</Button>
-        <Button onClick={loginHandler} className="bg-accentdark hover:bg-accentdarker text-[#19473f] font-semibold font-[Tahoma]">Connect Zupass</Button>
+        <ShinyButton onClick={loginHandler} className="bg-accentdark hover:bg-accentdarker text-[#19473f] font-semibold font-[Tahoma]">Connect Zupass</ShinyButton>
     );
 }
