@@ -33,12 +33,13 @@ model User {
 }
 
 model Zupass {
-  user        User   @relation(fields: [userId], references: [id])
-  userId      String @unique
-  email       String
-  nullifier   String
-  groups      String
-  semaphoreId String @unique
-  issuer      String
+  user           User   @relation(fields: [userId], references: [id])
+  userId         String @unique
+  email          String
+  nullifier      String @unique
+  group          String
+  ticketType     String
+  semaphoreId    String 
+  issuer         String
   attestationUID String
 }

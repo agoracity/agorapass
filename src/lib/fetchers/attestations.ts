@@ -135,3 +135,14 @@ export const fetchAttestationsReceived = async (schemaId: string, address: strin
     });
     return data.attestations;
 };
+
+export const fetchAttestationsMadePretrust = async (schemaId: string, address: string) => {
+    const { data } = await client.query({
+        query: ATTESTATIONS_MADE,
+        variables: {
+            schemaId,
+            address,
+        },
+    });
+    return data.attestations;
+};
