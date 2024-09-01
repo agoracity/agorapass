@@ -29,17 +29,17 @@ model User {
   attestationsDone    Int       @default(0)
   attestationReceived Int       @default(0)
   avatarType          String    @default("blockies")
-  Zupass              Zupass?
+  Zupass              Zupass[]
 }
-
 model Zupass {
-  user           User   @relation(fields: [userId], references: [id])
-  userId         String @unique
+  user           User     @relation(fields: [userId], references: [id])
+  userId         String
   email          String
-  nullifier      String @unique
+  nullifier      String
   group          String
   ticketType     String
-  semaphoreId    String 
+  semaphoreId    String
   issuer         String
-  attestationUID String
+  attestationUID String   @unique
+  createdAt      DateTime @default(now())
 }

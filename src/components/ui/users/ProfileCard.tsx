@@ -237,7 +237,7 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                             />
 
                         </div>
-                        {Zupass?.groups ? 'Member of ' + Zupass.groups.split(',').join(', ') : null}
+                        {Zupass?.group ? 'Member of ' + Zupass.group.split(',').join(', ') : null}
                     </motion.div>
                 </CardHeader>
                 <CardContent className="text-center">

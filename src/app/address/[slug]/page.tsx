@@ -240,12 +240,12 @@ export default function Page({ params }: { params: { slug: string } }) {
                             </>
                         )}
 
-                        {userData?.Zupass?.groups ? 
+                        {userData?.Zupass?.group ? 
                         
                         (
                             <>
                             <p>Zupass connected:</p>
-                            {'Member of ' + userData?.Zupass.groups.split(',').join(', ')}
+                            {'Member of ' + userData?.Zupass.group.split(',').join(', ')}
                             <hr className="my-4 border-gray-300" />
                             </>
                         )

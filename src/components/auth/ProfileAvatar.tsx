@@ -29,7 +29,7 @@ const ProfileAvatar = () => {
 
     const wallet = data?.wallet || 'Unknown';
     const avatarType = data?.avatarType || 'blockies';
-    const zupassUser = data?.Zupass
+    const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const isClient = typeof window !== 'undefined';
     const avatar = useMemo(() => isClient ? getAvatar(wallet, avatarType) : null, [wallet, avatarType]);
     const handleNewUserCreation = useCallback(async (user: any) => {

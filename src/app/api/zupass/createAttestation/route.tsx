@@ -45,13 +45,14 @@ export async function POST(request: NextRequest) {
         const recipient = attester;
 
         const walletAddress = attester;
-        const groups = payload.add_groups
+        const groups = payload.group
+        const ticketType = payload.ticketType
 
         const schemaEncoder = new SchemaEncoder("string nullifier,bytes32 category,bytes32 subcategory,bytes32[] subsubcategory,bytes32 issuer,bytes32 credentialType,bytes32 platform");
         const encodedData = schemaEncoder.encodeData([
             { name: "nullifier", value: nullifier, type: "string" },
             { name: "category", value: ethers.encodeBytes32String('Community'), type: "bytes32" },
-            { name: "subcategory", value: ethers.encodeBytes32String('Pop-up cities'), type: "bytes32" },
+            { name: "subcategory", value: ethers.encodeBytes32String(ticketType), type: "bytes32" },
             { name: "subsubcategory", value: [ethers.encodeBytes32String('short')], type: "bytes32[]" },
             { name: "issuer", value: ethers.encodeBytes32String(groups), type: "bytes32" },
             { name: "credentialType", value: ethers.encodeBytes32String('Ticket'), type: "bytes32" },
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
 
         // Write to the Zupass table
         const newZupass = await prisma.zupass.upsert({
-            where: { userId: user.id },
+            where: { attestationUID: newAttestationUID },
             update: {
                 email: payload.email,
                 nullifier: nullifier,

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
                 wallet: true,
                 Zupass: {
                     select: {
-                        groups: true,
+                        group: true,
                     },
                 },
             },

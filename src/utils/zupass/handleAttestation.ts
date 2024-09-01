@@ -41,21 +41,30 @@ export const handleVouch = async (
         for (const ticket of payload.add_groups) {
 
         // Check if semaphoreId already exists using the API route
-        const response = await fetch('/api/zupass/checkSemaphore', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
-        });
+        try {
+            const response = await fetch('/api/zupass/checkSemaphore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
+            });
 
-        const result = await response.json();
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-        if (result.exists) {
-            showErrorAlert('Zupass already connected to another account.');
+            const result = await response.json();
+
+            if (result.exists) {
+                showErrorAlert('Zupass already connected to another account.');
+                return;
+            }
+        } catch (error) {
+            console.error('Error checking semaphore:', error);
+            showErrorAlert('An error occurred while checking Zupass connection.');
             return;
         }
-
 
             const schemaEncoder = new SchemaEncoder("string nullifier,bytes32 category,bytes32 subcategory,bytes32[] subsubcategory,bytes32 issuer,bytes32 credentialType,bytes32 platform");
             const encodedData = schemaEncoder.encodeData([
@@ -107,13 +116,15 @@ export const handleVouch = async (
                 primaryType: 'Attest',
                 message: value,
             };
-
+            console.log('Before signTypedData', user, wallets, chainId, typedData)
             const signature = await signTypedData(user, wallets, chainId, typedData);
+            console.log('After signTypedData', signature)
             await generateAttestation(token, attester, signature, nullifier, {
                 ...payload,
                 group: ticket.group,
                 ticketType: ticket.ticketType
             });
+            console.log('After generateAttestation')
             // Increment nonce for the next attestation
             nonce++;
         }
