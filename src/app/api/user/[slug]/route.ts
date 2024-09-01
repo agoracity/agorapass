@@ -18,7 +18,7 @@ export async function GET(
             name: true,
             Zupass: {
                 select: {
-                    groups: true,
+                    group: true,
                 },
             },
         },

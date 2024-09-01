@@ -102,7 +102,8 @@ export async function POST(request: NextRequest) {
             update: {
                 email: payload.email,
                 nullifier: nullifier,
-                groups: payload.add_groups,
+                group: payload.group,
+                ticketType: payload.ticketType,
                 semaphoreId: payload.external_id,
                 issuer: 'Zupass',
                 attestationUID: newAttestationUID
@@ -111,7 +112,8 @@ export async function POST(request: NextRequest) {
                 userId: user.id,
                 email: payload.email,
                 nullifier: nullifier,
-                groups: payload.add_groups,
+                group: payload.group,
+                ticketType: payload.ticketType,
                 semaphoreId: payload.external_id,
                 issuer: 'Zupass',
                 attestationUID: newAttestationUID

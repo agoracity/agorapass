@@ -35,7 +35,8 @@ export const handleVouch = async (
         const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? '84532', 10);
         const schemaUID = process.env.SCHEMA_ID_ZUPASS || "0x9075dee7661b8b445a2f0caa3fc96223b8cc2593c796c414aed93f43d022b0f9";
         const attester = user?.wallet.address;
-        const nullifier = payload.nullifiers[0];
+        // const nullifier = payload.nullifiers[0];
+        const nullifier = ethers.keccak256(ethers.toUtf8Bytes(payload.external_id));
 
         for (const ticket of payload.add_groups) {
 
@@ -45,7 +46,7 @@ export const handleVouch = async (
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ semaphoreId: payload.external_id, ticketType: ticket.ticketType }),
+            body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
         });
 
         const result = await response.json();
@@ -108,8 +109,11 @@ export const handleVouch = async (
             };
 
             const signature = await signTypedData(user, wallets, chainId, typedData);
-            await generateAttestation(token, attester, signature, nullifier, { ...payload, ticket });
-
+            await generateAttestation(token, attester, signature, nullifier, {
+                ...payload,
+                group: ticket.group,
+                ticketType: ticket.ticketType
+            });
             // Increment nonce for the next attestation
             nonce++;
         }
