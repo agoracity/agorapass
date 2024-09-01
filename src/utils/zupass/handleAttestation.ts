@@ -38,98 +38,111 @@ export const handleVouch = async (
         // const nullifier = payload.nullifiers[0];
         const nullifier = ethers.keccak256(ethers.toUtf8Bytes(payload.external_id));
 
+        let connectedCount = 0;
+        let totalTickets = payload.add_groups.length;
+
         for (const ticket of payload.add_groups) {
+            // Check if semaphoreId already exists using the API route
+            try {
+                const response = await fetch('/api/zupass/checkSemaphore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
+                });
 
-        // Check if semaphoreId already exists using the API route
-        try {
-            const response = await fetch('/api/zupass/checkSemaphore', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
-            });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const result = await response.json();
+
+                if (result.exists) {
+                    console.log(`Ticket ${ticket.ticketType} already connected. Skipping.`);
+                    connectedCount++;
+                    continue;  // Skip to the next ticket
+                }
+
+                const schemaEncoder = new SchemaEncoder("string nullifier,bytes32 category,bytes32 subcategory,bytes32[] subsubcategory,bytes32 issuer,bytes32 credentialType,bytes32 platform");
+                const encodedData = schemaEncoder.encodeData([
+                    { name: "nullifier", value: nullifier, type: "string" },
+                    { name: "category", value: ethers.encodeBytes32String('Community'), type: "bytes32" },
+                    { name: "subcategory", value: ethers.encodeBytes32String(ticket.ticketType), type: "bytes32" },
+                    { name: "subsubcategory", value: [ethers.encodeBytes32String('short')], type: "bytes32[]" },
+                    { name: "issuer", value: ethers.encodeBytes32String(ticket.group), type: "bytes32" },
+                    { name: "credentialType", value: ethers.encodeBytes32String('Ticket'), type: "bytes32" },
+                    { name: "platform", value: ethers.encodeBytes32String("Zupass"), type: "bytes32" }
+                ]);
+
+                const domain = {
+                    name: 'EAS',
+                    version: '1.2.0',
+                    chainId: chainId,
+                    verifyingContract: '0x4200000000000000000000000000000000000021'
+                };
+
+                const types = {
+                    Attest: [
+                        { name: 'schema', type: 'bytes32' },
+                        { name: 'recipient', type: 'address' },
+                        { name: 'expirationTime', type: 'uint64' },
+                        { name: 'revocable', type: 'bool' },
+                        { name: 'refUID', type: 'bytes32' },
+                        { name: 'data', type: 'bytes' },
+                        { name: 'value', type: 'uint256' },
+                        { name: 'nonce', type: 'uint256' },
+                        { name: 'deadline', type: 'uint64' }
+                    ]
+                };
+
+                const value = {
+                    schema: schemaUID,
+                    recipient: attester,
+                    expirationTime: 0,
+                    revocable: true,
+                    refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                    data: encodedData,
+                    deadline: 0,
+                    value: 0,
+                    nonce: nonce
+                };
+
+                const typedData = {
+                    types: types,
+                    domain: domain,
+                    primaryType: 'Attest',
+                    message: value,
+                };
+                console.log('Before signTypedData', user, wallets, chainId, typedData)
+                const signature = await signTypedData(user, wallets, chainId, typedData);
+                console.log('After signTypedData', signature)
+                await generateAttestation(token, attester, signature, nullifier, {
+                    ...payload,
+                    group: ticket.group,
+                    ticketType: ticket.ticketType
+                });
+                console.log('After generateAttestation')
+                
+                // If we reach here, a new ticket was successfully connected
+                console.log(`Ticket ${ticket.ticketType} connected successfully.`);
+
+                // Increment nonce for the next attestation
+                nonce++;
+            } catch (error) {
+                console.error('Error processing ticket:', error);
+                // Optionally, you might want to continue with the next ticket instead of returning
+                // return;
             }
-
-            const result = await response.json();
-
-            if (result.exists) {
-                showErrorAlert('Zupass already connected to another account.');
-                return;
-            }
-        } catch (error) {
-            console.error('Error checking semaphore:', error);
-            showErrorAlert('An error occurred while checking Zupass connection.');
-            return;
         }
 
-            const schemaEncoder = new SchemaEncoder("string nullifier,bytes32 category,bytes32 subcategory,bytes32[] subsubcategory,bytes32 issuer,bytes32 credentialType,bytes32 platform");
-            const encodedData = schemaEncoder.encodeData([
-                { name: "nullifier", value: nullifier, type: "string" },
-                { name: "category", value: ethers.encodeBytes32String('Community'), type: "bytes32" },
-                { name: "subcategory", value: ethers.encodeBytes32String(ticket.ticketType), type: "bytes32" },
-                { name: "subsubcategory", value: [ethers.encodeBytes32String('short')], type: "bytes32[]" },
-                { name: "issuer", value: ethers.encodeBytes32String(ticket.group), type: "bytes32" },
-                { name: "credentialType", value: ethers.encodeBytes32String('Ticket'), type: "bytes32" },
-                { name: "platform", value: ethers.encodeBytes32String("Zupass"), type: "bytes32" }
-            ]);
-
-            const domain = {
-                name: 'EAS',
-                version: '1.2.0',
-                chainId: chainId,
-                verifyingContract: '0x4200000000000000000000000000000000000021'
-            };
-
-            const types = {
-                Attest: [
-                    { name: 'schema', type: 'bytes32' },
-                    { name: 'recipient', type: 'address' },
-                    { name: 'expirationTime', type: 'uint64' },
-                    { name: 'revocable', type: 'bool' },
-                    { name: 'refUID', type: 'bytes32' },
-                    { name: 'data', type: 'bytes' },
-                    { name: 'value', type: 'uint256' },
-                    { name: 'nonce', type: 'uint256' },
-                    { name: 'deadline', type: 'uint64' }
-                ]
-            };
-
-            const value = {
-                schema: schemaUID,
-                recipient: attester,
-                expirationTime: 0,
-                revocable: true,
-                refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                data: encodedData,
-                deadline: 0,
-                value: 0,
-                nonce: nonce
-            };
-
-            const typedData = {
-                types: types,
-                domain: domain,
-                primaryType: 'Attest',
-                message: value,
-            };
-            console.log('Before signTypedData', user, wallets, chainId, typedData)
-            const signature = await signTypedData(user, wallets, chainId, typedData);
-            console.log('After signTypedData', signature)
-            await generateAttestation(token, attester, signature, nullifier, {
-                ...payload,
-                group: ticket.group,
-                ticketType: ticket.ticketType
-            });
-            console.log('After generateAttestation')
-            // Increment nonce for the next attestation
-            nonce++;
+        if (connectedCount === totalTickets) {
+            showErrorAlert('All Zupass tickets are already connected to an account.');
+        } else if (connectedCount > 0) {
+            showOnlySucessWithRedirect('Some Zupass tickets were already connected. New tickets added successfully.', 'Go to profile', `/me`);
+        } else {
+            showOnlySucessWithRedirect('Zupass tickets connected successfully.', 'Go to profile', `/me`);
         }
-
-        showOnlySucessWithRedirect('Zupass tickets connected successfully.', 'Go to profile', `/me`);
 
     } catch (error) {
         console.log(error)

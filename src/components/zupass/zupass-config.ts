@@ -149,7 +149,7 @@ export const whitelistedTickets: Record<
       productName: "Contributor"
     }
   ],
-  America: [
+/*   America: [
     {
       pcdType: "eddsa-ticket-pcd",
       publicKey: [
@@ -161,7 +161,7 @@ export const whitelistedTickets: Record<
       productId: "8d081915-8d2e-4660-adb6-3841960f810f",
       productName: "Regular ticket"
     }
-  ]
+  ] */
 };
 
 // Map the above data structure into a simple array of event IDs.

@@ -103,8 +103,8 @@ const ProfileAvatar = () => {
                                     {/* Desktop view */}
                                     <div className="hidden lg:block px-2">
                                         {zupassUser ? (
-                                            <Button variant="secondary" className="px-2 font-bold mr-1" disabled>
-                                                Zupass connected 🎉
+                                            <Button variant="secondary" className="px-2 font-bold mr-1">
+                                                <ZupassButton />
                                             </Button>
                                         ) : (
                                             <ZupassButton />
