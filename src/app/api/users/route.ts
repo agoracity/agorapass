@@ -29,7 +29,6 @@ export async function POST(request: NextRequest) {
                 bio,
                 wallet: walletAddress,
                 id,
-                chainType: wallet.chainType,
                 vouchReset: DateTime.now().plus({ days: 30 }).toISO(), // Calculate 30 days from now
                 vouchesAvailables: 3
             },

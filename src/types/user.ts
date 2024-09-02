@@ -7,6 +7,5 @@ export interface User {
     farcaster?: string;
     image?: string;
     rankScore?: number;
-    attestationReceived?: number;
     avatarType: "metamask" | "blockies";
 }
