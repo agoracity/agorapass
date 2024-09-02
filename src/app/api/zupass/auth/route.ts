@@ -164,8 +164,18 @@ export const POST = async (req: NextRequest) => {
                 nullifiers: Array.from(nullifiers),
                 email: validPcds[0].claim.partialTicket.attendeeEmail,
                 external_id: validPcds[0].claim.partialTicket.attendeeSemaphoreId,
-                add_groups: validPcds.filter(pcd => pcd.claim.partialTicket.eventId && pcd.claim.partialTicket.productId)
-                    .map(pcd => matchTicketToType(pcd.claim.partialTicket.eventId!, pcd.claim.partialTicket.productId!)).join(",")
+                add_groups: validPcds
+                    .filter(pcd => pcd.claim.partialTicket.eventId && pcd.claim.partialTicket.productId)
+                    .map(pcd => {
+                        const ticketType = matchTicketToType(pcd.claim.partialTicket.eventId!, pcd.claim.partialTicket.productId!);
+                        const productName = Object.values(whitelistedTickets)
+                            .flat()
+                            .find(ticket => ticket.productId === pcd.claim.partialTicket.productId)?.productName || '';
+                        return {
+                            group: ticketType,
+                            ticketType: productName
+                        };
+                    })
             };
 
             const finalResponse = {

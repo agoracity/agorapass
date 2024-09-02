@@ -5,7 +5,11 @@ async function generateAttestation(token: string, attester: string, signature: s
         attester,
         signature,
         nullifier,
-        payload
+        payload: {
+            ...payload,
+            group: payload.group,
+            ticketType: payload.ticketType
+        }
     });
 
     const response = await fetch(url, {

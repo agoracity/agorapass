@@ -42,7 +42,8 @@ async function login(user: any, wallets: any, token: any) {
             revealAttendeeName: true,
             revealEventId: true,
             revealProductId: true,
-            revealAttendeeSemaphoreId: true
+            revealAttendeeSemaphoreId: true,
+            revealTicketCategory: true
         },
         returnUrl: window.location.origin,
         watermark,

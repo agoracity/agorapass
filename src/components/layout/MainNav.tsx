@@ -6,18 +6,45 @@ import Logo from "../../../public/agora.png";
 import Image from 'next/image';
 import { navSections } from '@/config/siteConfig';
 import { usePathname } from 'next/navigation'
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Menu } from 'lucide-react'
 
+import { useState } from 'react';
 
 function MainNav() {
     const pathname = usePathname()
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleLinkClick = () => {
+        setIsOpen(false);
+    };
+
     return (
         <div className='flex flex-col'>
             <div className='flex flex-row w-full items-center gap-1 p-4'>
-
                 <div className='sm:w-full flex justify-start'>
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                        <SheetTrigger className="lg:hidden">
+                            <Menu className="h-6 w-6" />
+                        </SheetTrigger>
+                        <SheetContent side="left">
+                            <div className='flex flex-col gap-4 mt-8'>
+                                {navSections.map((section, index) => (
+                                    <Link
+                                        key={index}
+                                        href={section.href}
+                                        className={`${section.className} ${pathname === section.href ? 'text-accentdark font-medium' : 'text-muted-foreground'} text-lg`}
+                                        onClick={handleLinkClick}
+                                    >
+                                        {section.label}
+                                    </Link>
+                                ))}
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-lg font-semibold md:text-base shrink-0"
+                        className="hidden lg:flex items-center gap-2 text-lg font-semibold md:text-base shrink-0"
                     >
                         <Image
                             src={Logo}
@@ -25,12 +52,12 @@ function MainNav() {
                             width={20}
                             height={20}
                         />
-                        <span className="hidden lg:flex">Agora Pass </span>
+                        <span>Agora Pass </span>
                         <sup>Beta</sup>
                     </Link>
                 </div>
                 <div className='w-full flex justify-center'>
-                    <div className='flex flex-row bg-white rounded-full border border-gray-200  font-medium shadow-md lg:gap-4 lg:text-lg '>
+                    <div className='hidden lg:flex flex-row bg-white rounded-full border border-gray-200 font-medium shadow-md lg:gap-4 lg:text-lg'>
                         {navSections.map((section, index) => (
                             <Link
                                 key={index}
@@ -43,7 +70,15 @@ function MainNav() {
                     </div>
                 </div>
                 <div className='min-w-[24px] sm:w-full flex justify-end'><ProfileAvatar /></div>
-
+                <a
+                href="https://stamp.network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="fixed bottom-4 right-4 p-2 px-6 bg-gray-700 text-white hover:bg-primarydark hover:text-white rounded-tl-[1.5rem] rounded-br-[1.5rem] transition-colors shadow-xl hover:shadow-2xl"
+                style={{ zIndex: 9999 }}
+            >
+                Powered by Stamp ⊙
+            </a>
             </div>
         </div>
     )

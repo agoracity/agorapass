@@ -9,6 +9,7 @@ import SEARCH_ENS_NAMES_BY_ADDRESS from '@/graphql/getENSNamebyAddress';
 import LAST_THREE_ATTESTATIONS from '@/graphql/LastThreeAttestations';
 import ATTESTATIONS_MADE from '@/graphql/AttestationsMade';
 import ATTESTATIONS_RECEIVED from '@/graphql/AttestationsReceived';
+import ATTESTATIONS_PRETRUST_CHECK from '@/graphql/AttestationPretrustCheck';
 import { Attestation } from "@/types/attestations";
 
 export const fetchAttestations = async (page: number, pageSize: number) => {
@@ -128,6 +129,17 @@ export const fetchAttestationsMade = async (schemaId: string, address: string) =
 export const fetchAttestationsReceived = async (schemaId: string, address: string) => {
     const { data } = await client.query({
         query: ATTESTATIONS_RECEIVED,
+        variables: {
+            schemaId,
+            address,
+        },
+    });
+    return data.attestations;
+};
+
+export const fetchAttestationsMadePretrust = async (schemaId: string, address: string) => {
+    const { data } = await client.query({
+        query: ATTESTATIONS_PRETRUST_CHECK,
         variables: {
             schemaId,
             address,
