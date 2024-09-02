@@ -77,66 +77,66 @@ const ProfileAvatar = () => {
         <>
             {authenticated ? (
                 <>
-                                    {/* Mobile view */}
-                                    <div className="lg:hidden">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="secondary" className="px-2 font-bold mr-1 flex items-center" asChild>
-                                                    <div className="flex items-center space-x-2">
-                                                        <Image src={ZupassLogo} alt="Zupass logo" className="w-6 h-6 rounded-full flex-shrink-0" />
-                                                        <ChevronDown className="w-5 h-5 flex-shrink-0" />
-                                                    </div>
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="flex flex-column justify-center items-center">
-                                                <DropdownMenuItem>
-                                                    {zupassUser ? (
-                                                        <span>Zupass connected 🎉</span>
-                                                    ) : (
-                                                        <ZupassButton />
-                                                    )}
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                    {/* Mobile view */}
+                    <div className="lg:hidden">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="secondary" className="px-2 font-bold mr-1 flex items-center" asChild>
+                                    <div className="flex items-center space-x-2">
+                                        <Image src={ZupassLogo} alt="Zupass logo" className="w-6 h-6 rounded-full flex-shrink-0" />
+                                        <ChevronDown className="w-5 h-5 flex-shrink-0" />
                                     </div>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="flex flex-column justify-center items-center">
+                                <DropdownMenuItem>
+                                    {zupassUser ? (
+                                        <span>Zupass connected 🎉</span>
+                                    ) : (
+                                        <ZupassButton />
+                                    )}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
 
-                                    {/* Desktop view */}
-                                    <div className="hidden lg:block px-2">
-                                        {zupassUser ? (
-                                            <Button variant="secondary" className="px-2 font-bold mr-1">
-                                                <ZupassButton />
-                                            </Button>
-                                        ) : (
-                                            <ZupassButton />
-                                        )}
-                                    </div>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="secondary" size="icon" className="rounded-full">
-                            <Avatar className="w-9 h-9 mx-auto ">
-                                {typeof avatar === 'string' ? (
-                                    <AvatarImage src={avatar} alt="Avatar Image" />
-                                ) : (
-                                    avatar
-                                )}
-                            </Avatar>
-                            <span className="sr-only">Toggle user menu</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                            <Link href='/me' className='cursor-pointer'>My Profile</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer'>Support</a>
-                        </DropdownMenuItem>
+                    {/* Desktop view */}
+                    <div className="hidden lg:block px-2">
+                        {zupassUser ? (
+                            <Button variant="secondary" className="px-2 font-bold mr-1" disabled>
+                                Zupass connected 🎉
+                            </Button>
+                        ) : (
+                            <ZupassButton />
+                        )}
+                    </div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="secondary" size="icon" className="rounded-full">
+                                <Avatar className="w-9 h-9 mx-auto ">
+                                    {typeof avatar === 'string' ? (
+                                        <AvatarImage src={avatar} alt="Avatar Image" />
+                                    ) : (
+                                        avatar
+                                    )}
+                                </Avatar>
+                                <span className="sr-only">Toggle user menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                                <Link href='/me' className='cursor-pointer'>My Profile</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer'>Support</a>
+                            </DropdownMenuItem>
 
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={logout} className='cursor-pointer'>
-                            Log out
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={logout} className='cursor-pointer'>
+                                Log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </>
             ) : (
                 <ShinyButton onClick={login}>
