@@ -44,7 +44,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     // Once data is loaded, display the attestation details
     return (
-        <div className="flex items-center justify-center bg-gray-100 w-full p-4">
+        <div className="flex items-center justify-center bg-gray-100 w-screen p-4">
             <motion.div
                 initial={{
                     opacity: 0,
