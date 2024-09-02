@@ -43,3 +43,11 @@ model Zupass {
   attestationUID String   @unique
   createdAt      DateTime @default(now())
 }
+
+model Ranking {
+  id        Int      @id @default(autoincrement())
+  address   String   @unique
+  value     Float
+  createdAt DateTime @default(now())
+  position  String
+}
