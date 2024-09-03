@@ -1,12 +1,11 @@
 import { gql } from "@apollo/client";
 
-const SEARCH_ENS_NAMES_BY_ADDRESS = gql`
-  query EnsNames($where: EnsNameWhereInput) {
-    ensNames(where: $where) {
-      id
+const FIND_FIRST_ENS_NAME = gql`
+  query findFirstEnsName($where: EnsNameWhereInput!) {
+    findFirstEnsName(where: $where) {
       name
-      timestamp
     }
   }
 `;
-export default SEARCH_ENS_NAMES_BY_ADDRESS
+
+export default FIND_FIRST_ENS_NAME;

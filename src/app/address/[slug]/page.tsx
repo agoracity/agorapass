@@ -4,7 +4,7 @@ import React from 'react';
 import { useEffect, useState } from "react";
 import { usePrivy } from '@privy-io/react-auth';
 import { useQuery } from '@tanstack/react-query';
-import { fetchAttestationsMadeCount, fetchAttestationsReceivedCount, fetchEnsNamesByAddress, fetchAttestationsMade, fetchAttestationsReceived } from '@/lib/fetchers/attestations';
+import { fetchAttestationsMadeCount, fetchAttestationsReceivedCount, fetchEnsNameByAddress, fetchAttestationsMade, fetchAttestationsReceived } from '@/lib/fetchers/attestations';
 import {
     Tooltip,
     TooltipContent,
@@ -65,7 +65,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     const { data: ensName, error: ensNameerror, isLoading: ensNameLoading } = useQuery({
         queryKey: ['ensName', id],
-        queryFn: () => fetchEnsNamesByAddress(id),
+        queryFn: () => fetchEnsNameByAddress(id),
     });
 
     const { data: userData, error: rankScoreError, isLoading: rankScoreLoading } = useQuery({
@@ -228,10 +228,10 @@ export default function Page({ params }: { params: { slug: string } }) {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild onClick={handleCopy}>
-                                        <p className="whitespace-nowrap truncate cursor-pointer">{ensName?.length > 0 ? ensName[0].name : address || "No Data Available"}</p>
+                                        <p className="whitespace-nowrap truncate cursor-pointer">{ensName || address || "No Data Available"}</p>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                        <p>{ensName?.length > 0 ? ensName[0].name : address || "No Data Available"}</p>
+                                        <p>{ensName || address || "No Data Available"}</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>

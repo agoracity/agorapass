@@ -5,7 +5,7 @@ import GET_AGGREGATE_ATTESTATIONS from '@/graphql/AggregateAttestation';
 import GET_ATTESTATION from '@/graphql/getAttestation';
 import COUNT_ATTESTATIONS_MADE from '@/graphql/AttestationsMadeCount';
 import COUNT_ATTESTATIONS_RECEIVED from '@/graphql/AttestationsReceivedCount';
-import SEARCH_ENS_NAMES_BY_ADDRESS from '@/graphql/getENSNamebyAddress';
+import FIND_FIRST_ENS_NAME from '@/graphql/getENSNamebyAddress';
 import LAST_THREE_ATTESTATIONS from '@/graphql/LastThreeAttestations';
 import ATTESTATIONS_MADE from '@/graphql/AttestationsMade';
 import ATTESTATIONS_RECEIVED from '@/graphql/AttestationsReceived';
@@ -74,18 +74,18 @@ export const fetchAttestationsReceivedCount = async (schemaId: string, address: 
     return data.aggregateAttestation._count.recipient;
 };
 
-export const fetchEnsNamesByAddress = async (address: string) => {
+export const fetchEnsNameByAddress = async (address: string) => {
     const { data } = await client.query({
-        query: SEARCH_ENS_NAMES_BY_ADDRESS,
+        query: FIND_FIRST_ENS_NAME,
         variables: {
             where: {
                 id: {
-                    equals: address,
+                    equals: address.toLowerCase(),
                 },
             },
         },
     });
-    return data.ensNames;
+    return data.findFirstEnsName?.name || null;
 };
 
 export const fetchAttestationsReduced = async (page: number, pageSize: number): Promise<Attestation[]> => {
