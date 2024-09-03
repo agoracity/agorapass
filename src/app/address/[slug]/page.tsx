@@ -13,23 +13,26 @@ import {
 } from "@/components/ui/tooltip";
 import { motion } from 'framer-motion';
 import Loader from '@/components/ui/Loader';
-import VouchButtonCustom from '@/components/ui/VouchButton';
+import dynamic from 'next/dynamic';
 import { copyToClipboard } from '@/utils/copyToClipboard';
 import { getAvatar } from '@/components/ui/users/getAvatarImg';
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import TwitterLogo from '@/../../public/X.svg'
 import { View } from 'lucide-react';
 import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
+
+// Dynamically import components
+const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
+const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
+const DialogHeader = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogHeader), { ssr: false });
+const DialogTitle = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogTitle), { ssr: false });
+const DialogTrigger = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogTrigger), { ssr: false });
+
+const VouchButtonCustom = dynamic(() => import('@/components/ui/VouchButton'), { ssr: false });
+
 //!TODO replace this schemaId
 const schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3"; // Replace with your schemaId
 
@@ -86,16 +89,29 @@ export default function Page({ params }: { params: { slug: string } }) {
         staleTime: Infinity,
     });
 
+    // Implement lazy loading for vouches data
+    const fetchMadeVouches = async () => {
+        if (dialogOpenedMade) {
+            return fetchAttestationsMade(schemaId, address);
+        }
+    };
+
+    const fetchReceivedVouches = async () => {
+        if (dialogOpenedReceived) {
+            return fetchAttestationsReceived(schemaId, address);
+        }
+    };
+
     const { data: madeVouchesData, error: madeVouchesError, isLoading: madeVouchesLoading } = useQuery({
         queryKey: ['attestationsMade', schemaId, address],
-        queryFn: () => fetchAttestationsMade(schemaId, address),
+        queryFn: fetchMadeVouches,
         enabled: dialogOpenedMade,
         staleTime: Infinity,
     });
 
     const { data: receivedVouchesData, error: receivedVouchesError, isLoading: receivedVouchesLoading } = useQuery({
         queryKey: ['attestationsReceived', schemaId, address],
-        queryFn: () => fetchAttestationsReceived(schemaId, address),
+        queryFn: fetchReceivedVouches,
         enabled: dialogOpenedReceived,
         staleTime: Infinity,
     });
