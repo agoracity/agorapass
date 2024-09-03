@@ -22,7 +22,7 @@ import {
 import { getAvatar } from './getAvatarImg';
 import { BlendIcon } from 'lucide-react';
 import Link from 'next/link';
-import VouchButtonCustom from '@/components/ui/VouchButton';
+import VouchButtonCustom from '@/components/ui/VouchButtonWithDialog';
 import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
 import truncateWallet from '@/utils/truncateWallet'
