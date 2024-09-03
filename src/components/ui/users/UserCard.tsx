@@ -51,7 +51,7 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
     const displayName = name ? truncateName(name) : truncateWallet(wallet);
     const fullName = name || wallet;
     const displayBio = bio || "No bio provided";
-    const avatar = getAvatar(wallet, avatarType);
+    const avatar = getAvatar(wallet, avatarType as "metamask" | "blockies");
 
     return (
         <Card className="w-full">
@@ -124,7 +124,7 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
 
             {authStatus && <div className="flex space-y-1 justify-end">
                 <div className="flex items-center rounded-md bg-secondary text-secondary-foreground">
-                    <VouchButtonCustom recipient={wallet} authStatus={authStatus} />
+                    <VouchButtonCustom recipient={wallet} authStatus={authStatus} userData={user} />
                 </div>
             </div>
             }

@@ -4,13 +4,16 @@ import { Button } from './button';
 import { handleVouch } from '@/utils/handleAttestation';
 import { Dialog, DialogContent, DialogTrigger } from './dialog';
 import UserProfileCard from './users/UserProfileCard';
+import { User } from '@/types/user'; // Make sure to import the User type
+
 interface VouchButtonCustomProps {
     recipient: string;
     className?: string;
     authStatus: boolean;
+    userData: User; 
 }
 
-const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, className, authStatus }) => {
+const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, className, authStatus, userData }) => {
     const { getAccessToken, user } = usePrivy();
     const { wallets } = useWallets();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -36,6 +39,7 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, classN
                             recipient={recipient}
                             onVouch={handleVouchConfirm}
                             onCancel={() => setIsDialogOpen(false)}
+                            userData={userData} // Pass userData here
                         />
                     </DialogContent>
                 </Dialog>

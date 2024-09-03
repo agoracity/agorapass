@@ -1,11 +1,26 @@
 export interface User {
-    name: string;
+    id: string;
+    email?: string | null;
+    name?: string | null;
+    bio?: string | null;
     wallet: string;
-    trustedBy: number;
-    bio?: string;
-    twitter?: string;
-    farcaster?: string;
-    image?: string;
-    rankScore?: number;
-    avatarType: "metamask" | "blockies";
+    twitter?: string | null;
+    farcaster?: string | null;
+    vouchesAvailables: number;
+    vouchReset?: Date | null;
+    createdAt: Date;
+    rankScore: number;
+    avatarType: string;
+    Zupass?: ZupassEntry[];
+}
+
+interface ZupassEntry {
+    email: string;
+    nullifier: string;
+    group: string;
+    ticketType: string;
+    semaphoreId: string;
+    issuer: string;
+    attestationUID: string;
+    createdAt: Date;
 }
