@@ -24,7 +24,7 @@ model User {
   vouchesAvailables   Int       @default(3)
   vouchReset          DateTime?
   createdAt           DateTime  @default(now())
-  rankScore           Int       @default(0)
+  rankScore           Float     @default(0)
   avatarType          String    @default("blockies")
   Zupass              Zupass[]
 }
