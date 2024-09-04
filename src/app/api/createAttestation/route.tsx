@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import prisma from '@/lib/db';
 import { toBigInt } from 'ethers';
 import { Utils } from 'alchemy-sdk';
-
+import { updateEigenScore } from '@/utils/updateEigenScore';
 const easContractAddress = "0x4200000000000000000000000000000000000021";
 const schemaUID = process.env.SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3";
 
@@ -104,7 +104,13 @@ export async function POST(request: NextRequest) {
 
         // console.log('New attestation UID:', newAttestationUID);
         // console.log('Transaction receipt:', transaction.receipt);
-
+        try {
+            const result = await updateEigenScore();
+            console.log('Data updated successfully:', result);
+            // Handle result if needed
+        } catch (error) {
+            console.error('Error updating eigenScore:', error);
+        }
         // Return success response with the newly created attestation UID
         return NextResponse.json({ newAttestationUID });
     } catch (error) {
