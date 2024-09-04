@@ -70,15 +70,7 @@ function MainNav() {
                     </div>
                 </div>
                 <div className='min-w-[24px] sm:w-full flex justify-end'><ProfileAvatar /></div>
-                <a
-                href="https://stamp.network"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed bottom-4 right-4 p-2 px-6 bg-gray-700 text-white hover:bg-primarydark hover:text-white rounded-tl-[1.5rem] rounded-br-[1.5rem] transition-colors shadow-xl hover:shadow-2xl"
-                style={{ zIndex: 9999 }}
-            >
-                Powered by Stamp ⊙
-            </a>
+
             </div>
         </div>
     )
