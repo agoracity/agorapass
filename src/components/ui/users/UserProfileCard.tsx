@@ -7,8 +7,8 @@ import truncateWallet from '@/utils/truncateWallet';
 import TwitterLogo from '@/../../public/X.svg';
 import FarcasterLogo from '@/../../public/farcaster.svg';
 import Image from 'next/image';
-import { User } from '@/types/user'; // Make sure to import the User type
-
+import { User } from '@/types/user';
+import displayRanking from '@/utils/displayRanking';
 interface UserProfileCardProps {
     recipient: string;
     onVouch: () => void;
@@ -104,7 +104,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ recipient, onVouch, o
                             )}
                             
                             {userData?.rankScore !== undefined && (
-                                <p className="mt-2 font-semibold text-zinc-700">Trust Score: {userData.rankScore}</p>
+                                <p className="mt-2 font-semibold text-zinc-700">Trust Score: {displayRanking(userData.rankScore.toString())}</p>
                             )}
                         </div>
 

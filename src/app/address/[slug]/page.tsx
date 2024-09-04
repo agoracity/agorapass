@@ -161,7 +161,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         {userData?.name && (
                             <h1>{userData.name}</h1>
                         )}
-                        <h1>Trust Score: {displayRanking(userData?.rankScore?.toString() ?? 'N/A')}</h1>
+                        <h1>Trust Score: {userData?.rankScore ? displayRanking(userData.rankScore.toString()) : 'N/A'}</h1>
                     </div>
                     <div className="flex flex-col gap-4 items-center">
 
