@@ -24,6 +24,7 @@ import { View } from 'lucide-react';
 import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
 import displayRanking from '@/utils/displayRanking';
+import truncateWallet from '@/utils/truncateWallet';
 // Dynamically import components
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
 const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
@@ -228,7 +229,9 @@ export default function Page({ params }: { params: { slug: string } }) {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild onClick={handleCopy}>
-                                        <p className="whitespace-nowrap truncate cursor-pointer">{ensName || address || "No Data Available"}</p>
+                                        <p className="whitespace-nowrap truncate cursor-pointer">
+                                            {ensName || truncateWallet(address) || "No Data Available"}
+                                        </p>
                                     </TooltipTrigger>
                                     <TooltipContent>
                                         <p>{ensName || address || "No Data Available"}</p>

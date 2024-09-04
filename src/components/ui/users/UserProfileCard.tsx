@@ -9,6 +9,8 @@ import FarcasterLogo from '@/../../public/farcaster.svg';
 import Image from 'next/image';
 import { User } from '@/types/user';
 import displayRanking from '@/utils/displayRanking';
+import Link from 'next/link';
+
 interface UserProfileCardProps {
     recipient: string;
     onVouch: () => void;
@@ -68,7 +70,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ recipient, onVouch, o
 
                     <div className="flex-grow">
                         <div className="text-center lg:text-left">
-                            <h2 className="text-2xl font-bold text-zinc-700">{ensName || truncateWallet(recipient)}</h2>
+                            <Link href={`/address/${recipient}`}><h2 className="text-2xl font-bold text-zinc-700">{ensName || truncateWallet(recipient)}</h2></Link>
                             {ensName && <p className="mt-2 font-semibold text-zinc-700">{truncateWallet(recipient)}</p>}
                             {/* <p className="mt-2 font-semibold text-zinc-700">@{(ensName || truncateWallet(recipient)).toLowerCase()}</p> */}
                             
