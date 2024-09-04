@@ -34,7 +34,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ recipient, onVouch, o
                 ]);
                 setVouchesMade(made);
                 setVouchesReceived(received);
-                setEnsName(ensNames.length > 0 ? ensNames : null);
+                setEnsName(ensNames?.length > 0 ? ensNames : null);
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {

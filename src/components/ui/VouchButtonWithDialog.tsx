@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Button } from './button';
 import { handleVouch } from '@/utils/handleAttestation';
-import { Dialog, DialogContent, DialogTrigger } from './dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from './dialog';
 import UserProfileCard from './users/UserProfileCard';
-import { User } from '@/types/user'; // Make sure to import the User type
+import { User } from '@/types/user';
 
 interface VouchButtonCustomProps {
     recipient: string;
     className?: string;
     authStatus: boolean;
-    userData: User; 
+    userData: User;
 }
 
 const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, className, authStatus, userData }) => {
@@ -35,6 +35,10 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, classN
                         </Button>
                     </DialogTrigger>
                     <DialogContent >
+                        <DialogTitle className='hidden'>User profile</DialogTitle>
+                        <DialogDescription className='hidden'>
+                            This card displays the information of the user profile
+                        </DialogDescription>
                         <UserProfileCard
                             recipient={recipient}
                             onVouch={handleVouchConfirm}
