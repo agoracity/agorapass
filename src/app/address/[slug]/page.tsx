@@ -23,7 +23,7 @@ import TwitterLogo from '@/../../public/X.svg'
 import { View } from 'lucide-react';
 import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
-
+import displayRanking from '@/utils/displayRanking';
 // Dynamically import components
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
 const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
@@ -161,7 +161,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         {userData?.name && (
                             <h1>{userData.name}</h1>
                         )}
-                        <h1>Trust Score: {userData?.rankScore ?? 'N/A'}</h1>
+                        <h1>Trust Score: {displayRanking(userData?.rankScore?.toString() ?? 'N/A')}</h1>
                     </div>
                     <div className="flex flex-col gap-4 items-center">
 
