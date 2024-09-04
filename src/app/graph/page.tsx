@@ -4,10 +4,11 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
 import { fetchAttestations } from "@/lib/fetchers/attestations";
-import ReactDOM from 'react-dom';
 import { useRouter } from 'next/navigation';
+import * as d3 from 'd3';
 
-const ForceGraph3DWrapper = dynamic(() => import('react-force-graph').then(mod => mod.ForceGraph3D), {
+// Dynamically import ForceGraph3D with ssr option set to false
+const ForceGraph3D = dynamic(() => import('react-force-graph').then(mod => mod.ForceGraph3D), {
     ssr: false,
     loading: () => <p>Loading 3D Graph...</p>
 });
@@ -52,9 +53,6 @@ interface Coords {
     y: number;
     z: number;
 }
-
-import * as d3 from 'd3';
-import { ForceGraph3D } from 'react-force-graph';
 
 const RankingsGraph: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
