@@ -122,12 +122,11 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                 </div>
             </CardContent>
 
-            {authStatus && <div className="flex space-y-1 justify-end">
+             <div className="flex space-y-1 justify-end">
                 <div className="flex items-center rounded-md bg-secondary text-secondary-foreground">
                     <VouchButtonCustom recipient={wallet} authStatus={authStatus} userData={user} />
                 </div>
             </div>
-            }
 
         </Card>
     );
