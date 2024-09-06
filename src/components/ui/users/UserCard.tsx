@@ -27,6 +27,7 @@ import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
 import truncateWallet from '@/utils/truncateWallet'
 import displayRanking from '@/utils/displayRanking';
+
 function truncateName(name: string) {
     const maxLength = 30; // Maximum characters to display before truncating
     if (name.length <= maxLength) {
@@ -50,11 +51,11 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
 
     const displayName = name ? truncateName(name) : truncateWallet(wallet);
     const fullName = name || wallet;
-    const displayBio = bio || "No bio provided";
+    const displayBio = bio || "";
     const avatar = getAvatar(wallet, avatarType as "metamask" | "blockies");
 
     return (
-        <Card className="w-full">
+        <Card className="w-full flex flex-col">
             <CardHeader className="flex flex-row items-start gap-4 space-y-0">
                 <Avatar>
                     {typeof avatar === 'string' ? (
@@ -76,10 +77,13 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                         {/* TODO: Add ENS / Address sliced */}
                     </TooltipProvider>
 
-                    <div className="flex items-center text-sm">
-                        <BlendIcon className="mr-1 h-3 w-3" />
-                        Trust Score {displayRanking(rankScore?.toString())}
-                    </div>
+                 {rankScore && (
+                       <div className="flex items-center text-sm">
+                       <BlendIcon className="mr-1 h-3 w-3" />
+                       Rank Score {displayRanking(rankScore?.toString())}
+                   </div>
+                 )
+                 }
                 </div>
             </CardHeader>
 
@@ -122,12 +126,13 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
                 </div>
             </CardContent>
 
-             <div className="flex space-y-1 justify-end">
-                <div className="flex items-center rounded-md bg-secondary text-secondary-foreground">
+            <CardFooter className="mt-auto">
+                {authStatus && (
+                    <div className="ml-auto">
                     <VouchButtonCustom recipient={wallet} authStatus={authStatus} userData={user} />
-                </div>
-            </div>
-
+                    </div>
+                )}
+            </CardFooter>
         </Card>
     );
 }
