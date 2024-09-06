@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,13 +25,20 @@ import ShinyButton from '../ui/ShinyButton';
 const ProfileAvatar = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
-    const { authenticated, logout, ready } = usePrivy();
+    const { authenticated, logout, ready, user } = usePrivy();
 
-    const wallet = data?.wallet || 'Unknown';
+    const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
     const avatarType = data?.avatarType || 'blockies';
     const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const isClient = typeof window !== 'undefined';
-    const avatar = useMemo(() => isClient ? getAvatar(wallet, avatarType) : null, [wallet, avatarType]);
+
+    useEffect(() => {
+        if (authenticated && user) {
+            setUpdateTrigger(prev => !prev);
+        }
+    }, [authenticated, user]);
+
+    const avatar = useMemo(() => isClient ? getAvatar(wallet, avatarType) : null, [wallet, avatarType, isClient]);
     const handleNewUserCreation = useCallback(async (user: any) => {
         Swal.fire({
             title: 'Creating user...',

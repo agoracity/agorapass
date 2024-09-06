@@ -72,18 +72,21 @@ export async function PATCH(request: NextRequest) {
 
         const { name, bio, avatarType } = await request.json();
 
-        if (!name || typeof name !== 'string' || name.trim().length < 2) {
-            return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
+        let updateData: any = {};
+        if (name !== undefined) {
+            if (typeof name !== 'string' || (name.trim().length > 0 && name.trim().length < 2)) {
+                return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
+            }
+            updateData.name = name.trim();
         }
+        if (bio !== undefined) updateData.bio = bio;
+        if (avatarType !== undefined) updateData.avatarType = avatarType;
+
         const updatedUser = await prisma.user.update({
             where: {
                 id: verifiedClaims.userId,
             },
-            data: {
-                name: name.trim(),
-                bio,
-                avatarType
-            },
+            data: updateData,
         });
 
         return NextResponse.json(updatedUser);
