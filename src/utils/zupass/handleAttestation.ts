@@ -16,7 +16,6 @@ export const handleVouch = async (
         return;
     }
 
-  
     let nonce = await fetchNonce(user.wallet.address);
 
     if (nonce === undefined) {
@@ -35,13 +34,16 @@ export const handleVouch = async (
         const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? '84532', 10);
         const schemaUID = process.env.SCHEMA_ID_ZUPASS || "0x9075dee7661b8b445a2f0caa3fc96223b8cc2593c796c414aed93f43d022b0f9";
         const attester = user?.wallet.address;
-        // const nullifier = payload.nullifiers[0];
+        
+        console.log('payload', payload);
         const nullifier = ethers.keccak256(ethers.toUtf8Bytes(payload.external_id));
+        console.log('nul', nullifier);
 
         let connectedCount = 0;
-        let totalTickets = payload.add_groups.length;
+        const tickets = Array.isArray(payload.add_groups) ? payload.add_groups : [payload];
+        let totalTickets = tickets.length;
 
-        for (const ticket of payload.add_groups) {
+        for (const ticket of tickets) {
             // Check if semaphoreId already exists using the API route
             try {
                 const response = await fetch('/api/zupass/checkSemaphore', {

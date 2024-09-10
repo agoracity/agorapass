@@ -3,7 +3,8 @@ import { TicketTypeName } from "./types";
 import { whitelistedTickets } from "./zupass-config";
 import crypto from "crypto";
 import { handleVouch } from "@/utils/zupass/handleAttestation";
-async function login(user: any, wallets: any, token: any) {
+
+async function login(user: any, wallets: any, token: any, setTicketsToSign: React.Dispatch<React.SetStateAction<any[]>>) {
 
     // Define or retrieve your nonce here
     const nonce = crypto.randomBytes(16).toString("hex");
@@ -77,19 +78,31 @@ async function login(user: any, wallets: any, token: any) {
         console.log("PCDs and nonce sent successfully:", response.status);
         const responseData = await response.json();
         console.log("Response data from server:", responseData);
-        // console.log('responseData.payload', responseData.payload)
-        handleVouch(user, wallets, token, responseData.payload)
-        // Access fields
-        // const { attendeeEmail } = responseData;
-        // console.log("Attendee Email:", attendeeEmail);
+        
+        try {
+            if (!responseData.payload || !Array.isArray(responseData.payload.add_groups)) {
+                throw new Error("Invalid response data structure");
+            }
 
+            const ticketsToSignData = responseData.payload.add_groups.map((ticket: any) => ({
+                ...ticket,
+                signed: false,
+                external_id: responseData.payload.external_id // Add external_id here
+            }));
+            console.log("Tickets to sign2:", ticketsToSignData);
+
+            setTicketsToSign(ticketsToSignData);
+            console.log("setTicketsToSign called successfully");
+        } catch (error) {
+            console.error("Error processing response data:", error);
+        }
     } else {
         console.error("Invalid or missing PCDs in the result from zuAuthPopup");
     }
 }
 
 export function useZupass(): {
-    login: (user: any, wallets: any, token: any) => Promise<void>;
+    login: (user: any, wallets: any, token: any, setTicketsToSign: React.Dispatch<React.SetStateAction<any[]>>) => Promise<void>;
 } {
     return { login };
 }
