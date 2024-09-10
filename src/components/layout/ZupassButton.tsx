@@ -39,25 +39,36 @@ export default function ZupassButton() {
 
 		try {
 			console.log('ticket', ticket);
-			await handleVouch(user, wallets, await getAccessToken(), {
+			const results = await handleVouch(user, wallets, await getAccessToken(), {
 				add_groups: [ticket], // Wrap the single ticket in an array
 				external_id: ticket.external_id
 			});
 
-			setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
-			
-			// Show a temporary success message for this ticket
-			await showTempSuccessAlert(`Ticket ${ticket.ticketType} signed successfully!`);
+			if (results && results.length > 0) {
+				const result = results[0]; // We're only processing one ticket at a time here
 
-			// Check if all tickets are signed
-			const allSigned = ticketsToSign.every(t => t.signed);
-			if (allSigned) {
-				showSuccessAlert('All Zupass tickets connected successfully.', 'Go to profile', `/me`);
-				setDialogOpen(false);
+				if (result.alreadyConnected) {
+					await showTempSuccessAlert(`Ticket ${ticket.ticketType} is already connected to an account.`);
+				} else if (result.error) {
+					showErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
+				} else {
+					await showTempSuccessAlert(`Ticket ${ticket.ticketType} signed successfully!`);
+				}
+
+				setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
+
+				// Check if all tickets are signed
+				const allSigned = ticketsToSign.every(t => t.signed);
+				if (allSigned) {
+					showSuccessAlert('All Zupass tickets processed successfully.', 'Go to profile', `/me`);
+					setDialogOpen(false);
+				}
+			} else {
+				showErrorAlert('No results returned from handleVouch');
 			}
 		} catch (error) {
 			console.error('Error processing ticket:', error);
-			showErrorAlert(`Failed to sign ticket: ${ticket.ticketType}`);
+			showErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
 		}
 	};
 

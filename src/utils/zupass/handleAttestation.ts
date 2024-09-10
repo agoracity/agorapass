@@ -37,10 +37,10 @@ export const handleVouch = async (
         
         console.log('payload', payload);
 
-
         let connectedCount = 0;
         const tickets = Array.isArray(payload.add_groups) ? payload.add_groups : [payload];
         let totalTickets = tickets.length;
+        let results = [];
 
         for (const ticket of tickets) {
             // set nullifier
@@ -70,6 +70,7 @@ export const handleVouch = async (
                 if (result.exists) {
                     console.log(`Ticket ${ticket.ticketType} already connected. Skipping.`);
                     connectedCount++;
+                    results.push({ ticketType: ticket.ticketType, alreadyConnected: true });
                     continue;  // Skip to the next ticket
                 }
 
@@ -136,12 +137,13 @@ export const handleVouch = async (
                 // If we reach here, a new ticket was successfully connected
                 console.log(`Ticket ${ticket.ticketType} connected successfully.`);
 
+                results.push({ ticketType: ticket.ticketType, alreadyConnected: false });
+
                 // Increment nonce for the next attestation
                 nonce++;
             } catch (error) {
                 console.error('Error processing ticket:', error);
-                // Optionally, you might want to continue with the next ticket instead of returning
-                // return;
+                results.push({ ticketType: ticket.ticketType, error: true });
             }
         }
 
@@ -153,8 +155,11 @@ export const handleVouch = async (
             showOnlySucessWithRedirect('Zupass tickets connected successfully.', 'Go to profile', `/me`);
         }
 
+        return results;
+
     } catch (error) {
         console.log(error)
         showErrorAlert('An error occurred while attesting to connect your Zupass tickets');
+        throw error;
     }
 };
