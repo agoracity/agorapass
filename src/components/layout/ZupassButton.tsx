@@ -82,7 +82,9 @@ export default function ZupassButton() {
 				Connect Zupass
 			</ShinyButton>
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-				<DialogContent>
+				<DialogContent  onInteractOutside={(e) => {
+          e.preventDefault();
+        }}>
 					<DialogHeader>
 						<DialogTitle>Sign Your Zupass Tickets</DialogTitle>
 						<DialogDescription>

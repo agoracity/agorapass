@@ -130,7 +130,9 @@ export const handleVouch = async (
                 await generateAttestation(token, attester, signature, nullifier, {
                     ...payload,
                     group: ticket.group,
-                    ticketType: ticket.ticketType
+                    ticketType: ticket.ticketType,
+                    email: payload.email
+
                 });
                 console.log('After generateAttestation')
                 

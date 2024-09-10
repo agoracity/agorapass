@@ -97,11 +97,13 @@ export async function POST(request: NextRequest) {
         }
 
 
-        // Write to the Zupass table
+        // Extract email from the first group in add_groups
+        const email = payload.add_groups[0]?.email;
+        // Update the Zupass upsert operation
         const newZupass = await prisma.zupass.upsert({
             where: { attestationUID: newAttestationUID },
             update: {
-                email: payload.email,
+                email: email,
                 nullifier: nullifier,
                 group: payload.group,
                 ticketType: payload.ticketType,
@@ -111,7 +113,7 @@ export async function POST(request: NextRequest) {
             },
             create: {
                 userId: user.id,
-                email: payload.email,
+                email: email,
                 nullifier: nullifier,
                 group: payload.group,
                 ticketType: payload.ticketType,
