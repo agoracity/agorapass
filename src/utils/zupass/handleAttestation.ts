@@ -36,14 +36,21 @@ export const handleVouch = async (
         const attester = user?.wallet.address;
         
         console.log('payload', payload);
-        const nullifier = ethers.keccak256(ethers.toUtf8Bytes(payload.external_id));
-        console.log('nul', nullifier);
+
 
         let connectedCount = 0;
         const tickets = Array.isArray(payload.add_groups) ? payload.add_groups : [payload];
         let totalTickets = tickets.length;
 
         for (const ticket of tickets) {
+            // set nullifier
+            const nullifier = ethers.keccak256(
+                ethers.concat([
+                    ethers.toUtf8Bytes(payload.external_id),
+                    ethers.encodeBytes32String(ticket.ticketType)
+                ])
+            );
+
             // Check if semaphoreId already exists using the API route
             try {
                 const response = await fetch('/api/zupass/checkSemaphore', {
