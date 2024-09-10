@@ -149,19 +149,54 @@ export const whitelistedTickets: Record<
       productName: "Contributor"
     }
   ],
-   America: [
-    {
-      pcdType: "eddsa-ticket-pcd",
-      publicKey: [
-        "05e0c4e8517758da3a26c80310ff2fe65b9f85d89dfc9c80e6d0b6477f88173e",
-        "29ae64b615383a0ebb1bc37b3a642d82d37545f0f5b1444330300e4c4eedba3f"
-      ],
-      eventId: "be4dbf9c-abc9-4bc2-a731-3464b84ce3fb",
-      eventName: "ETH Latam",
-      productId: "8d081915-8d2e-4660-adb6-3841960f810f",
-      productName: "Regular ticket"
-    }
-  ] 
+  //  America: [
+  //   {
+  //     pcdType: "eddsa-ticket-pcd",
+  //     publicKey: [
+  //       "05e0c4e8517758da3a26c80310ff2fe65b9f85d89dfc9c80e6d0b6477f88173e",
+  //       "29ae64b615383a0ebb1bc37b3a642d82d37545f0f5b1444330300e4c4eedba3f"
+  //     ],
+  //     eventId: "be4dbf9c-abc9-4bc2-a731-3464b84ce3fb",
+  //     eventName: "ETH Latam",
+  //     productId: "8d081915-8d2e-4660-adb6-3841960f810f",
+  //     productName: "Regular ticket"
+  //   }
+  // ],
+  // TestTicket: [
+  //   {
+  //     pcdType: "eddsa-ticket-pcd",
+  //     publicKey: [
+  //       "1ebfb986fbac5113f8e2c72286fe9362f8e7d211dbc68227a468d7b919e75003",
+  //       "10ec38f11baacad5535525bbe8e343074a483c051aa1616266f3b1df3fb7d204"
+  //     ],
+  //     productId: "b8bcccb9-3912-5329-aaa3-ea4cb7ab4a0d",
+  //     eventId: "718555c0-3ce7-5844-8ad3-da9ba4ae897b",
+  //     eventName: "Europe",
+  //     productName: "GA"
+  //   },
+  //   {
+  //     pcdType: "eddsa-ticket-pcd",
+  //     publicKey: [
+  //       "1ebfb986fbac5113f8e2c72286fe9362f8e7d211dbc68227a468d7b919e75003",
+  //       "10ec38f11baacad5535525bbe8e343074a483c051aa1616266f3b1df3fb7d204"
+  //     ],
+  //     productId: "c7807d6c-3cea-5ce6-ba97-519d543265fe",
+  //     eventId: "63933c56-d49e-509e-af29-575e19375a80",
+  //     eventName: "Europe",
+  //     productName: "VIP"
+  //   },
+  //   {
+  //     pcdType: "eddsa-ticket-pcd",
+  //     publicKey: [
+  //       "1ebfb986fbac5113f8e2c72286fe9362f8e7d211dbc68227a468d7b919e75003",
+  //       "10ec38f11baacad5535525bbe8e343074a483c051aa1616266f3b1df3fb7d204"
+  //     ],
+  //     productId: "f4c59e92-0368-5082-9fd2-6f3b245de231",
+  //     eventId: "7fd0a623-ab22-51d7-8920-abf5de0acb22",
+  //     eventName: "America",
+  //     productName: "GA"
+  //   }
+  // ],
 };
 
 // Map the above data structure into a simple array of event IDs.

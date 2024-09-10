@@ -4,7 +4,7 @@ import { useZupassPopupMessages } from "@pcd/passport-interface";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { showLoadingAlert, showErrorAlert } from "@/utils/alertUtils";
+import { showTempSuccessAlert, showErrorAlert, showSuccessAlert } from "@/utils/alertUtils";
 import ShinyButton from "@/components/ui/ShinyButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { handleVouch } from "@/utils/zupass/handleAttestation";
@@ -45,6 +45,16 @@ export default function ZupassButton() {
 			});
 
 			setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
+			
+			// Show a temporary success message for this ticket
+			await showTempSuccessAlert(`Ticket ${ticket.ticketType} signed successfully!`);
+
+			// Check if all tickets are signed
+			const allSigned = ticketsToSign.every(t => t.signed);
+			if (allSigned) {
+				showSuccessAlert('All Zupass tickets connected successfully.', 'Go to profile', `/me`);
+				setDialogOpen(false);
+			}
 		} catch (error) {
 			console.error('Error processing ticket:', error);
 			showErrorAlert(`Failed to sign ticket: ${ticket.ticketType}`);
@@ -75,8 +85,9 @@ export default function ZupassButton() {
 								<Button 
 									onClick={() => handleSign(index)} 
 									disabled={ticket.signed}
+									className={ticket.signed ? "bg-green-500 hover:bg-green-600" : ""}
 								>
-									{ticket.signed ? "Signed" : "Sign"}
+									{ticket.signed ? "Signed!" : "Sign"}
 								</Button>
 							</div>
 						))}
