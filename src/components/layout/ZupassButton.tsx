@@ -78,35 +78,40 @@ export default function ZupassButton() {
 
 	return (
 		<>
-			<ShinyButton onClick={loginHandler} className="bg-accentdark hover:bg-accentdarker text-[#19473f] font-semibold font-[Tahoma]">
+			<ShinyButton onClick={loginHandler} className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]">
 				Connect Zupass
 			</ShinyButton>
 			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-				<DialogContent  onInteractOutside={(e) => {
-          e.preventDefault();
-        }}>
+				<DialogContent className="bg-[#19473f] text-[#f0b90b]" onInteractOutside={(e) => {
+					e.preventDefault();
+				}}>
 					<DialogHeader>
-						<DialogTitle>Sign Your Zupass Tickets</DialogTitle>
-						<DialogDescription>
+						<DialogTitle className="text-[#f0b90b] font-semibold">Sign Your Zupass Tickets</DialogTitle>
+						<DialogDescription className="text-[#f0b90b] opacity-80">
 							Choose which tickets you'd like to sign and connect to your account.
 						</DialogDescription>
 					</DialogHeader>
 					<div className="grid grid-cols-2 gap-4">
 						{ticketsToSign.map((ticket, index) => (
 							<div key={index} className="flex justify-between items-center">
-								<span>{ticket.ticketType}</span>
-								<Button 
+								<span className="text-[#f0b90b]">{ticket.ticketType}</span>
+								<ShinyButton 
 									onClick={() => handleSign(index)} 
 									disabled={ticket.signed}
-									className={ticket.signed ? "bg-green-500 hover:bg-green-600" : ""}
+									className={`font-semibold font-[Tahoma] ${ticket.signed ? "bg-green-500 hover:bg-green-600 text-[#19473f]" : "bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f]"}`}
 								>
 									{ticket.signed ? "Signed!" : "Sign"}
-								</Button>
+								</ShinyButton>
 							</div>
 						))}
 					</div>
 					<DialogFooter>
-						<Button onClick={() => setDialogOpen(false)}>Close</Button>
+						<Button 
+							onClick={() => setDialogOpen(false)} 
+							className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]"
+						>
+							Close
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
