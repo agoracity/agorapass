@@ -238,10 +238,9 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                             />
 
                         </div>
-                        {Zupass && Zupass.length > 0 && Zupass[0].group
-                            ? 'Member of ' + Zupass[0].group
-                            : null}
-                        </motion.div>
+                        {Zupass && Zupass.length > 0 && (
+                            <p>Member of {Zupass.map((zupass: any) => zupass.group).join(', ')}</p>
+                        )}                    </motion.div>
                 </CardHeader>
                 <CardContent className="text-center">
                     <motion.div
