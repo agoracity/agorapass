@@ -4,17 +4,25 @@ import { useZupassPopupMessages } from "@pcd/passport-interface";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { showTempSuccessAlert, showErrorAlert, showSuccessAlert, showTempErrorAlert } from "@/utils/alertUtils";
+import { showTempSuccessAlert, showErrorAlert, showSuccessAlert, showTempErrorAlert, showLoadingAlert } from "@/utils/alertUtils";
 import ShinyButton from "@/components/ui/ShinyButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { handleVouch } from "@/utils/zupass/handleAttestation";
-
+import Swal from "sweetalert2";
 import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
 
-export default function ZupassButton() {
+interface ZupassButtonProps {
+	children?: React.ReactNode;
+}
+
+
+
+export default function ZupassButton({ children }: ZupassButtonProps) {
 	const [loading, setLoading] = useState(false);
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [ticketsToSign, setTicketsToSign] = useState<any[]>([]);
+	const [signingIndex, setSigningIndex] = useState<number | null>(null);
+
 	const { login } = useZupass();
 	const [multiPCDs] = useZupassPopupMessages();
 
@@ -26,6 +34,7 @@ export default function ZupassButton() {
 
 	useEffect(() => {
 		if (ticketsToSign.length > 0) {
+			Swal.close(); // Close the loading alert when tickets are ready
 			setDialogOpen(true);
 		}
 	}, [ticketsToSign]);
@@ -34,6 +43,7 @@ export default function ZupassButton() {
 	const { wallets } = useWallets();
 
 	const loginHandler = async () => {
+		showLoadingAlert(); // Show loading alert when button is clicked
 		setLoading(true);
 		try {
 			const token = await getAccessToken();
@@ -43,12 +53,15 @@ export default function ZupassButton() {
 			showErrorAlert("Failed to connect Zupass. Please try again.");
 		} finally {
 			setLoading(false);
+			Swal.close(); // Close the loading alert
 		}
 	};
 
 	const handleSign = async (index: number) => {
 		const ticket = ticketsToSign[index];
 		if (ticket.signed) return;
+		setSigningIndex(index);
+		showLoadingAlert();
 		try {
 			if (!user || !user.wallet) {
 				throw new Error('User or user wallet not found');
@@ -108,7 +121,15 @@ export default function ZupassButton() {
 		} catch (error) {
 			console.error('Error processing ticket:', error);
 			showTempErrorAlert(`Failed to process ticket: ${ticket.ticketType}`); // Changed to temp error alert
+		} finally {
+			setSigningIndex(null);
+			Swal.close(); // Close the loading alert
 		}
+	};
+
+	const handleDialogClose = () => {
+		setDialogOpen(false);
+		setTicketsToSign([]); // Reset ticketsToSign when dialog closes
 	};
 
 	if (loading) {
@@ -118,9 +139,9 @@ export default function ZupassButton() {
 	return (
 		<>
 			<ShinyButton onClick={loginHandler} className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]">
-				Connect Zupass
+				{children || "Connect Zupass"}
 			</ShinyButton>
-			<Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+			<Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
 				<DialogContent className="bg-[#19473f] text-[#f0b90b]" onInteractOutside={(e) => {
 					e.preventDefault();
 				}}>
@@ -136,17 +157,27 @@ export default function ZupassButton() {
 								<span className="text-[#f0b90b]">{ticket.ticketType}</span>
 								<ShinyButton
 									onClick={() => handleSign(index)}
-									disabled={ticket.signed}
-									className={`font-semibold font-[Tahoma] ${ticket.signed ? "bg-green-500 hover:bg-green-600 text-[#19473f]" : "bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f]"}`}
+									disabled={ticket.signed || signingIndex === index}
+									className={`font-semibold font-[Tahoma] ${
+										ticket.signed
+											? "bg-green-500 hover:bg-green-600 text-[#19473f]"
+											: signingIndex === index
+											? "bg-gray-400 text-[#19473f]"
+											: "bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f]"
+									}`}
 								>
-									{ticket.signed ? "Signed!" : "Sign"}
+									{ticket.signed
+										? "Signed!"
+										: signingIndex === index
+										? "Signing..."
+										: "Sign"}
 								</ShinyButton>
 							</div>
 						))}
 					</div>
 					<DialogFooter>
 						<Button
-							onClick={() => setDialogOpen(false)}
+							onClick={handleDialogClose}
 							className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]"
 						>
 							Close

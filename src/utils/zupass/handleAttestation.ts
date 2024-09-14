@@ -4,6 +4,7 @@ import fetchNonce from '../fetchNonce';
 import { showLoadingAlert, showErrorAlert, showOnlySucessWithRedirect } from '../alertUtils';
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
 import { ethers } from 'ethers';
+import Swal from 'sweetalert2';
 
 export const handleVouch = async (
     user: any,
@@ -124,17 +125,19 @@ export const handleVouch = async (
                     primaryType: 'Attest',
                     message: value,
                 };
-                console.log('Before signTypedData', user, wallets, chainId, typedData)
+                console.log('Before signTypedData', user, wallets, chainId, typedData);
+                Swal.close(); // Close the loading alert before user interaction
                 const signature = await signTypedData(user, wallets, chainId, typedData);
-                console.log('After signTypedData', signature)
+                showLoadingAlert(); // Show loading alert again after signature
+                console.log('After signTypedData', signature);
+                
                 await generateAttestation(token, attester, signature, nullifier, {
                     ...payload,
                     group: ticket.group,
                     ticketType: ticket.ticketType,
                     email: payload.email
-
                 });
-                console.log('After generateAttestation')
+                console.log('After generateAttestation');
                 
                 // If we reach here, a new ticket was successfully connected
                 console.log(`Ticket ${ticket.ticketType} connected successfully.`);
@@ -163,5 +166,7 @@ export const handleVouch = async (
         console.log(error)
         showErrorAlert('An error occurred while attesting to connect your Zupass tickets');
         throw error;
+    } finally {
+        Swal.close(); // Ensure the loading alert is closed
     }
 };

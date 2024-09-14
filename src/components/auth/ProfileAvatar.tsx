@@ -97,11 +97,9 @@ const ProfileAvatar = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="flex flex-column justify-center items-center">
                                 <DropdownMenuItem>
-                                    {zupassUser ? (
-                                        <span>Zupass connected 🎉</span>
-                                    ) : (
-                                        <ZupassButton />
-                                    )}
+                                    <ZupassButton>
+                                        {zupassUser ? "Refresh Zupass" : "Connect Zupass"}
+                                    </ZupassButton>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -109,13 +107,9 @@ const ProfileAvatar = () => {
 
                     {/* Desktop view */}
                     <div className="hidden lg:block px-2">
-                        {zupassUser ? (
-                            <Button variant="secondary" className="px-2 font-bold mr-1" disabled>
-                                Zupass connected 🎉
-                            </Button>
-                        ) : (
-                            <ZupassButton />
-                        )}
+                        <ZupassButton>
+                            {zupassUser ? "Refresh Zupass" : "Connect Zupass"}
+                        </ZupassButton>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
