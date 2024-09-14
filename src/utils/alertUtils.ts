@@ -72,3 +72,21 @@ export const showTempSuccessAlert = (message: string) => {
   
     return alert;
   };
+
+export const showTempErrorAlert = (message: string) => { 
+    const alert = MySwal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: message,
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        position: 'center',
+        backdrop: 'rgba(0,0,0,0.4)',
+        didOpen: () => {
+            MySwal.showLoading();
+        },
+    });
+
+    return alert;
+};

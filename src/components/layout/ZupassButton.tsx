@@ -4,7 +4,7 @@ import { useZupassPopupMessages } from "@pcd/passport-interface";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { showTempSuccessAlert, showErrorAlert, showSuccessAlert } from "@/utils/alertUtils";
+import { showTempSuccessAlert, showErrorAlert, showSuccessAlert, showTempErrorAlert } from "@/utils/alertUtils";
 import ShinyButton from "@/components/ui/ShinyButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { handleVouch } from "@/utils/zupass/handleAttestation";
@@ -50,7 +50,7 @@ export default function ZupassButton() {
 				if (result.alreadyConnected) {
 					await showTempSuccessAlert(`Ticket ${ticket.ticketType} is already connected to an account.`);
 				} else if (result.error) {
-					showErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
+					showTempErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
 				} else {
 					await showTempSuccessAlert(`Ticket ${ticket.ticketType} signed successfully!`);
 				}
@@ -68,7 +68,7 @@ export default function ZupassButton() {
 			}
 		} catch (error) {
 			console.error('Error processing ticket:', error);
-			showErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
+			showTempErrorAlert(`Failed to process ticket: ${ticket.ticketType}`); // Changed to temp error alert
 		}
 	};
 
@@ -95,8 +95,8 @@ export default function ZupassButton() {
 						{ticketsToSign.map((ticket, index) => (
 							<div key={index} className="flex justify-between items-center">
 								<span className="text-[#f0b90b]">{ticket.ticketType}</span>
-								<ShinyButton 
-									onClick={() => handleSign(index)} 
+								<ShinyButton
+									onClick={() => handleSign(index)}
 									disabled={ticket.signed}
 									className={`font-semibold font-[Tahoma] ${ticket.signed ? "bg-green-500 hover:bg-green-600 text-[#19473f]" : "bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f]"}`}
 								>
@@ -106,8 +106,8 @@ export default function ZupassButton() {
 						))}
 					</div>
 					<DialogFooter>
-						<Button 
-							onClick={() => setDialogOpen(false)} 
+						<Button
+							onClick={() => setDialogOpen(false)}
 							className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]"
 						>
 							Close
