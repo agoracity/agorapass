@@ -99,6 +99,7 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
 
 
     const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, avatarType, Zupass } = data || {};
+    console.log('data', data);
     const [remainingTime, setRemainingTime] = useState('00:00:00');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -237,8 +238,10 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                             />
 
                         </div>
-                        {Zupass?.group ? 'Member of ' + Zupass.group.split(',').join(', ') : null}
-                    </motion.div>
+                        {Zupass && Zupass.length > 0 && Zupass[0].group
+                            ? 'Member of ' + Zupass[0].group
+                            : null}
+                        </motion.div>
                 </CardHeader>
                 <CardContent className="text-center">
                     <motion.div

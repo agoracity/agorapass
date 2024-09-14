@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchAttestationsMadePretrust } from '@/lib/fetchers/attestations';
 import prisma from '@/lib/db';
+import { ethers } from 'ethers';
 
 function stringToBytes32(str: string): string {
     // Pad the string to 32 bytes
@@ -17,7 +18,7 @@ export async function POST(request: NextRequest) {
             process.env.SCHEMA_ID_ZUPASS as string,
             semaphoreId
         );
-        
+
         const matchingAttestations = attestations.filter((attestation: { decodedDataJson: string; recipient: string }) => {
             try {
                 const decodedData = JSON.parse(attestation.decodedDataJson);
@@ -35,12 +36,12 @@ export async function POST(request: NextRequest) {
 
         console.log('matchingAttestations', matchingAttestations);
         if (matchingAttestations.length > 0) {
-            const isSameWallet = matchingAttestations.some((attestation: { recipient: string }) => 
+            const isSameWallet = matchingAttestations.some((attestation: { recipient: string }) =>
                 attestation.recipient.toLowerCase() === walletAddress.toLowerCase()
             );
 
             if (isSameWallet) {
-                const matchingAttestation = matchingAttestations.find((attestation: { recipient: string }) => 
+                const matchingAttestation = matchingAttestations.find((attestation: { recipient: string }) =>
                     attestation.recipient.toLowerCase() === walletAddress.toLowerCase()
                 );
                 console.log('matchingAttestation', matchingAttestation);
@@ -53,16 +54,16 @@ export async function POST(request: NextRequest) {
                     const nullifier = nullifierField.value.value
                     const issuerField = decodedData.find((field: any) => field.name === "issuer");
                     const issuer = issuerField.value.value
-
+                    const group = ethers.decodeBytes32String(issuer);
                     if (!existingZupass) {
                         const user = await prisma.user.findUnique({ where: { wallet: walletAddress } });
                         if (user) {
                             await prisma.zupass.create({
                                 data: {
                                     userId: user.id,
-                                    email: email, 
+                                    email: email,
                                     nullifier: nullifier,
-                                    group: semaphoreId,
+                                    group: group,
                                     ticketType: ticketType,
                                     semaphoreId: semaphoreId,
                                     issuer: issuer,
