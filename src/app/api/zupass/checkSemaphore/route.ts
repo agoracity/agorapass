@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchAttestationsMadePretrust } from '@/lib/fetchers/attestations';
+import prisma from '@/lib/db';
 
 function stringToBytes32(str: string): string {
     // Pad the string to 32 bytes
@@ -9,14 +10,15 @@ function stringToBytes32(str: string): string {
 }
 
 export async function POST(request: NextRequest) {
-    const { semaphoreId, ticketType } = await request.json();
+    const { semaphoreId, ticketType, walletAddress, email } = await request.json();
 
     try {
         const attestations = await fetchAttestationsMadePretrust(
             process.env.SCHEMA_ID_ZUPASS as string,
             semaphoreId
         );
-        const existingAttestation = attestations.find((attestation: { decodedDataJson: string }) => {
+        
+        const matchingAttestations = attestations.filter((attestation: { decodedDataJson: string; recipient: string }) => {
             try {
                 const decodedData = JSON.parse(attestation.decodedDataJson);
                 const subcategoryField = decodedData.find((field: any) => field.name === "subcategory");
@@ -31,14 +33,55 @@ export async function POST(request: NextRequest) {
             return false;
         });
 
-        console.log('existingAttestation', existingAttestation);
-        if (existingAttestation) {
-            return NextResponse.json({ exists: true });
+        console.log('matchingAttestations', matchingAttestations);
+        if (matchingAttestations.length > 0) {
+            const isSameWallet = matchingAttestations.some((attestation: { recipient: string }) => 
+                attestation.recipient.toLowerCase() === walletAddress.toLowerCase()
+            );
+
+            if (isSameWallet) {
+                const matchingAttestation = matchingAttestations.find((attestation: { recipient: string }) => 
+                    attestation.recipient.toLowerCase() === walletAddress.toLowerCase()
+                );
+                console.log('matchingAttestation', matchingAttestation);
+                if (matchingAttestation) {
+                    const existingZupass = await prisma.zupass.findUnique({
+                        where: { attestationUID: matchingAttestation.id }
+                    });
+                    const decodedData = JSON.parse(matchingAttestation.decodedDataJson);
+                    const nullifierField = decodedData.find((field: any) => field.name === "nullifier");
+                    const nullifier = nullifierField.value.value
+                    const issuerField = decodedData.find((field: any) => field.name === "issuer");
+                    const issuer = issuerField.value.value
+
+                    if (!existingZupass) {
+                        const user = await prisma.user.findUnique({ where: { wallet: walletAddress } });
+                        if (user) {
+                            await prisma.zupass.create({
+                                data: {
+                                    userId: user.id,
+                                    email: email, 
+                                    nullifier: nullifier,
+                                    group: semaphoreId,
+                                    ticketType: ticketType,
+                                    semaphoreId: semaphoreId,
+                                    issuer: issuer,
+                                    attestationUID: matchingAttestation.id
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            return NextResponse.json({ exists: true, isSameWallet, count: matchingAttestations.length });
         } else {
-            return NextResponse.json({ exists: false });
+            return NextResponse.json({ exists: false, isSameWallet: false, count: 0 });
         }
     } catch (error) {
         console.error('Error checking attestations:', error);
         return NextResponse.json({ error: 'Failed to check attestations' }, { status: 500 });
+    } finally {
+        await prisma.$disconnect();
     }
 }

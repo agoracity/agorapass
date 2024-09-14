@@ -9,6 +9,8 @@ import ShinyButton from "@/components/ui/ShinyButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { handleVouch } from "@/utils/zupass/handleAttestation";
 
+import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
+
 export default function ZupassButton() {
 	const [loading, setLoading] = useState(false);
 	const [dialogOpen, setDialogOpen] = useState(false);
@@ -22,22 +24,59 @@ export default function ZupassButton() {
 		}
 	}, [multiPCDs]);
 
+	useEffect(() => {
+		if (ticketsToSign.length > 0) {
+			setDialogOpen(true);
+		}
+	}, [ticketsToSign]);
+
 	const { getAccessToken, user } = usePrivy();
 	const { wallets } = useWallets();
 
 	const loginHandler = async () => {
-		setLoading(false);
-		const token = await getAccessToken();
-		await login(user, wallets, token, setTicketsToSign);
-		setLoading(false);
-		setDialogOpen(true);
+		setLoading(true);
+		try {
+			const token = await getAccessToken();
+			await login(user, wallets, token, setTicketsToSign);
+		} catch (error) {
+			console.error("Error during login:", error);
+			showErrorAlert("Failed to connect Zupass. Please try again.");
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const handleSign = async (index: number) => {
 		const ticket = ticketsToSign[index];
 		if (ticket.signed) return;
-
 		try {
+			if (!user || !user.wallet) {
+				throw new Error('User or user wallet not found');
+			}
+			const wallet = wallets.find(w => w.walletClientType === user.wallet?.walletClientType);
+			if (!wallet) {
+				throw new Error('Desired wallet not found');
+			}
+			const address = wallet.address;
+
+			const attestationCheck = await checkSemaphoreAttestation(
+				ticket.external_id, 
+				ticket.ticketType, 
+				address,
+				ticket.email 
+			);
+			
+			if (attestationCheck.exists) {
+				if (attestationCheck.isSameWallet) {
+					await showTempSuccessAlert(`Ticket ${ticket.ticketType} is already connected to your account.`);
+					setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
+					return;
+				} else {
+					showTempErrorAlert(`Ticket ${ticket.ticketType} is already connected to another account.`);
+					return;
+				}
+			}
+
 			console.log('ticket', ticket);
 			const results = await handleVouch(user, wallets, await getAccessToken(), {
 				add_groups: [ticket], // Wrap the single ticket in an array

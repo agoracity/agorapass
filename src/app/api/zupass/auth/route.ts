@@ -34,9 +34,9 @@ export const POST = async (req: NextRequest) => {
                 responses.push({ error: `Invalid PCD type: ${type}`, status: 400 });
                 continue;
             }
-            console.log("inputPCD", inputPCD);
+            // console.log("inputPCD", inputPCD);
             const pcd = await ZKEdDSAEventTicketPCDPackage.deserialize(inputPCD);
-            console.log("pcd", pcd);
+            // console.log("pcd", pcd);
             if (!inputPCD || !pcd) {
                 responses.push({
                     error: "Invalid PCD format or deserialization error",

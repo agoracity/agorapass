@@ -90,7 +90,6 @@ async function login(user: any, wallets: any, token: any, setTicketsToSign: Reac
                 external_id: responseData.payload.external_id, // Add external_id here,
                 email: responseData.payload.email
             }));
-            console.log("Tickets to sign2:", ticketsToSignData);
 
             setTicketsToSign(ticketsToSignData);
             console.log("setTicketsToSign called successfully");

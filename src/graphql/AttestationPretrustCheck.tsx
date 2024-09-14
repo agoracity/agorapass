@@ -10,8 +10,6 @@ const ATTESTATIONS_PRETRUST_CHECK = gql`
     ) {
       id
       recipient
-      timeCreated
-      txid
       decodedDataJson
     }
   }
