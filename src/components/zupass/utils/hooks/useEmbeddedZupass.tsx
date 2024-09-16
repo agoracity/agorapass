@@ -1,4 +1,5 @@
 import { Zapp, ZupassAPI, connect } from "@pcd/zupass-client";
+import React from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export enum EmbeddedZupassState {
@@ -8,7 +9,7 @@ export enum EmbeddedZupassState {
 
 export const EmbeddedZupassContext = createContext<EmbeddedZupass>({
   state: EmbeddedZupassState.CONNECTING,
-  ref: null
+  ref: React.createRef<HTMLDivElement>()
 });
 
 type EmbeddedZupass =
@@ -43,7 +44,11 @@ export function EmbeddedZupassProvider({
       connect(zapp, ref.current, zupassUrl).then((zupass) => {
         setValue({
           state: EmbeddedZupassState.CONNECTED,
-          z: zupass,
+          z: {
+            ...zupass,
+            // @ts-ignore TODO: Fix type mismatch for _version property
+            _version: 'unknown'
+          },
           ref
         });
       });

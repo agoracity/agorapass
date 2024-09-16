@@ -1,11 +1,12 @@
 "use client";
+
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { Navbar } from "./Navbar";
-import {
-  EmbeddedZupassProvider,
-  useEmbeddedZupass
-} from "../utils/hooks/useEmbeddedZupass";
+import { EmbeddedZupassProvider, useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
 import { FrogCrypto } from "./FrogCrypto";
-export const ZUPASS_URL = process.env.ZUPASS_URL || "https://zupass.org";
+
+export const ZUPASS_URL = process.env.NEXT_PUBLIC_ZUPASS_URL || "https://zupass.org";
 
 const zapp = {
   name: "test-client",
@@ -28,8 +29,15 @@ function Main() {
   );
 }
 
-export default function Wrapper() {
-  const zupassUrl = localStorage.getItem("zupassUrl") || ZUPASS_URL;
+function Wrapper() {
+  const [zupassUrl, setZupassUrl] = useState(ZUPASS_URL);
+
+  useEffect(() => {
+    const storedUrl = localStorage.getItem("zupassUrl");
+    if (storedUrl) {
+      setZupassUrl(storedUrl);
+    }
+  }, []);
 
   return (
     <EmbeddedZupassProvider zapp={zapp} zupassUrl={zupassUrl}>
@@ -37,3 +45,5 @@ export default function Wrapper() {
     </EmbeddedZupassProvider>
   );
 }
+
+export default dynamic(() => Promise.resolve(Wrapper), { ssr: false });

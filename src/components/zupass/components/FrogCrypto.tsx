@@ -92,9 +92,6 @@ export function FrogCrypto(): ReactNode {
 
   return (
     <div className="flex flex-col items-center">
-      {!!frogs.length && (
-        <p className="mb-2 text-xl text-center font-bold">{frogs.length} 🐸</p>
-      )}
       <button
         onClick={async () => {
           if (!z || !z.fs || !z.identity) {
