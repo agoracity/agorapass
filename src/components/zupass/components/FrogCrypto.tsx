@@ -6,7 +6,7 @@ import { v5 } from "uuid";
 import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
 import { ZUPASS_URL } from "./Wrapper";
 
-const PODPCDCard = PODPCDUI.renderCardBody;
+const PODPCDCard = PODPCDUI.renderCardBody as React.FC<{ pcd: PODPCD }>;
 const FOLDER = "AGORATEST";
 
 export function FrogCrypto(): ReactNode {
@@ -67,16 +67,21 @@ export function FrogCrypto(): ReactNode {
   }
 
   const getCurrentPODPCDs = async (folder: string): Promise<PODPCD[]> => {
+    if (!z || !z.fs) {
+      throw new Error("Zupass client not initialized");
+    }
     const list = await z.fs.list(folder);
     const pcdIds = list
       .filter((l) => l.type === "pcd" && l.pcdType === PODPCDTypeName)
       .map((l: any) => l.id);
     return Promise.all(
-      pcdIds.map((id) =>
-        z.fs
-          .get(id)
-          .then((s) => PODPCDPackage.deserialize(s.pcd) as unknown as PODPCD)
-      )
+      pcdIds.map(async (id) => {
+        if (!z.fs) {
+          throw new Error("Zupass client not initialized");
+        }
+        const s = await z.fs.get(id);
+        return PODPCDPackage.deserialize(s.pcd) as unknown as PODPCD;
+      })
     );
   };
 
@@ -92,6 +97,10 @@ export function FrogCrypto(): ReactNode {
       )}
       <button
         onClick={async () => {
+          if (!z || !z.fs || !z.identity) {
+            console.error("Zupass client not initialized");
+            return;
+          }
           const pod = await POD.sign(
             podEntriesFromSimplifiedJSON(
               JSON.stringify({
@@ -130,7 +139,7 @@ export function FrogCrypto(): ReactNode {
         <button
           onClick={() =>
             window.open(
-              `${zupassUrl}/#/?folder=PUDDLECRYPTO`,
+              `${zupassUrl}/#/?folder=AGORATEST`,
               "_blank",
               "noopener,noreferrer"
             )
@@ -154,15 +163,17 @@ export function FrogCrypto(): ReactNode {
                 | bigint
                 | undefined;
 
-              if (timestampA && !timestampB) return -1;
-              if (!timestampA && timestampB) return 1;
-              if (!timestampA && !timestampB) return 0;
-              return Number(timestampB - timestampA); // Larger timestamp first
+              if (timestampA && timestampB) {
+                return Number(timestampB - timestampA); // Larger timestamp first
+              }
+              if (timestampA) return -1;
+              if (timestampB) return 1;
+              return 0;
             })
             .map((pod) => (
               <div key={pod.id} className="bg-white text-gray-800 max-w-md rounded-lg border border-gray-300 p-3">
                 <strong>{pod.claim.entries.zupass_title.value}</strong>
-                <PODPCDCard pcd={pod as PODPCD} />
+                <PODPCDCard pcd={pod} />
               </div>
             ))
         )}
