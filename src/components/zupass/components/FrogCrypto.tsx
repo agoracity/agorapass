@@ -1,0 +1,174 @@
+import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
+import { PODPCD, PODPCDPackage, PODPCDTypeName } from "@pcd/pod-pcd";
+import { PODPCDUI } from "@pcd/pod-pcd-ui";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import { v5 } from "uuid";
+import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
+import { ZUPASS_URL } from "./Wrapper";
+
+const PODPCDCard = PODPCDUI.renderCardBody;
+const FOLDER = "AGORATEST";
+
+export function FrogCrypto(): ReactNode {
+  const { z, connected } = useEmbeddedZupass();
+  const [cooldown, setCooldown] = useState(0);
+  const [nonce, setNonce] = useState(() => {
+    const storedNonce = localStorage.getItem("frogNonce");
+    return storedNonce ? parseInt(storedNonce, 10) : 0;
+  });
+  const [frogs, setFrogs] = useState<PODPCD[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const FROG_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+
+
+  const zupassUrl = useMemo(() => {
+    return localStorage.getItem("zupassUrl") || ZUPASS_URL;
+  }, []);
+
+  useEffect(() => {
+    let timer: number;
+    if (cooldown > 0) {
+      timer = window.setInterval(() => {
+        setCooldown((prev) => Math.max(0, prev - 1));
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [cooldown]);
+
+  useEffect(() => {
+    localStorage.setItem("frogNonce", nonce.toString());
+  }, [nonce]);
+
+  useEffect(() => {
+    const loadFrogs = async () => {
+      if (connected) {
+        console.log("loading");
+        try {
+          const loadedFrogs = await getCurrentPODPCDs(FOLDER);
+          setFrogs(loadedFrogs);
+        } catch (error) {
+          console.error("Error loading frogs:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadFrogs();
+  }, [connected]);
+
+  if (!connected) {
+    return (
+      <div className="flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
+  const getCurrentPODPCDs = async (folder: string): Promise<PODPCD[]> => {
+    const list = await z.fs.list(folder);
+    const pcdIds = list
+      .filter((l) => l.type === "pcd" && l.pcdType === PODPCDTypeName)
+      .map((l: any) => l.id);
+    return Promise.all(
+      pcdIds.map((id) =>
+        z.fs
+          .get(id)
+          .then((s) => PODPCDPackage.deserialize(s.pcd) as unknown as PODPCD)
+      )
+    );
+  };
+
+  const formatCooldown = (seconds: number) => {
+    const remainingSeconds = seconds % 60;
+    return `${remainingSeconds.toString()}s`;
+  };
+
+  return (
+    <div className="flex flex-col items-center">
+      {!!frogs.length && (
+        <p className="mb-2 text-xl text-center font-bold">{frogs.length} 🐸</p>
+      )}
+      <button
+        onClick={async () => {
+          const pod = await POD.sign(
+            podEntriesFromSimplifiedJSON(
+              JSON.stringify({
+                zupass_display: "collectable",
+                zupass_title: `AGORA ${nonce}`,
+                timestamp: Date.now(),
+                issuer: "AgoraPass",
+                owner: (await z.identity.getIdentityCommitment()).toString()
+              })
+            ),
+            "0001020304050607080900010203040506070809000102030405060708090000"
+          );
+          const newPOD = new PODPCD(
+            v5(`${pod.contentID}`, FROG_NAMESPACE),
+            pod
+          );
+          await z.fs.put(FOLDER, await PODPCDPackage.serialize(newPOD));
+          setFrogs(await getCurrentPODPCDs(FOLDER));
+          setCooldown(10);
+          // alert(`got frog ${nonce}`);
+          setNonce((prevNonce) => {
+            const newNonce = prevNonce + 1;
+            localStorage.setItem("frogNonce", newNonce.toString());
+            return newNonce;
+          });
+        }}
+        disabled={cooldown > 0}
+        className="bg-green-700 font-bold text-white px-4 py-2 rounded disabled:opacity-50 mb-4"
+      >
+        {cooldown > 0
+          ? `Get FROG (wait ${formatCooldown(cooldown)})`
+          : "Get FROG"}
+      </button>
+
+      <div className="mb-8">
+        <button
+          onClick={() =>
+            window.open(
+              `${zupassUrl}/#/?folder=PUDDLECRYPTO`,
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+          className="font-bold bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
+        >
+          View in Zupass
+        </button>
+      </div>
+
+      <div className="flex flex-col items-center gap-3">
+        {loading ? (
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500"></div>
+        ) : (
+          frogs
+            .sort((a, b) => {
+              const timestampA = a.claim.entries.timestamp?.value as
+                | bigint
+                | undefined;
+              const timestampB = b.claim.entries.timestamp?.value as
+                | bigint
+                | undefined;
+
+              if (timestampA && !timestampB) return -1;
+              if (!timestampA && timestampB) return 1;
+              if (!timestampA && !timestampB) return 0;
+              return Number(timestampB - timestampA); // Larger timestamp first
+            })
+            .map((pod) => (
+              <div key={pod.id} className="bg-white text-gray-800 max-w-md rounded-lg border border-gray-300 p-3">
+                <strong>{pod.claim.entries.zupass_title.value}</strong>
+                <PODPCDCard pcd={pod as PODPCD} />
+              </div>
+            ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Remove styled-components definitions
