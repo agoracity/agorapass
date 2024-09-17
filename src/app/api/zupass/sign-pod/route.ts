@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
 import { PODPCD, PODPCDPackage } from "@pcd/pod-pcd";
 import { v5 as uuidv5 } from 'uuid';
-
+import { constructZupassPcdAddRequestUrl } from '@pcd/passport-interface';
+const ZUPASS_URL = "https://zupass.org"
 const ZUPASS_SIGNING_KEY = process.env.ZUPASS_SIGNING_KEY;
 const FROG_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
 
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
   const { timestamp, owner } = await request.json();
 
   try {
-    const pod = await POD.sign(
+    const pod =  POD.sign(
       podEntriesFromSimplifiedJSON(JSON.stringify({
         zupass_display: "collectable",
         zupass_title: `AGORA`,
@@ -31,16 +32,19 @@ export async function POST(request: NextRequest) {
       pod
     );
 
-    // Serialize PODPCD
+  
     const serializedPODPCD = await PODPCDPackage.serialize(podpcd);
-
-    // Convert BigInt values to strings before sending response
-    const serializedData = JSON.parse(JSON.stringify(
-      { podpcd: serializedPODPCD },
-      (_, value) => typeof value === 'bigint' ? value.toString() : value
-    ));
-
-    return NextResponse.json(serializedData);
+  
+    const url = constructZupassPcdAddRequestUrl(
+      ZUPASS_URL,
+      "http://localhost:3000" + "#/popup",
+      serializedPODPCD,
+      "AGORATEST",
+      false,
+    );
+    console.log("ZUPASS_URL", ZUPASS_URL)
+    console.log("url", url)
+    return NextResponse.json(url);
   } catch (error) {
     console.error('Error creating PODPCD:', error);
     return NextResponse.json({ message: 'Error creating PODPCD' }, { status: 500 });

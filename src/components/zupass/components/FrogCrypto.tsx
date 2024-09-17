@@ -1,10 +1,10 @@
-import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
 import { PODPCD, PODPCDPackage, PODPCDTypeName } from "@pcd/pod-pcd";
 import { PODPCDUI } from "@pcd/pod-pcd-ui";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { v5 } from "uuid";
 import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
 import { ZUPASS_URL } from "./Wrapper";
+import axios from 'axios';
+
 
 const PODPCDCard = PODPCDUI.renderCardBody as React.FC<{ pcd: PODPCD }>;
 const FOLDER = "AGORATEST";
@@ -98,31 +98,29 @@ export function FrogCrypto(): ReactNode {
             console.error("Zupass client not initialized");
             return;
           }
-          const pod = await POD.sign(
-            podEntriesFromSimplifiedJSON(
-              JSON.stringify({
-                zupass_display: "collectable",
-                zupass_title: `AGORA ${nonce}`,
-                timestamp: Date.now(),
-                issuer: "AgoraPass",
-                owner: (await z.identity.getIdentityCommitment()).toString()
-              })
-            ),
-            "0001020304050607080900010203040506070809000102030405060708090000"
-          );
-          const newPOD = new PODPCD(
-            v5(`${pod.contentID}`, FROG_NAMESPACE),
-            pod
-          );
-          await z.fs.put(FOLDER, await PODPCDPackage.serialize(newPOD));
-          setFrogs(await getCurrentPODPCDs(FOLDER));
-          setCooldown(10);
-          // alert(`got frog ${nonce}`);
-          setNonce((prevNonce) => {
-            const newNonce = prevNonce + 1;
-            localStorage.setItem("frogNonce", newNonce.toString());
-            return newNonce;
-          });
+          try {
+            const ownerIdentity = await z.identity.getIdentityCommitment();
+            
+            // Call the server to get the signed POD
+            const response = await axios.post('/api/zupass/sign-pod', {
+              nonce,
+              timestamp: Date.now(),
+              owner: ownerIdentity.toString()
+            });
+            console.log('response.data', response.data)
+           
+
+            setFrogs(await getCurrentPODPCDs(FOLDER));
+            setCooldown(10);
+            setNonce((prevNonce) => {
+              const newNonce = prevNonce + 1;
+              localStorage.setItem("frogNonce", newNonce.toString());
+              return newNonce;
+            });
+          } catch (error) {
+            console.error("Error getting FROG:", error);
+            alert("Failed to get FROG. Please try again.");
+          }
         }}
         disabled={cooldown > 0}
         className="bg-green-700 font-bold text-white px-4 py-2 rounded disabled:opacity-50 mb-4"
