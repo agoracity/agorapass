@@ -3,7 +3,8 @@ import { POD, podEntriesFromSimplifiedJSON } from "@pcd/pod";
 import { PODPCD, PODPCDPackage } from "@pcd/pod-pcd";
 import { v5 as uuidv5 } from 'uuid';
 import { constructZupassPcdAddRequestUrl } from '@pcd/passport-interface';
-const ZUPASS_URL = "https://zupass.org"
+import { Zupass } from '@/config/siteConfig';
+
 const ZUPASS_SIGNING_KEY = process.env.ZUPASS_SIGNING_KEY;
 const FROG_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
 
@@ -17,8 +18,8 @@ export async function POST(request: NextRequest) {
   try {
     const pod =  POD.sign(
       podEntriesFromSimplifiedJSON(JSON.stringify({
-        zupass_display: "collectable",
-        zupass_title: `AGORA`,
+        zupass_display: Zupass.zupass_display,
+        zupass_title: Zupass.zupass_title,
         timestamp,
         issuer: "AgoraPass",
         owner
@@ -36,14 +37,12 @@ export async function POST(request: NextRequest) {
     const serializedPODPCD = await PODPCDPackage.serialize(podpcd);
   
     const url = constructZupassPcdAddRequestUrl(
-      ZUPASS_URL,
-      "http://localhost:3000" + "#/popup",
+      Zupass.url,
+      process.env.NEXT_PUBLIC_BASE_URL + "#/popup",
       serializedPODPCD,
-      "AGORATEST",
-      false,
+      Zupass.folder,
+      true,
     );
-    console.log("ZUPASS_URL", ZUPASS_URL)
-    console.log("url", url)
     return NextResponse.json(url);
   } catch (error) {
     console.error('Error creating PODPCD:', error);

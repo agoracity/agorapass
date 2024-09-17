@@ -1540,16 +1540,6 @@
     circomlibjs "^0.1.7"
     uuid "^9.0.0"
 
-"@pcd/eddsa-pcd@0.6.4":
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/@pcd/eddsa-pcd/-/eddsa-pcd-0.6.4.tgz#a6d70727bd952c33b3e22728460662cc500f5aba"
-  integrity sha512-8NL1vRXlehIRmzCF0etDd3PHiooWJ9h2NMQKywktX0MyANfw8VgwYOG/ftQuG54v14V37WiBRqlda/7Rya8mUw==
-  dependencies:
-    "@pcd/pcd-types" "0.11.4"
-    "@pcd/util" "0.5.3"
-    circomlibjs "^0.1.7"
-    uuid "^9.0.0"
-
 "@pcd/eddsa-ticket-pcd@0.6.2", "@pcd/eddsa-ticket-pcd@^0.6.1":
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/@pcd/eddsa-ticket-pcd/-/eddsa-ticket-pcd-0.6.2.tgz#52ef6aa511d4219e75addcf54a9ec1e9515f51a4"
@@ -1623,20 +1613,6 @@
     snarkjs "^0.7.4"
     url-join "4.0.1"
 
-"@pcd/message-pcd@0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pcd/message-pcd/-/message-pcd-0.1.4.tgz#cdf2e882466ae77479d7546ec54af6bd4499d3bf"
-  integrity sha512-Nf+YpF31x++MTACWPX2yq/ja1w7p4crFkoBJ9JDHhsdVl/GImq8QKLF2oe/jcp5VcmTWrHwLjXLQY/opYhxlww==
-  dependencies:
-    "@pcd/eddsa-pcd" "0.6.4"
-    "@pcd/pcd-types" "0.11.4"
-    "@pcd/semaphore-signature-pcd" "0.11.4"
-    "@trufflesuite/bigint-buffer" "^1.1.10"
-    chai "^4.3.7"
-    json-bigint "^1.0.0"
-    uuid "^9.0.0"
-    zod "^3.22.4"
-
 "@pcd/obj-pcd@0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@pcd/obj-pcd/-/obj-pcd-0.0.3.tgz#a4f31cae45c25e39cc0c8c2cf520a45b7d0c2a67"
@@ -1682,19 +1658,6 @@
     uuid "^9.0.0"
     zod "^3.22.4"
 
-"@pcd/passport-ui@0.11.4":
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/@pcd/passport-ui/-/passport-ui-0.11.4.tgz#14d8f5185e47aec3c81faacc78076976c22ff6cc"
-  integrity sha512-QLIOt7cKys35IJ7vwfbm8sHVHSKZpW1DwjWGqgO7+qipbC42wiKSRZLTbOkqGvnZM2ZnZW+qUYKYoGyix+Bwdw==
-  dependencies:
-    "@pcd/message-pcd" "0.1.4"
-    medium-zoom "^1.0.8"
-    pako "^2.1.0"
-    qr-image "^3.2.0"
-    react "^18.2.0"
-    react-router-dom "^6.9.0"
-    styled-components "^5.3.9"
-
 "@pcd/pcd-collection@0.11.2":
   version "0.11.2"
   resolved "https://registry.yarnpkg.com/@pcd/pcd-collection/-/pcd-collection-0.11.2.tgz#38403708097d3f0dd59cefe717f773e2989a928f"
@@ -1718,18 +1681,6 @@
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/@pcd/pcd-types/-/pcd-types-0.11.4.tgz#c2b1382ae2a6bd105a1fc4d1e1fb09adbaea1ac1"
   integrity sha512-IxPzs5dFc9O7mtcusbEMNln3lWtoyMkxPLbcJTbmlR+HGURNxDR5ZumXlXTOv8LL1OwkY1TaU1EkrhXVnVWdNA==
-
-"@pcd/pod-pcd-ui@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@pcd/pod-pcd-ui/-/pod-pcd-ui-0.1.5.tgz#47d00ed1ac9fd5da53d9aff1ce9086dc7f42fd50"
-  integrity sha512-vVMNpNcVq96iP9Jhhg+GKJK0bYVRgppku4p7HW8aREVIOGzqqSNKiQdaWP/29lBLcSOQB+tsivurVDwVEMsQKw==
-  dependencies:
-    "@pcd/passport-ui" "0.11.4"
-    "@pcd/pcd-types" "0.11.4"
-    "@pcd/pod" "0.1.5"
-    "@pcd/pod-pcd" "0.1.5"
-    "@pcd/util" "0.5.3"
-    react "^18.2.0"
 
 "@pcd/pod-pcd@0.1.2":
   version "0.1.2"
@@ -1834,20 +1785,6 @@
     "@pcd/pcd-types" "0.11.2"
     "@pcd/semaphore-identity-pcd" "0.11.2"
     "@pcd/util" "0.5.2"
-    "@semaphore-protocol/group" "^3.15.2"
-    "@semaphore-protocol/identity" "^3.15.2"
-    "@semaphore-protocol/proof" "^3.15.2"
-    json-bigint "^1.0.0"
-    uuid "^9.0.0"
-
-"@pcd/semaphore-signature-pcd@0.11.4":
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/@pcd/semaphore-signature-pcd/-/semaphore-signature-pcd-0.11.4.tgz#0ec41e9d95a5a22d2014ed4ec6c94d220b87aa25"
-  integrity sha512-8MEOhiRP4timkQRncRECVgDBlZrIQoHnEHBHKeGI6OShV78c/kKCYQOuxA786nYc6AHT/kSj97BZK8+ObSXkgA==
-  dependencies:
-    "@pcd/pcd-types" "0.11.4"
-    "@pcd/semaphore-identity-pcd" "0.11.4"
-    "@pcd/util" "0.5.3"
     "@semaphore-protocol/group" "^3.15.2"
     "@semaphore-protocol/identity" "^3.15.2"
     "@semaphore-protocol/proof" "^3.15.2"
@@ -2634,11 +2571,6 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/rect/-/rect-1.1.0.tgz#f817d1d3265ac5415dadc67edab30ae196696438"
   integrity sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==
 
-"@remix-run/router@1.19.2":
-  version "1.19.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.19.2.tgz#0c896535473291cb41f152c180bedd5680a3b273"
-  integrity sha512-baiMx18+IMuD1yyvOGaHM9QrVUPGGG0jC+z+IPHnRJWUAUvaKuWKyE8gjDj2rzv3sz9zOGoRSPgeBVHRhZnBlA==
-
 "@rushstack/eslint-patch@^1.3.3":
   version "1.10.4"
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.10.4.tgz#427d5549943a9c6fce808e39ea64dbe60d4047f1"
@@ -2990,13 +2922,6 @@
   version "3.8.4"
   resolved "https://registry.yarnpkg.com/@tanstack/virtual-core/-/virtual-core-3.8.4.tgz#0ff84b6a0e4b394335cf7ccf759c36b58cbd02eb"
   integrity sha512-iO5Ujgw3O1yIxWDe9FgUPNkGjyT657b1WNX52u+Wv1DyBFEpdCdGkuVaky0M3hHFqNWjAmHWTn4wgj9rTr7ZQg==
-
-"@trufflesuite/bigint-buffer@^1.1.10":
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/@trufflesuite/bigint-buffer/-/bigint-buffer-1.1.10.tgz#a1d9ca22d3cad1a138b78baaf15543637a3e1692"
-  integrity sha512-pYIQC5EcMmID74t26GCC67946mgTJFiLXOT/BYozgrd4UEY2JHEGLhWi9cMiQCt5BSqFEvKkCHNnoj82SRjiEw==
-  dependencies:
-    node-gyp-build "4.4.0"
 
 "@tweenjs/tween.js@18 - 23":
   version "23.1.3"
@@ -7715,11 +7640,6 @@ md5@^2.3.0:
     crypt "0.0.2"
     is-buffer "~1.1.6"
 
-medium-zoom@^1.0.8:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/medium-zoom/-/medium-zoom-1.1.0.tgz#6efb6bbda861a02064ee71a2617a8dc4381ecc71"
-  integrity sha512-ewyDsp7k4InCUp3jRmwHBRFGyjBimKps/AJLjRSox+2q/2H4p/PNpQf+pwONWlJiOudkBXtbdmVbFjqyybfTmQ==
-
 memorystream@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/memorystream/-/memorystream-0.3.1.tgz#86d7090b30ce455d63fbae12dda51a47ddcaf9b2"
@@ -8069,11 +7989,6 @@ node-forge@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.3.1.tgz#be8da2af243b2417d5f646a770663a92b7e9ded3"
   integrity sha512-dPEtOeMvF9VMcYV/1Wb8CPoVAXtp6MKMlcbAt4ddqmGqUJ6fQZFXkNZNkNlfevtNkGtaSoXf/vNNNSvgrdXwtA==
-
-node-gyp-build@4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.4.0.tgz#42e99687ce87ddeaf3a10b99dc06abc11021f3f4"
-  integrity sha512-amJnQCcgtRVw9SvoebO3BKGESClrfXGCUTX9hSn1OuGQTQBOZmVd0Z0OlecpuRksKvbsUqALE8jls/ErClAPuQ==
 
 node-gyp-build@^4.2.0, node-gyp-build@^4.2.2, node-gyp-build@^4.3.0:
   version "4.8.1"
@@ -8716,11 +8631,6 @@ punycode@^2.1.0:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
-qr-image@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/qr-image/-/qr-image-3.2.0.tgz#9fa8295beae50c4a149cf9f909a1db464a8672e8"
-  integrity sha512-rXKDS5Sx3YipVsqmlMJsJsk6jXylEpiHRC2+nJy66fxA5ExYyGa4PqwteW69SaVmAb2OQ18HbYriT7cGQMbduw==
-
 qr.js@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
@@ -8904,21 +8814,6 @@ react-remove-scroll@2.5.7:
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
 
-react-router-dom@^6.9.0:
-  version "6.26.2"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.26.2.tgz#a6e3b0cbd6bfd508e42b9342099d015a0ac59680"
-  integrity sha512-z7YkaEW0Dy35T3/QKPYB1LjMK2R1fxnHO8kWpUMTBdfVzZrWOiY9a7CtN8HqdWtDUWd5FY6Dl8HFsqVwH4uOtQ==
-  dependencies:
-    "@remix-run/router" "1.19.2"
-    react-router "6.26.2"
-
-react-router@6.26.2:
-  version "6.26.2"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.26.2.tgz#2f0a68999168954431cdc29dd36cec3b6fa44a7e"
-  integrity sha512-tvN1iuT03kHgOFnLPfLJ8V95eijteveqdOSk+srqfePtQvqCExB8eHOYnlilbOcyJyKnYkr1vJvf7YqotAJu1A==
-  dependencies:
-    "@remix-run/router" "1.19.2"
-
 react-style-singleton@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-style-singleton/-/react-style-singleton-2.2.1.tgz#f99e420492b2d8f34d38308ff660b60d0b1205b4"
@@ -8928,7 +8823,7 @@ react-style-singleton@^2.2.1:
     invariant "^2.2.4"
     tslib "^2.0.0"
 
-react@^18, react@^18.2.0:
+react@^18:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
@@ -9606,7 +9501,7 @@ sturdy-websocket@^0.2.1:
   resolved "https://registry.yarnpkg.com/sturdy-websocket/-/sturdy-websocket-0.2.1.tgz#20a58fd53372ef96eaa08f3c61c91a10b07c7c05"
   integrity sha512-NnzSOEKyv4I83qbuKw9ROtJrrT6Z/Xt7I0HiP/e6H6GnpeTDvzwGIGeJ8slai+VwODSHQDooW2CAilJwT9SpRg==
 
-styled-components@^5.3.6, styled-components@^5.3.9:
+styled-components@^5.3.6:
   version "5.3.11"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-5.3.11.tgz#9fda7bf1108e39bf3f3e612fcc18170dedcd57a8"
   integrity sha512-uuzIIfnVkagcVHv9nE0VPlHPSCmXIUGKfJ42LNjxCCTDTL5sgnJ8Z7GZBq0EnLYGln77tPpEpExt2+qa+cZqSw==

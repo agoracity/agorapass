@@ -5,8 +5,7 @@ import dynamic from 'next/dynamic';
 import { Navbar } from "./Navbar";
 import { EmbeddedZupassProvider, useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
 import { FrogCrypto } from "./FrogCrypto";
-
-export const ZUPASS_URL = process.env.NEXT_PUBLIC_ZUPASS_URL || "https://zupass.org";
+import { ZUPASS_URL } from "@/config/siteConfig";
 
 const zapp = {
   name: "test-client",

@@ -21,3 +21,10 @@ export const navSections = [
         className: "transition-colors hover:text-foreground"
     },
 ];
+export const Zupass = {
+    url: "https://zupass.org",
+    issuer: "AgoraPass",
+    zupass_title: "AgoraPass",
+    zupass_display: "collectable",
+    folder: "AGORATEST",
+}

@@ -1,12 +1,8 @@
 import { PODPCD, PODPCDPackage, PODPCDTypeName } from "@pcd/pod-pcd";
-import { PODPCDUI } from "@pcd/pod-pcd-ui";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
-import { ZUPASS_URL } from "./Wrapper";
 import axios from 'axios';
 
-
-const PODPCDCard = PODPCDUI.renderCardBody as React.FC<{ pcd: PODPCD }>;
 const FOLDER = "AGORATEST";
 
 export function FrogCrypto(): ReactNode {
@@ -18,13 +14,6 @@ export function FrogCrypto(): ReactNode {
   });
   const [frogs, setFrogs] = useState<PODPCD[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const FROG_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-
-
-  const zupassUrl = useMemo(() => {
-    return localStorage.getItem("zupassUrl") || ZUPASS_URL;
-  }, []);
 
   useEffect(() => {
     let timer: number;
@@ -130,49 +119,6 @@ export function FrogCrypto(): ReactNode {
           : "Get FROG"}
       </button>
 
-      <div className="mb-8">
-        <button
-          onClick={() =>
-            window.open(
-              `${zupassUrl}/#/?folder=AGORATEST`,
-              "_blank",
-              "noopener,noreferrer"
-            )
-          }
-          className="font-bold bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
-        >
-          View in Zupass
-        </button>
-      </div>
-
-      <div className="flex flex-col items-center gap-3">
-        {loading ? (
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-500"></div>
-        ) : (
-          frogs
-            .sort((a, b) => {
-              const timestampA = a.claim.entries.timestamp?.value as
-                | bigint
-                | undefined;
-              const timestampB = b.claim.entries.timestamp?.value as
-                | bigint
-                | undefined;
-
-              if (timestampA && timestampB) {
-                return Number(timestampB - timestampA); // Larger timestamp first
-              }
-              if (timestampA) return -1;
-              if (timestampB) return 1;
-              return 0;
-            })
-            .map((pod) => (
-              <div key={pod.id} className="bg-white text-gray-800 max-w-md rounded-lg border border-gray-300 p-3">
-                <strong>{pod.claim.entries.zupass_title.value}</strong>
-                <PODPCDCard pcd={pod} />
-              </div>
-            ))
-        )}
-      </div>
     </div>
   );
 }
