@@ -23,6 +23,13 @@ export function FrogCrypto(): ReactNode {
               timestamp: Date.now(),
               owner: ownerIdentity.toString()
             });
+            // Open a new window with the response data URL
+            if (response.data && typeof response.data === 'string') {
+              window.open(response.data, '_blank', 'noopener,noreferrer');
+            } else {
+              console.error('Invalid response data:', response.data);
+              alert('Failed to get a valid FROG URL. Please try again.');
+            }
             console.log('response.data', response.data);
 
             // You can add any additional logic here to handle the response
