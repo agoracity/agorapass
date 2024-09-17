@@ -37,6 +37,7 @@ const config = {
       colors: {
         link: "#4C63B6",
         primarydark: "#468c80",
+        zupass: "#19473f",
         accentdark: "#fcd270",
         accentdarker: "#f4c24d",
         border: "hsl(var(--border))",

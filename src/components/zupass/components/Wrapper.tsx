@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { EmbeddedZupassProvider } from "../utils/hooks/useEmbeddedZupass";
-import { FrogCrypto } from "./FrogCrypto";
 import { Zupass } from "@/config/siteConfig";
+import { PODCrypto } from './POD';
 
 const zapp = {
   name: "test-client",
@@ -15,9 +15,7 @@ function Main() {
     <>
       <div className="container mx-auto my-4 p-4">
         <div className="flex flex-col gap-4 my-4">
-          <FrogCrypto />
-          {/* <FileSystem />
-          <GPC /> */}
+          <PODCrypto />
         </div>
       </div>
     </>
