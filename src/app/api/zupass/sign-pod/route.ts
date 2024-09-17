@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       podEntriesFromSimplifiedJSON(JSON.stringify({
         zupass_display: Zupass.zupass_display,
         zupass_title: Zupass.zupass_title,
+        zupass_image_url: Zupass.zupass_image_url,
         timestamp,
         issuer: "AgoraPass",
         owner

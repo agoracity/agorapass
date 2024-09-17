@@ -27,4 +27,5 @@ export const Zupass = {
     zupass_title: "AgoraPass",
     zupass_display: "collectable",
     folder: "AGORATEST",
+    zupass_image_url: "https://staging-pass.agora.city/agora.png",
 }
