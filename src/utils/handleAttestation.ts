@@ -2,8 +2,8 @@ import generateAttestation from './generateAttestation';
 import { signTypedData } from './signTypedData';
 import fetchNonce from './fetchNonce';
 import { showLoadingAlert, showErrorAlert, showSuccessAlert } from './alertUtils';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
+import {ethers} from 'ethers';
 
 export const handleVouch = async (
     recipient: string,
@@ -42,15 +42,15 @@ export const handleVouch = async (
         }
 
         const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? '84532', 10);
-        const schemaUID = process.env.SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3";
+        const schemaUID = process.env.SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7";
         const attester = user?.wallet.address;
 
-        const schemaEncoder = new SchemaEncoder("uint8 power,string endorsementType,string platform");
-        const encodedData = schemaEncoder.encodeData([
-            { name: "power", value: "1", type: "uint8" },
-            { name: "endorsementType", value: "Social", type: "string" },
-            { name: "platform", value: "Agora Pass", type: "string" }
-        ]);
+        const schemaEncoder = new SchemaEncoder("bytes32 endorsement,bytes32 platform,bytes32 category");
+       const encodedData = schemaEncoder.encodeData([
+           { name: "endorsement", value: ethers.encodeBytes32String("Social"), type: "bytes32" },
+           { name: "platform", value: ethers.encodeBytes32String("AgoraPass"), type: "bytes32" },
+           { name: "category", value: ethers.encodeBytes32String("Community"), type: "bytes32" }
+       ]);
 
         const domain = {
             name: 'EAS',

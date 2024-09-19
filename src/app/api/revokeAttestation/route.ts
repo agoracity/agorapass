@@ -7,7 +7,7 @@ import { toBigInt } from 'ethers';
 import { Utils } from 'alchemy-sdk';
 
 const easContractAddress = "0x4200000000000000000000000000000000000021";
-const schemaUID = process.env.SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3";
+const schemaUID = process.env.SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7";
 
 const eas = new EAS(easContractAddress);
 // Signer must be an ethers-like signer.

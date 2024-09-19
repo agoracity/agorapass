@@ -35,7 +35,7 @@ const DialogTrigger = dynamic(() => import("@/components/ui/dialog").then(mod =>
 const VouchButtonCustom = dynamic(() => import('@/components/ui/VouchButton'), { ssr: false });
 
 //!TODO replace this schemaId
-const schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3"; // Replace with your schemaId
+const schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7"; // Replace with your schemaId
 
 export default function Page({ params }: { params: { slug: string } }) {
 
