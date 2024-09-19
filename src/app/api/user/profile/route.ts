@@ -27,9 +27,10 @@ export async function GET(request: NextRequest) {
             select: {
                 avatarType: true,
                 wallet: true,
+                rankScore: true,
+                podUrl: true,
                 Zupass: {
                     select: {
-                        //We only bring the semaphoreId atm, just to check that some zupass in connected
                         semaphoreId: true,
                     },
                 },
