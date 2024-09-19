@@ -21,9 +21,16 @@ import ZupassButton from '../layout/ZupassButton';
 import Image from 'next/image';
 import ZupassLogo from '@/../../public/zupass.webp';
 import ShinyButton from '../ui/ShinyButton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import dynamic from 'next/dynamic';
+const DynamicWrapper = dynamic(() => import('@/components/zupass/components/Wrapper'), {
+    ssr: false,
+    loading: () => <p>Loading...</p>
+  });
 
 const ProfileAvatar = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
     const { authenticated, logout, ready, user } = usePrivy();
 
@@ -37,6 +44,13 @@ const ProfileAvatar = () => {
             setUpdateTrigger(prev => !prev);
         }
     }, [authenticated, user]);
+
+    useEffect(() => {
+        if (data && data.rankScore > 0.25 && (!data.podUrl || data.podUrl === '')) {
+            console.log("podConnected is false");
+            setIsDialogOpen(true);
+        }
+    }, [data]);
 
     const avatar = useMemo(() => isClient ? getAvatar(wallet, avatarType) : null, [wallet, avatarType, isClient]);
     const handleNewUserCreation = useCallback(async (user: any) => {
@@ -79,6 +93,8 @@ const ProfileAvatar = () => {
     });
 
     const disableLogin = !ready || authenticated;
+
+    const [showWrapper, setShowWrapper] = useState(false);
 
     return (
         <>
@@ -144,6 +160,25 @@ const ProfileAvatar = () => {
                     <p className='flex items-center flex-row whitespace-nowrap'>Sign in <Wallet className='h-5 w-5 ml-2' /></p>
                 </ShinyButton>
             )}
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Congratulations!</DialogTitle>
+                    </DialogHeader>
+                    <p>You can now generate your own AgoraPass!</p>
+                    {!showWrapper ? (
+                        <Button onClick={() => setShowWrapper(true)}>
+                            Connect to Zupass
+                        </Button>
+                    ) : (
+                       <>
+                        <DynamicWrapper wallet={wallet} />
+                        Once added to Zupass, you can close this window.
+                       </>
+                    )}
+                </DialogContent>
+            </Dialog>
         </>
     );
 };

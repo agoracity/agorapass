@@ -10,22 +10,26 @@ const zapp = {
   permissions: ["read", "write"]
 };
 
-function Main() {
+interface MainProps {
+  wallet: string;
+}
+
+function Main({ wallet }: MainProps) {
   return (
     <>
-      <div className="container mx-auto my-4 p-4">
-        <div className="flex flex-col gap-4 my-4">
-          <PODCrypto />
-        </div>
-      </div>
+      <PODCrypto wallet={wallet} />
     </>
   );
 }
 
-function Wrapper() {
+interface WrapperProps {
+  wallet: string;
+}
+
+function Wrapper({ wallet }: WrapperProps) {
   return (
     <EmbeddedZupassProvider zapp={zapp} zupassUrl={Zupass.url}>
-      <Main />
+      <Main wallet={wallet} />
     </EmbeddedZupassProvider>
   );
 }

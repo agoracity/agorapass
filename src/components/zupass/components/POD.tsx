@@ -3,8 +3,13 @@ import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
 import axios from 'axios';
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { openZupassPopupUrl } from "@pcd/passport-interface";
 
-export function PODCrypto(): ReactNode {
+interface PODCryptoProps {
+  wallet: string;
+}
+
+export function PODCrypto({ wallet }: PODCryptoProps): ReactNode {
   const { z, connected } = useEmbeddedZupass();
   const [isLoading, setIsLoading] = useState(false);
   const [PODUrl, setPODUrl] = useState<string | null>(null);
@@ -21,7 +26,8 @@ export function PODCrypto(): ReactNode {
       
       const response = await axios.post('/api/zupass/sign-pod', {
         timestamp: Date.now(),
-        owner: ownerIdentity.toString()
+        owner: ownerIdentity.toString(),
+        wallet: wallet
       });
 
       if (response.data && typeof response.data === 'string') {
@@ -40,7 +46,7 @@ export function PODCrypto(): ReactNode {
 
   const handleAddToZupass = () => {
     if (PODUrl) {
-      window.open(PODUrl, '_blank', 'noopener,noreferrer');
+      openZupassPopupUrl(PODUrl);
     }
   };
 
@@ -63,10 +69,10 @@ export function PODCrypto(): ReactNode {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Zupass...
+                Generating AgoraPass...
               </>
             ) : (
-              "Generate Zupass"
+              "Generate AgoraPass"
             )}
           </Button>
         )
