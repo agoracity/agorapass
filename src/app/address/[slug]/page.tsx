@@ -25,6 +25,7 @@ import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
 import displayRanking from '@/utils/displayRanking';
 import truncateWallet from '@/utils/truncateWallet';
+import communityData from '@/data/communityData.json';
 // Dynamically import components
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
 const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
@@ -266,7 +267,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     </>
 ) : null}
 
-                        <VouchButtonCustom recipient={address} className='!w-full py-1' authStatus={authStatus} />
+                        <VouchButtonCustom recipient={address} className='!w-full py-1' authStatus={authStatus} platform={communityData.AgoraPass.id} />
                     </div>
                 </div>
             </motion.div>
