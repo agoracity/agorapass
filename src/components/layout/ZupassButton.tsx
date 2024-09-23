@@ -1,17 +1,33 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import { useZuAuth } from '@/components/zupass/zuauthLogic';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { useState } from 'react';
 import Image from 'next/image';
-import { Loader2 } from 'lucide-react'; 
+import { Loader2 } from 'lucide-react';
 import { matchTicketToType, whitelistedTickets } from '@/components/zupass/zupass-config';
+import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
 
 export default function ZupassButton({ user }: { user: any }) {
     const { handleZuAuth, isLoading, result, handleSign } = useZuAuth(user);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [signingStates, setSigningStates] = useState<{ [key: string]: boolean }>({});
+    const [linkedStates, setLinkedStates] = useState<{ [key: string]: boolean }>({});
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [pcdInfos, setPcdInfos] = useState<React.ReactNode[]>([]);
+    const [isCheckingAttestation, setIsCheckingAttestation] = useState(false);
+
+    useEffect(() => {
+        if (result && result.pcds) {
+            setIsCheckingAttestation(true);
+            Promise.all(result.pcds.map((pcd: any, index: number) => renderPcdInfo(pcd, index)))
+                .then(infos => {
+                    setPcdInfos(infos);
+                    setIsCheckingAttestation(false);
+                });
+        }
+    }, [result]);
 
     const onZuAuth = async () => {
         await handleZuAuth();
@@ -27,7 +43,7 @@ export default function ZupassButton({ user }: { user: any }) {
         }
     };
 
-    const renderPcdInfo = (pcdWrapper: any, index: number) => {
+    const renderPcdInfo = async (pcdWrapper: any, index: number) => {
         console.log("PCD wrapper:", pcdWrapper);
 
         try {
@@ -36,6 +52,7 @@ export default function ZupassButton({ user }: { user: any }) {
 
             const eventId = pcdData.claim?.partialTicket?.eventId || "Not specified";
             const productId = pcdData.claim?.partialTicket?.productId || "Not specified";
+            const semaphoreId = pcdData.claim?.semaphoreId || "";
 
             const ticketType = matchTicketToType(eventId, productId);
             const ticketInfo = ticketType ? whitelistedTickets[ticketType].find(t => t.eventId === eventId && t.productId === productId) : null;
@@ -43,24 +60,32 @@ export default function ZupassButton({ user }: { user: any }) {
             const displayTicketType = ticketInfo ? ticketInfo.productName : "Unknown";
             const displayEventName = ticketInfo ? ticketInfo.eventName : "Unknown Event";
 
+            // Check if the ticket is already linked
+            const isLinked = await checkSemaphoreAttestation(semaphoreId, ticketType || "", user.wallet.address, user.email);
+            setLinkedStates(prev => ({ ...prev, [index]: isLinked.exists && isLinked.isSameWallet }));
+
             return (
                 <div key={index} className="mb-4 p-4 border rounded">
                     <p>Ticket Type: {displayTicketType}</p>
                     <p>Event Name: {displayEventName}</p>
-                    <Button 
-                        onClick={() => handleSignWithLoading(pcdData, index)} 
-                        disabled={signingStates[index]}
-                        className="mt-2"
-                    >
-                        {signingStates[index] ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Signing...
-                            </>
-                        ) : (
-                            'Sign'
-                        )}
-                    </Button>
+                    {isLinked ? (
+                        <p className="text-green-600 font-semibold mt-2">Signed</p>
+                    ) : (
+                        <Button 
+                            onClick={() => handleSignWithLoading(pcdData, index)} 
+                            disabled={signingStates[index]}
+                            className="mt-2"
+                        >
+                            {signingStates[index] ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Signing...
+                                </>
+                            ) : (
+                                'Sign'
+                            )}
+                        </Button>
+                    )}
                 </div>
             );
         } catch (error) {
@@ -97,10 +122,13 @@ export default function ZupassButton({ user }: { user: any }) {
                     <DialogHeader>
                         <DialogTitle>Your Zupass Tickets</DialogTitle>
                     </DialogHeader>
-                    {result && result.pcds ? (
-                        <div>
-                            {result.pcds.map((pcd: any, index: number) => renderPcdInfo(pcd, index))}
+                    {isLoading || isCheckingAttestation ? (
+                        <div className="flex items-center justify-center mt-2">
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                            <span className="ml-2">Loading...</span>
                         </div>
+                    ) : result && result.pcds ? (
+                        <div>{pcdInfos}</div>
                     ) : (
                         <p>No tickets found or there was an error processing the result.</p>
                     )}

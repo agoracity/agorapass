@@ -54,26 +54,26 @@ export const handleVouch = async (
 
             // Check if semaphoreId already exists using the API route
             try {
-                // const response = await fetch('/api/zupass/checkSemaphore', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                //     body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
-                // });
+                const response = await fetch('/api/zupass/checkSemaphore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ semaphoreId: nullifier, ticketType: ticket.ticketType }),
+                });
 
-                // if (!response.ok) {
-                //     throw new Error(`HTTP error! status: ${response.status}`);
-                // }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-                // const result = await response.json();
+                const result = await response.json();
 
-                // if (result.exists) {
-                //     console.log(`Ticket ${ticket.ticketType} already connected. Skipping.`);
-                //     connectedCount++;
-                //     results.push({ ticketType: ticket.ticketType, alreadyConnected: true });
-                //     continue;  // Skip to the next ticket
-                // }
+                if (result.exists) {
+                    console.log(`Ticket ${ticket.ticketType} already connected. Skipping.`);
+                    connectedCount++;
+                    results.push({ ticketType: ticket.ticketType, alreadyConnected: true });
+                    continue;  // Skip to the next ticket
+                }
 
                 const schemaEncoder = new SchemaEncoder("string nullifier,bytes32 category,bytes32 subcategory,bytes32[] subsubcategory,bytes32 issuer,bytes32 credentialType,bytes32 platform");
                 const encodedData = schemaEncoder.encodeData([
