@@ -17,6 +17,7 @@ async function generateAttestation(token: string, attester: string, signature: s
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token,
+            'x-privy-app-id': "agora"
         },
         body: body
     });

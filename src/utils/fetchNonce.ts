@@ -1,6 +1,6 @@
 const fetchNonce = async (wallet: string) => {
-    // console.log('wallet!', wallet);
-    const response = await fetch(`/api/getNonce?attester=${wallet}`, {
+    const apiUrl = process.env.NEXT_PUBLIC_STAMP_API_URL;
+    const response = await fetch(`${apiUrl}/attestation/nonce?attester=${wallet}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -12,7 +12,6 @@ const fetchNonce = async (wallet: string) => {
     }
 
     const data = await response.json();
-    // console.log('Fetched nonce data:', data);
     return data.easNonce;
 };
 export default fetchNonce

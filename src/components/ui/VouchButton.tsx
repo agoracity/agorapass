@@ -2,19 +2,24 @@ import React from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Button } from './button';
 import { handleVouch } from '@/utils/handleAttestation';
+import communityData from '@/data/communityData.json';
 
 interface VouchButtonCustomProps {
     recipient: string;
     className?: string;
     authStatus: boolean;
+    platform: string;
 }
 
-const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, className, authStatus }) => {
+const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, className, authStatus, platform }) => {
     const { getAccessToken, user } = usePrivy();
     const { wallets } = useWallets();
-
+    const communityInfo = communityData[platform as keyof typeof communityData];
+    const chain = communityInfo.chainId;
+    const schema = communityInfo.schema;
+    const verifyingContract = communityInfo.verifyingContract;
     const handleClick = () => {
-        handleVouch(recipient, authStatus, user, wallets, getAccessToken);
+        handleVouch(recipient, user, wallets, getAccessToken, chain, schema, platform, verifyingContract);
     };
 
     return (

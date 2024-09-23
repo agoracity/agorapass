@@ -1,12 +1,9 @@
-async function generateAttestation(token: string, power: string, endorsementType: string, platform: string, recipient: string, attester: string, signature: string) {
-    const url = '/api/createAttestation';
-
+async function generateAttestation(token: string, platform: string, recipient: string, attester: string, signature: string, ) {
+    const url = process.env.NEXT_PUBLIC_STAMP_API_URL + '/attestation';
 
     const body = JSON.stringify({
-        power: power,
-        endorsementType: endorsementType,
-        platform: platform,
-        wallet: recipient,
+        platform,
+        recipient,
         attester,
         signature
     });
@@ -16,6 +13,7 @@ async function generateAttestation(token: string, power: string, endorsementType
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token,
+            'x-privy-app-id': 'agora',
         },
         body: body
     });

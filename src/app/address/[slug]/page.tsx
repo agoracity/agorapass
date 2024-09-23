@@ -25,6 +25,7 @@ import FarcasterLogo from '@/../../public/farcaster.svg'
 import Image from 'next/image';
 import displayRanking from '@/utils/displayRanking';
 import truncateWallet from '@/utils/truncateWallet';
+import communityData from '@/data/communityData.json';
 // Dynamically import components
 const Dialog = dynamic(() => import("@/components/ui/dialog").then(mod => mod.Dialog), { ssr: false });
 const DialogContent = dynamic(() => import("@/components/ui/dialog").then(mod => mod.DialogContent), { ssr: false });
@@ -35,7 +36,7 @@ const DialogTrigger = dynamic(() => import("@/components/ui/dialog").then(mod =>
 const VouchButtonCustom = dynamic(() => import('@/components/ui/VouchButton'), { ssr: false });
 
 //!TODO replace this schemaId
-const schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3"; // Replace with your schemaId
+const schemaId = process.env.NEXT_PUBLIC_SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7"; // Replace with your schemaId
 
 export default function Page({ params }: { params: { slug: string } }) {
 
@@ -266,7 +267,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     </>
 ) : null}
 
-                        <VouchButtonCustom recipient={address} className='!w-full py-1' authStatus={authStatus} />
+                        <VouchButtonCustom recipient={address} className='!w-full py-1' authStatus={authStatus} platform={communityData.AgoraPass.id} />
                     </div>
                 </div>
             </motion.div>

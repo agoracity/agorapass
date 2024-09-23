@@ -14,7 +14,7 @@ const RevokeButton: React.FC<RevokeButtonCustomProps> = ({ UID, className }) => 
     const { getAccessToken, user } = usePrivy();
     const { wallets } = useWallets();
     const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? '84532', 10);
-    const schemaUID = process.env.SCHEMA_ID || "0x5ee00c7a6606190e090ea17749ec77fe23338387c23c0643c4251380f37eebc3";
+    const schemaUID = process.env.SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7";
 
     const handleClick = async () => {
         if (!user?.wallet?.address) {

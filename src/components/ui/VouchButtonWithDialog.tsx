@@ -5,6 +5,7 @@ import { handleVouch } from '@/utils/handleAttestation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogFooter } from './dialog';
 import UserProfileCard from './users/UserProfileCard';
 import { User } from '@/types/user';
+import communityData from '@/data/communityData.json';
 
 interface VouchButtonCustomProps {
     recipient: string;
@@ -17,9 +18,13 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ recipient, classN
     const { getAccessToken, user, login } = usePrivy();
     const { wallets } = useWallets();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+    const platform = "AgoraPass"; 
+    const communityInfo = communityData[platform as keyof typeof communityData];
+    const chain = communityInfo.chainId;
+    const schema = communityInfo.schema;
+    const verifyingContract = communityInfo.verifyingContract;
     const handleVouchConfirm = () => {
-        handleVouch(recipient, authStatus, user, wallets, getAccessToken);
+        handleVouch(recipient, user, wallets, getAccessToken, chain, schema, platform, verifyingContract);
         setIsDialogOpen(false);
     };
 
