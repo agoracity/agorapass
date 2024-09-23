@@ -1,190 +1,114 @@
 "use client";
-import { useZupass } from "@/components/zupass/zupass";
-import { useZupassPopupMessages } from "@pcd/passport-interface";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { showTempSuccessAlert, showErrorAlert, showSuccessAlert, showTempErrorAlert, showLoadingAlert } from "@/utils/alertUtils";
-import ShinyButton from "@/components/ui/ShinyButton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { handleVouch } from "@/utils/zupass/handleAttestation";
-import Swal from "sweetalert2";
-import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
 
-interface ZupassButtonProps {
-	children?: React.ReactNode;
-}
+import { useZuAuth } from '@/components/zupass/zuauthLogic';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useState } from 'react';
+import Image from 'next/image';
+import { Loader2 } from 'lucide-react'; 
+import { matchTicketToType, whitelistedTickets } from '@/components/zupass/zupass-config';
 
+export default function ZupassButton({ user }: { user: any }) {
+    const { handleZuAuth, isLoading, result, handleSign } = useZuAuth(user);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [signingStates, setSigningStates] = useState<{ [key: string]: boolean }>({});
 
+    const onZuAuth = async () => {
+        await handleZuAuth();
+        setIsDialogOpen(true);
+    };
 
-export default function ZupassButton({ children }: ZupassButtonProps) {
-	const [loading, setLoading] = useState(false);
-	const [dialogOpen, setDialogOpen] = useState(false);
-	const [ticketsToSign, setTicketsToSign] = useState<any[]>([]);
-	const [signingIndex, setSigningIndex] = useState<number | null>(null);
+    const handleSignWithLoading = async (pcdData: any, index: number) => {
+        setSigningStates(prev => ({ ...prev, [index]: true }));
+        try {
+            await handleSign(pcdData);
+        } finally {
+            setSigningStates(prev => ({ ...prev, [index]: false }));
+        }
+    };
 
-	const { login } = useZupass();
-	const [multiPCDs] = useZupassPopupMessages();
+    const renderPcdInfo = (pcdWrapper: any, index: number) => {
+        console.log("PCD wrapper:", pcdWrapper);
 
-	useEffect(() => {
-		if (multiPCDs) {
-			console.log("🚀 ~ multiPCDs:", multiPCDs);
-		}
-	}, [multiPCDs]);
+        try {
+            const pcdData = JSON.parse(pcdWrapper.pcd);
+            console.log("Parsed PCD data:", pcdData);
 
-	useEffect(() => {
-		if (ticketsToSign.length > 0) {
-			Swal.close(); // Close the loading alert when tickets are ready
-			setDialogOpen(true);
-		}
-	}, [ticketsToSign]);
+            const eventId = pcdData.claim?.partialTicket?.eventId || "Not specified";
+            const productId = pcdData.claim?.partialTicket?.productId || "Not specified";
 
-	const { getAccessToken, user } = usePrivy();
-	const { wallets } = useWallets();
+            const ticketType = matchTicketToType(eventId, productId);
+            const ticketInfo = ticketType ? whitelistedTickets[ticketType].find(t => t.eventId === eventId && t.productId === productId) : null;
 
-	const loginHandler = async () => {
-		showLoadingAlert(); // Show loading alert when button is clicked
-		setLoading(true);
-		try {
-			const token = await getAccessToken();
-			await login(user, wallets, token, setTicketsToSign);
-		} catch (error) {
-			console.error("Error during login:", error);
-			showErrorAlert("Failed to connect Zupass. Please try again.");
-		} finally {
-			setLoading(false);
-			Swal.close(); // Close the loading alert
-		}
-	};
+            const displayTicketType = ticketInfo ? ticketInfo.productName : "Unknown";
+            const displayEventName = ticketInfo ? ticketInfo.eventName : "Unknown Event";
 
-	const handleSign = async (index: number) => {
-		const ticket = ticketsToSign[index];
-		if (ticket.signed) return;
-		setSigningIndex(index);
-		showLoadingAlert();
-		try {
-			if (!user || !user.wallet) {
-				throw new Error('User or user wallet not found');
-			}
-			const wallet = wallets.find(w => w.walletClientType === user.wallet?.walletClientType);
-			if (!wallet) {
-				throw new Error('Desired wallet not found');
-			}
-			const address = wallet.address;
+            return (
+                <div key={index} className="mb-4 p-4 border rounded">
+                    <p>Ticket Type: {displayTicketType}</p>
+                    <p>Event Name: {displayEventName}</p>
+                    <Button 
+                        onClick={() => handleSignWithLoading(pcdData, index)} 
+                        disabled={signingStates[index]}
+                        className="mt-2"
+                    >
+                        {signingStates[index] ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Signing...
+                            </>
+                        ) : (
+                            'Sign'
+                        )}
+                    </Button>
+                </div>
+            );
+        } catch (error) {
+            console.error("Error processing PCD:", error);
+            return (
+                <div key={index} className="mb-4 p-4 border rounded bg-red-100">
+                    <p>Error: Unable to process ticket information</p>
+                </div>
+            );
+        }
+    };
 
-			const attestationCheck = await checkSemaphoreAttestation(
-				ticket.external_id, 
-				ticket.ticketType, 
-				address,
-				ticket.email 
-			);
-			
-			if (attestationCheck.exists) {
-				if (attestationCheck.isSameWallet) {
-					await showTempSuccessAlert(`Ticket ${ticket.ticketType} is already connected to your account.`);
-					setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
-					return;
-				} else {
-					showTempErrorAlert(`Ticket ${ticket.ticketType} is already connected to another account.`);
-					return;
-				}
-			}
+    return (
+        <>
+            <Button 
+                onClick={onZuAuth} 
+                disabled={isLoading} 
+                className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma] flex items-center justify-center px-3 py-2 text-sm sm:text-base"
+            >
+                <Image
+                    src="/zupass.webp"
+                    alt="Zupass"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 sm:w-6 sm:h-6 mr-2 rounded-full object-cover"
+                />
+                <span>
+                    {isLoading ? 'Auth...' : 'Link Zupass'}
+                </span>
+            </Button>
 
-			console.log('ticket', ticket);
-			const results = await handleVouch(user, wallets, await getAccessToken(), {
-				add_groups: [ticket], // Wrap the single ticket in an array
-				external_id: ticket.external_id
-			});
-
-			if (results && results.length > 0) {
-				const result = results[0]; // We're only processing one ticket at a time here
-
-				if (result.alreadyConnected) {
-					await showTempSuccessAlert(`Ticket ${ticket.ticketType} is already connected to an account.`);
-				} else if (result.error) {
-					showTempErrorAlert(`Failed to process ticket: ${ticket.ticketType}`);
-				} else {
-					await showTempSuccessAlert(`Ticket ${ticket.ticketType} signed successfully!`);
-				}
-
-				setTicketsToSign(prev => prev.map((t, i) => i === index ? { ...t, signed: true } : t));
-
-				// Check if all tickets are signed
-				const allSigned = ticketsToSign.every(t => t.signed);
-				if (allSigned) {
-					showSuccessAlert('All Zupass tickets processed successfully.', 'Go to profile', `/me`);
-					setDialogOpen(false);
-				}
-			} else {
-				showErrorAlert('No results returned from handleVouch');
-			}
-		} catch (error) {
-			console.error('Error processing ticket:', error);
-			showTempErrorAlert(`Failed to process ticket: ${ticket.ticketType}`); // Changed to temp error alert
-		} finally {
-			setSigningIndex(null);
-			Swal.close(); // Close the loading alert
-		}
-	};
-
-	const handleDialogClose = () => {
-		setDialogOpen(false);
-		setTicketsToSign([]); // Reset ticketsToSign when dialog closes
-	};
-
-	if (loading) {
-		return <p>loading...</p>;
-	}
-
-	return (
-		<>
-			<ShinyButton onClick={loginHandler} className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]">
-				{children || "Connect Zupass"}
-			</ShinyButton>
-			<Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-				<DialogContent className="bg-[#19473f] text-[#f0b90b]" onInteractOutside={(e) => {
-					e.preventDefault();
-				}}>
-					<DialogHeader>
-						<DialogTitle className="text-[#f0b90b] font-semibold">Sign Your Zupass Tickets</DialogTitle>
-						<DialogDescription className="text-[#f0b90b] opacity-80">
-							Choose which tickets you'd like to sign and connect to your account.
-						</DialogDescription>
-					</DialogHeader>
-					<div className="grid grid-cols-2 gap-4">
-						{ticketsToSign.map((ticket, index) => (
-							<div key={index} className="flex justify-between items-center">
-								<span className="text-[#f0b90b]">{ticket.ticketType}</span>
-								<ShinyButton
-									onClick={() => handleSign(index)}
-									disabled={ticket.signed || signingIndex === index}
-									className={`font-semibold font-[Tahoma] ${
-										ticket.signed
-											? "bg-green-500 hover:bg-green-600 text-[#19473f]"
-											: signingIndex === index
-											? "bg-gray-400 text-[#19473f]"
-											: "bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f]"
-									}`}
-								>
-									{ticket.signed
-										? "Signed!"
-										: signingIndex === index
-										? "Signing..."
-										: "Sign"}
-								</ShinyButton>
-							</div>
-						))}
-					</div>
-					<DialogFooter>
-						<Button
-							onClick={handleDialogClose}
-							className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold font-[Tahoma]"
-						>
-							Close
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-		</>
-	);
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Your Zupass Tickets</DialogTitle>
+                    </DialogHeader>
+                    {result && result.pcds ? (
+                        <div>
+                            {result.pcds.map((pcd: any, index: number) => renderPcdInfo(pcd, index))}
+                        </div>
+                    ) : (
+                        <p>No tickets found or there was an error processing the result.</p>
+                    )}
+                    <DialogFooter>
+                        <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
+    );
 }

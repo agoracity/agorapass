@@ -1,17 +1,22 @@
-import generateAttestation from './generateAttestation';
-import { signTypedData } from './signTypedData';
-import fetchNonce from './fetchNonce';
-import { showLoadingAlert, showErrorAlert, showSuccessAlert } from './alertUtils';
+import generateAttestation from '@/utils/generateAttestation';
+import { signTypedData } from '@/utils/signTypedData';
+import fetchNonce from '@/utils/fetchNonce';
+import { showLoadingAlert, showErrorAlert, showSuccessAlert } from '@/utils/alertUtils';
 import { SchemaEncoder } from '@ethereum-attestation-service/eas-sdk';
-import {ethers} from 'ethers';
+import communityData from '@/data/communityData.json';
+import { ethers } from 'ethers';
 
 export const handleVouch = async (
     recipient: string,
-    authStatus: boolean,
     user: any,
     wallets: any,
-    getAccessToken: any
+    getAccessToken: any,
+    chain: number | string,
+    schema: string,
+    platform: string,
+    verifyingContract: string
 ) => {
+    console.log('user', user);
     if (!user?.wallet?.address) {
         showErrorAlert('User wallet address is not defined.');
         return;
@@ -21,42 +26,53 @@ export const handleVouch = async (
         showErrorAlert("You can't vouch yourself.");
         return;
     }
+    showLoadingAlert();
 
-    const power = "1";
-    const endorsementType = "Social";
-    const platform = "Agora Pass";
+    const token = await getAccessToken();
+    if (!token) {
+        showErrorAlert('Something went wrong. Try reloading the page.');
+        return;
+    }
+
     const nonce = await fetchNonce(user.wallet.address);
+    // const nonce = await fetchNonce(user.wallet.address, token);
 
     if (nonce === undefined) {
         showErrorAlert('Failed to fetch nonce.');
         return;
     }
 
-    showLoadingAlert();
 
     try {
-        const token = await getAccessToken();
-        if (!token) {
-            showErrorAlert('Something went wrong. Try reloading the page.');
-            return;
-        }
-
-        const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID ?? '84532', 10);
-        const schemaUID = process.env.SCHEMA_ID || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7";
+        const chainId = typeof chain === 'string' ? parseInt(chain) : chain;
+        const schemaUID = schema;
         const attester = user?.wallet.address;
-
-        const schemaEncoder = new SchemaEncoder("bytes32 endorsement,bytes32 platform,bytes32 category");
-       const encodedData = schemaEncoder.encodeData([
-           { name: "endorsement", value: ethers.encodeBytes32String("Social"), type: "bytes32" },
-           { name: "platform", value: ethers.encodeBytes32String("AgoraPass"), type: "bytes32" },
-           { name: "category", value: ethers.encodeBytes32String("Community"), type: "bytes32" }
-       ]);
-
+        console.log('attester', attester);
+        console.log('platform', platform);
+         // Fetch endorsementType and power from communityData
+         const communityInfo = communityData[platform as keyof typeof communityData];
+         if (!communityInfo) {
+             console.log('communityInfo', communityInfo);
+         }
+         // Use default values if endorsementType or power are not defined
+         const endorsementType = 'endorsementType' in communityInfo ? communityInfo.endorsementType : "Default";
+         const category = 'power' in communityInfo ? communityInfo.category : "Community";
+         console.log('endorsementType', endorsementType)
+         console.log('category',category)
+         const schemaEncoder = new SchemaEncoder("bytes32 endorsement,bytes32 platform,bytes32 category");
+         console.log('schemaEncoder', schemaEncoder)
+         // !TO DO, we need to encode the category/endorsement/platform as bytes32
+        const encodedData = schemaEncoder.encodeData([
+            { name: "endorsement", value: ethers.encodeBytes32String(endorsementType), type: "bytes32" },
+            { name: "platform", value: ethers.encodeBytes32String(platform), type: "bytes32" },
+            { name: "category", value: ethers.encodeBytes32String(category), type: "bytes32" }
+        ]);
+        console.log('encodedData', encodedData);
         const domain = {
             name: 'EAS',
             version: '1.2.0',
             chainId: chainId,
-            verifyingContract: '0x4200000000000000000000000000000000000021'
+            verifyingContract: verifyingContract
         };
 
         const types = {
@@ -91,12 +107,20 @@ export const handleVouch = async (
             primaryType: 'Attest',
             message: value,
         };
-
+        
+        console.log('wallets', wallets)
         const signature = await signTypedData(user, wallets, chainId, typedData);
 
-        const resultAttestation = await generateAttestation(token, power, endorsementType, platform, recipient, attester, signature);
 
-        showSuccessAlert('Vouch created successfully.', 'Go to vouch', `/vouch/${resultAttestation.newAttestationUID}`);
+        //TO CONSIDER, we can pass encoded data instead of doing it server side as well, but should we?
+        const resultAttestation = await generateAttestation(token, platform, recipient, attester, signature);
+        console.log('resultAttestation:', resultAttestation);
+
+        // Construct the attestation view URL
+        const baseUrl = communityInfo.graphql.replace('/graphql', '');
+        const attestationViewUrl = `${baseUrl}/attestation/view/${resultAttestation.newAttestationUID}`;
+
+        showSuccessAlert('Vouch created successfully.', 'Go to vouch', attestationViewUrl);
 
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';

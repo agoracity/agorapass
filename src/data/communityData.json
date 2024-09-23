@@ -1,0 +1,35 @@
+{
+    "AgoraPass": {
+      "id": "AgoraPass",
+      "name": "AgoraPass",
+      "schema": "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7",
+      "chainId": 84532,
+      "endorsementType": "Social",
+      "power": "1",
+      "graphql": "https://base-sepolia.easscan.org/graphql",
+      "verifyingContract": "0x4200000000000000000000000000000000000021",
+      "description": "Join the solution to decentralize invitations into communities, such as Zuzalu and decrease the dependency on trust in centralized authorities in our community",
+      "members": 42069,
+      "category": "Zuzalu",
+      "roles": [
+        {
+          "name": "Agora Citizen",
+          "members": 41934,
+          "image": "/agorapass.webp",
+          "rewards": ["Be part of the Web of Trust"],
+          "requirements": ["Vouch for someone"]
+        },
+        {
+          "name": "Trusted Citizen",
+          "members": 135,
+          "image": "/agorapass.webp",
+          "rewards": [ "Access to community forums", "Participation in community votes"],
+          "requirements": ["Connect your Zupass", "Have the necessary rank score"]
+        }
+      ],
+      "links": [
+        { "type": "website", "url": "https://pass.agora.city/" },
+        { "type": "twitter", "url": "https://t.co/LDTNJrccMW" }
+      ]
+    }
+}

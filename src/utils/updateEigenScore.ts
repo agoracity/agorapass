@@ -3,7 +3,7 @@ export async function updateEigenScore() {
     const EIGENSCORE_API_TOKEN = process.env.EIGENSCORE_API_TOKEN || '';
 
     // Send the POST request to the Python app
-    const response = await fetch(`${EIGENSCORE_URL}/rankings`, {
+    const response = await fetch(`${EIGENSCORE_URL}/rankings/agora`, {
         method: 'GET',
         headers: {
             'access-token': EIGENSCORE_API_TOKEN,
