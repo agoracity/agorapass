@@ -10,7 +10,6 @@ export interface User {
     vouchReset?: Date | null;
     createdAt: Date;
     rankScore: number;
-    avatarType: string;
     Zupass?: ZupassEntry[];
 }
 

@@ -10,7 +10,6 @@ export async function GET(
         where: { wallet: slug },
         select: {
             rankScore: true,
-            avatarType: true,
             bio: true,
             twitter: true,
             farcaster: true,

@@ -1,17 +1,20 @@
 import React from 'react';
-import { MetaMaskAvatar } from 'react-metamask-avatar';
-import blockies from 'ethereum-blockies';
+import { createAvatar } from '@dicebear/core';
+import { thumbs } from '@dicebear/collection';
+import { Avatar, AvatarImage, AvatarFallback } from '../avatar';
 
-// Fix the types
-export function getAvatar(wallet: string, avatarType: 'metamask' | 'blockies'): JSX.Element | string | null {
-    if (avatarType === 'metamask') {
-        // MetaMaskAvatar is a component, so return the JSX element
-        return <MetaMaskAvatar address={wallet} size={100} className='!w-full !h-full' />;
-    }
-    if (avatarType === 'blockies') {
-        // Generate a blockies avatar and return the data URL string
-        const icon = blockies.create({ seed: wallet, size: 8, scale: 4 });
-        return icon.toDataURL();
-    }
-    return null;
+export function getAvatar(wallet: string, className?: string): React.ReactElement {
+    const seed = wallet.toLowerCase();
+    const avatarSvg = createAvatar(thumbs, {
+        seed: seed,
+        size: 100,
+        radius: 50,
+    }).toString();
+
+    return (
+        <Avatar className={className}>
+            <AvatarImage src={`data:image/svg+xml;utf8,${encodeURIComponent(avatarSvg)}`} alt={`Avatar for ${wallet}`} />
+            <AvatarFallback>{wallet.slice(0, 2).toUpperCase()}</AvatarFallback>
+        </Avatar>
+    );
 }

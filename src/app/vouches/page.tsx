@@ -5,12 +5,11 @@ import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchAttestationsReduced } from "@/lib/fetchers/attestations";
 import { Attestation } from '@/types/attestations';
-import { MetaMaskAvatar } from 'react-metamask-avatar';
-import blockies from 'ethereum-blockies';
 import Loader from "@/components/ui/Loader";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { getAvatar } from "@/components/ui/users/getAvatarImg";
 
 const truncateAddress = (address: string, length: number) => {
     if (address.length <= length) return address;
@@ -37,17 +36,6 @@ const useOutsideClick = (
             document.removeEventListener("touchstart", listener);
         };
     }, [ref, callback]);
-};
-
-const getAvatar = (wallet: string, avatarType: 'metamask' | 'blockies'): JSX.Element | string | null => {
-    if (avatarType === 'metamask') {
-        return <MetaMaskAvatar address={wallet} size={100} className='!w-full !h-full' />;
-    }
-    if (avatarType === 'blockies') {
-        const icon = blockies.create({ seed: wallet, size: 8, scale: 4 });
-        return icon.toDataURL();
-    }
-    return null;
 };
 
 const Attestations: React.FC = () => {
@@ -117,7 +105,7 @@ const Attestations: React.FC = () => {
                     {" on "}{new Date(attestation.timeCreated * 1000).toLocaleString()}
                 </>
             ),
-            src: getAvatar(attestation.id, 'blockies') as string,
+            src: getAvatar(attestation.id),
             ctaText: "View",
             ctaLink: `/vouch/${attestation.id}`
         }))
@@ -185,14 +173,18 @@ const Attestations: React.FC = () => {
                                 ref={cardRef}
                             >
                                 <motion.div layoutId={`image-${activeCard.title}-${id}`}>
-                                    <Image
-                                        priority
-                                        width={200}
-                                        height={200}
-                                        src={activeCard.src}
-                                        alt={activeCard.title}
-                                        className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
-                                    />
+                                    {typeof activeCard.src === 'string' ? (
+                                        <Image
+                                            priority
+                                            width={200}
+                                            height={200}
+                                            src={activeCard.src}
+                                            alt={activeCard.title}
+                                            className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
+                                        />
+                                    ) : (
+                                        activeCard.src
+                                    )}
                                 </motion.div>
                                 <div>
                                     <div className="flex  justify-center items-center lg:justify-between lg:items-start py-4 flex-col lg:flex-row">

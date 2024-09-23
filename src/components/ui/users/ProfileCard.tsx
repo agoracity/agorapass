@@ -1,7 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
@@ -13,8 +12,6 @@ import { getAvatar } from './getAvatarImg';
 import { motion } from "framer-motion";
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
 import { DateTime } from "luxon";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { MetaMaskAvatar } from 'react-metamask-avatar';
 import { copyToClipboard } from '@/utils/copyToClipboard';
 import Image from 'next/image';
 import TwitterLogo from '@/../../public/X.svg'
@@ -33,7 +30,6 @@ const MySwal = withReactContent(Swal);
 export const FormSchema = z.object({
     username: z.string().max(20, { message: "Username must not be longer than 20 characters" }),
     bio: z.string().max(160, { message: "Bio must not be longer than 160 characters." }).optional(),
-    avatarType: z.enum(['metamask', 'blockies']).default('metamask'),
 });
 
 interface ProfileCardProps {
@@ -98,7 +94,7 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
     });
 
 
-    const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, avatarType, Zupass } = data || {};
+    const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, Zupass } = data || {};
     console.log('data', data);
     const [remainingTime, setRemainingTime] = useState('00:00:00');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -108,12 +104,12 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
-        defaultValues: { username: name || "", bio: bio || "", avatarType: avatarType || "metamask" },
+        defaultValues: { username: name || "", bio: bio || "" },
     });
 
     useEffect(() => {
-        form.reset({ username: name || "", bio: bio || "", avatarType: avatarType || "metamask" });
-    }, [name, bio, avatarType, form]);
+        form.reset({ username: name || "", bio: bio || "" });
+    }, [name, bio, form]);
 
     useEffect(() => {
         const updateRemainingTime = () => {
@@ -148,11 +144,11 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
     };
 
     // Check if data is available before rendering the avatar
-    if (!wallet || !avatarType) {
+    if (!wallet) {
         return <div>Loading...</div>;
     }
 
-    const avatar = getAvatar(wallet, avatarType);
+    const avatar = getAvatar(wallet, "w-20 h-20")
 
     const handleCopy = () => {
         copyToClipboard(wallet);
@@ -183,15 +179,9 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
+                        className='flex justify-center items-center'
                     >
-                        <Avatar className="w-20 h-20 mx-auto mb-2">
-                            {typeof avatar === 'string' ? (
-                                <AvatarImage src={avatar} alt="Avatar Image" />
-                            ) : (
-                                avatar
-                            )}
-                            {/* <AvatarFallback className="flex items-center justify-center">{email?.charAt(0)}</AvatarFallback> */}
-                        </Avatar>
+                        {avatar}
                     </motion.div>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -310,47 +300,6 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            control={form.control}
-                                            name="avatarType"
-                                            render={({ field }) => (
-                                                <FormItem className="space-y-3">
-                                                    <FormLabel>Choose an avatar</FormLabel>
-                                                    <FormControl>
-                                                        <RadioGroup
-                                                            onValueChange={field.onChange}
-                                                            defaultValue={field.value}
-                                                            className="flex flex-col md:flex-row md:items-start md:justify-start space-y-1 "
-                                                        >
-                                                            <FormItem className="flex items-center space-x-3 space-y-0">
-                                                                <FormControl>
-                                                                    <RadioGroupItem value="blockies" />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">
-                                                                    <Avatar className="w-24 h-24 mx-auto mb-4">
-                                                                        <AvatarImage src={getAvatar(wallet, 'blockies') as string} alt="Blockies Avatar" className="w-full h-full object-cover" />
-                                                                        <AvatarFallback>{email?.charAt(0)}</AvatarFallback>
-                                                                    </Avatar>
-                                                                </FormLabel>
-                                                            </FormItem>
-                                                            <FormItem className="flex items-center space-x-3 space-y-0 p-0 m-0">
-                                                                <FormControl>
-                                                                    <RadioGroupItem value="metamask" />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">
-                                                                    <div className="w-24 h-24 mx-auto mb-4">
-                                                                        <MetaMaskAvatar address={wallet} size={96} className="w-full h-full object-cover" />
-                                                                    </div>
-                                                                </FormLabel>
-                                                            </FormItem>
-
-                                                        </RadioGroup>
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-
                                         <UnlinkAccounts
                                             user={user}
                                             unlinkTwitter={unlinkTwitter}
@@ -361,11 +310,6 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                                             <Button type="submit">
                                                 Save changes
                                             </Button>
-                                            {/* <DialogClose asChild>
-                                            <Button type="button" variant="secondary">
-                                                Close
-                                            </Button>
-                                        </DialogClose> */}
                                         </DialogFooter>
                                     </form>
                                 </Form>

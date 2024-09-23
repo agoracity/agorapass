@@ -47,7 +47,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({ recipient, onVouch, o
         fetchData();
     }, [recipient, schemaId]);
 
-    const avatar = userData ? getAvatar(recipient, userData.avatarType as "metamask" | "blockies") : null;
+    const avatar = userData ? getAvatar(recipient, "w-24 h-24") : null;
     return (
         <div className="w-full rounded-xl p-6 bg-white">
             {isLoading ? (

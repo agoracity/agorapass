@@ -118,8 +118,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         staleTime: Infinity,
     });
 
-    const avatarType = userData ? userData.avatarType || 'metamask' : 'metamask';
-    const avatar = getAvatar(address, avatarType);
+    const avatar = getAvatar(address);
 
     if (madeLoading || receivedLoading || ensNameLoading) return <div className="w-screen flex items-center justify-center"><Loader /></div>;
     if (madeError || receivedError || ensNameerror) return <div>Error: {madeError?.message || receivedError?.message}</div>;

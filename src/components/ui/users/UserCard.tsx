@@ -10,7 +10,6 @@ import {
     CardFooter,
     CardHeader
 } from "@/components/ui/card";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { User } from '@/types/user';
 import {
     Tooltip,
@@ -38,7 +37,7 @@ function truncateName(name: string) {
 }
 
 const UserCard: React.FC<{ user: User }> = ({ user }) => {
-    const { name, wallet, bio, twitter, avatarType, rankScore, farcaster } = user;
+    const { name, wallet, bio, twitter, rankScore, farcaster } = user;
 
     const [authStatus, setAuthStatus] = useState(false);
     const { ready, authenticated } = usePrivy();
@@ -52,18 +51,12 @@ const UserCard: React.FC<{ user: User }> = ({ user }) => {
     const displayName = name ? truncateName(name) : truncateWallet(wallet);
     const fullName = name || wallet;
     const displayBio = bio || "";
-    const avatar = getAvatar(wallet, avatarType as "metamask" | "blockies");
+    const avatar = getAvatar(wallet);
 
     return (
         <Card className="w-full flex flex-col">
             <CardHeader className="flex flex-row items-start gap-4 space-y-0">
-                <Avatar>
-                    {typeof avatar === 'string' ? (
-                        <AvatarImage src={avatar} alt="Avatar Image" />
-                    ) : (
-                        avatar
-                    )}
-                </Avatar>
+               {avatar}
                 <div>
                     <TooltipProvider>
                         <Tooltip>

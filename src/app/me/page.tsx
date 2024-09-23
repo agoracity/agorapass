@@ -16,7 +16,7 @@ const VouchesList = dynamic(() => import("@/components/ui/users/VouchesList").th
 });
 
 // Import types and schemas separately
-import type { FormSchema } from "@/components/ui/users/ProfileCard";
+// import type { FormSchema } from "@/components/ui/users/ProfileCard";
 
 // Move this to a separate file and import it
 import { LastThreeAttestations } from "@/lib/fetchers/attestations";
@@ -89,8 +89,8 @@ export default function Page() {
 // Custom hook for profile update
 function useProfileUpdate(getAccessToken: () => Promise<string>, setUpdateTrigger: React.Dispatch<React.SetStateAction<boolean>>) {
   return {
-    handleSubmit: async (formData: { username: string; avatarType: "metamask" | "blockies"; bio?: string }) => {
-      const { username, bio = "", avatarType } = formData;
+    handleSubmit: async (formData: { username: string; bio?: string }) => {
+      const { username, bio = "" } = formData;
       const token = await getAccessToken();
 
       if (!token) {
@@ -105,7 +105,7 @@ function useProfileUpdate(getAccessToken: () => Promise<string>, setUpdateTrigge
             'Content-Type': 'application/json',
             'Authorization': token,
           },
-          body: JSON.stringify({ name: username, bio: bio, avatarType }),
+          body: JSON.stringify({ name: username, bio: bio }),
         });
 
         if (!response.ok) {

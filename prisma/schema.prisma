@@ -25,7 +25,6 @@ model User {
   vouchReset        DateTime?
   createdAt         DateTime  @default(now())
   rankScore         Float     @default(0)
-  avatarType        String    @default("blockies")
   podUrl            String?
   Zupass            Zupass[]
 }

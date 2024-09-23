@@ -77,7 +77,6 @@ export async function GET(req: NextRequest) {
                 rankScore: true,
                 name: true,
                 bio: true,
-                avatarType: true,
                 twitter: true,
                 farcaster: true,
             },

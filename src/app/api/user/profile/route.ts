@@ -25,7 +25,6 @@ export async function GET(request: NextRequest) {
                 id: verifiedClaims.userId,
             },
             select: {
-                avatarType: true,
                 wallet: true,
                 rankScore: true,
                 podUrl: true,

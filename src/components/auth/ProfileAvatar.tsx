@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { Wallet, ChevronDown } from 'lucide-react';
 import createUser from '@/utils/createUser';
 import Swal from 'sweetalert2';
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { getAvatar } from '../ui/users/getAvatarImg';
 import { useFetchUserProfile } from '@/hooks/useFetchUser';
 import ZupassButton from '../layout/ZupassButton';
@@ -35,8 +34,6 @@ const ProfileAvatar = () => {
     const { authenticated, logout, ready, user } = usePrivy();
 
     const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
-    const avatarType = data?.avatarType || 'blockies';
-    const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const isClient = typeof window !== 'undefined';
 
     useEffect(() => {
@@ -52,7 +49,7 @@ const ProfileAvatar = () => {
         }
     }, [data]);
 
-    const avatar = useMemo(() => isClient ? getAvatar(wallet, avatarType) : null, [wallet, avatarType, isClient]);
+    const avatar = useMemo(() => isClient ? getAvatar(wallet) : null, [wallet, isClient]);
     const handleNewUserCreation = useCallback(async (user: any) => {
         Swal.fire({
             title: 'Creating user...',
@@ -128,13 +125,7 @@ const ProfileAvatar = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon" className="rounded-full">
-                                <Avatar className="w-9 h-9 mx-auto ">
-                                    {typeof avatar === 'string' ? (
-                                        <AvatarImage src={avatar} alt="Avatar Image" />
-                                    ) : (
-                                        avatar
-                                    )}
-                                </Avatar>
+                              {avatar}
                                 <span className="sr-only">Toggle user menu</span>
                             </Button>
                         </DropdownMenuTrigger>

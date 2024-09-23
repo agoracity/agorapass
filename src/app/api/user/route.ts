@@ -30,7 +30,6 @@ export async function GET(request: NextRequest) {
                 vouchReset:true,
                 name:true,
                 bio:true,
-                avatarType: true,
                 wallet: true,
                 Zupass: {
                     select: {
@@ -70,7 +69,7 @@ export async function PATCH(request: NextRequest) {
         }
 
 
-        const { name, bio, avatarType } = await request.json();
+        const { name, bio } = await request.json();
 
         let updateData: any = {};
         if (name !== undefined) {
@@ -80,7 +79,6 @@ export async function PATCH(request: NextRequest) {
             updateData.name = name.trim();
         }
         if (bio !== undefined) updateData.bio = bio;
-        if (avatarType !== undefined) updateData.avatarType = avatarType;
 
         const updatedUser = await prisma.user.update({
             where: {
