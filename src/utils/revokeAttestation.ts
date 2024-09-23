@@ -1,10 +1,11 @@
-async function revokeAttestation(signature: string, uid: string, token: string) {
-    const url = '/api/revokeAttestation';
+async function revokeAttestation(signature: string, uid: string, token: string, address: string) {
+    const url = process.env.NEXT_PUBLIC_STAMP_API_URL +  '/attestation/revoke';
 
 
     const body = JSON.stringify({
         uid,
-        signature
+        signature,
+        address
     });
 
     const response = await fetch(url, {
@@ -12,6 +13,7 @@ async function revokeAttestation(signature: string, uid: string, token: string) 
         headers: {
             'Content-Type': 'application/json',
             'Authorization': token,
+            'x-privy-app-id': 'AgoraPass'
         },
         body: body
     });

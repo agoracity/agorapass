@@ -62,7 +62,7 @@ export async function handleRevokeAttestation({ user, wallets, chainId, schemaUI
 
         await wallet.switchChain(chainId);
         const signature = await signTypedData(user, wallets, chainId, typedData);
-        const resultAttestation = await revokeAttestation(signature, UID, token);
+        const resultAttestation = await revokeAttestation(signature, UID, token, user.wallet.address);
 
         Swal.fire({
             icon: 'success',
