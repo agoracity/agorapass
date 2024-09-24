@@ -82,15 +82,28 @@ export const useZuAuth = (user: any) => {
                     user: user
                 }),
             });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+
+            const responseBody = await response.json();
+            console.log("API response:", responseBody);
+            if (!response.ok || responseBody.error) {
+                if (responseBody.status === 550) {
+                    throw new Error("You have no vouches available.");
+                } else if (responseBody.status === 400) {
+                    throw new Error("You can't vouch yourself.");
+                } else if (responseBody.status === 500) {
+                    throw new Error("Internal server error. Please try again later.");
+                } else {
+                    // Throw a general error for other status codes
+                    throw new Error(`Error creating attestation: ${responseBody.error || response.statusText}`);
+                }
             }
-            const data = await response.json();
-            setApiResponse(data);
-            console.log("API response:", data);
+
+            setApiResponse(responseBody);
+            console.log("API response:", responseBody);
         } catch (error) {
             console.error("Sign error:", error);
             setApiResponse({ error: error instanceof Error ? error.message : String(error) });
+            throw error;
         }
     };
 

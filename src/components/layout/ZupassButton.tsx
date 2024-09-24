@@ -8,13 +8,14 @@ import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import { matchTicketToType, whitelistedTickets } from '@/components/zupass/zupass-config';
 import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
+import Swal from 'sweetalert2';
+import { showTempErrorAlert } from '@/utils/alertUtils';
 
 export default function ZupassButton({ user, text }: { user: any, text: string }) {
     const { handleZuAuth, isLoading, result, handleSign } = useZuAuth(user);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [signingStates, setSigningStates] = useState<{ [key: string]: boolean }>({});
     const [linkedStates, setLinkedStates] = useState<{ [key: string]: boolean }>({});
-    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const [pcdInfos, setPcdInfos] = useState<React.ReactNode[]>([]);
     const [isCheckingAttestation, setIsCheckingAttestation] = useState(false);
 
@@ -36,8 +37,20 @@ export default function ZupassButton({ user, text }: { user: any, text: string }
 
     const handleSignWithLoading = async (pcdData: any, index: number) => {
         setSigningStates(prev => ({ ...prev, [index]: true }));
+        Swal.fire({
+            title: 'Signing...',
+            text: 'Please wait while we sign your ticket.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
         try {
             await handleSign(pcdData);
+            Swal.close();
+        } catch (error) {
+            console.log("Error signing:", error);
+            showTempErrorAlert(error instanceof Error ? error.message : 'There was an error signing your ticket. Please try again.');
         } finally {
             setSigningStates(prev => ({ ...prev, [index]: false }));
         }
