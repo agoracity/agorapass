@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 import { matchTicketToType, whitelistedTickets } from '@/components/zupass/zupass-config';
 import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
 
-export default function ZupassButton({ user }: { user: any }) {
+export default function ZupassButton({ user, text }: { user: any, text: string }) {
     const { handleZuAuth, isLoading, result, handleSign } = useZuAuth(user);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [signingStates, setSigningStates] = useState<{ [key: string]: boolean }>({});
@@ -65,7 +65,7 @@ export default function ZupassButton({ user }: { user: any }) {
             setLinkedStates(prev => ({ ...prev, [index]: isLinked.exists && isLinked.isSameWallet }));
 
             return (
-                <div key={index} className="mb-4 p-4 border rounded">
+                <div key={index} className="mb-4 p-6 border rounded">
                     <p>Ticket Type: {displayTicketType}</p>
                     <p>Event Name: {displayEventName}</p>
                     {isLinked.exists && isLinked.isSameWallet ? (
@@ -113,7 +113,7 @@ export default function ZupassButton({ user }: { user: any }) {
                     className="w-5 h-5 sm:w-6 sm:h-6 mr-2 rounded-full object-cover"
                 />
                 <span>
-                    {isLoading ? 'Auth...' : 'Link Zupass'}
+                    {isLoading ? 'Auth...' : text}
                 </span>
             </Button>
 

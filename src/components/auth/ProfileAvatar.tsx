@@ -32,7 +32,7 @@ const ProfileAvatar = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
     const { authenticated, logout, ready, user } = usePrivy();
-
+    const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
     const isClient = typeof window !== 'undefined';
 
@@ -97,30 +97,10 @@ const ProfileAvatar = () => {
         <>
             {authenticated ? (
                 <>
-                    {/* Mobile view */}
-                    <div className="lg:hidden">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="secondary" className="px-2 font-bold mr-1 flex items-center" asChild>
-                                    <div className="flex items-center space-x-2">
-                                        <Image src={ZupassLogo} alt="Zupass logo" className="w-6 h-6 rounded-full flex-shrink-0" />
-                                        <ChevronDown className="w-5 h-5 flex-shrink-0" />
-                                    </div>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="flex flex-column justify-center items-center">
-                                <DropdownMenuItem>
-                                    <ZupassButton user={user}>
-                                    </ZupassButton>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
 
                     {/* Desktop view */}
-                    <div className="hidden lg:block px-2">
-                        <ZupassButton user={user}>
-                        </ZupassButton>
+                    <div className="block px-2">
+                        <ZupassButton user={user} text={zupassUser ? "Refresh" : "Link Zupass"} />
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
