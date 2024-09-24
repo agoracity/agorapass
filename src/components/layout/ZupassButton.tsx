@@ -52,7 +52,7 @@ export default function ZupassButton({ user }: { user: any }) {
 
             const eventId = pcdData.claim?.partialTicket?.eventId || "Not specified";
             const productId = pcdData.claim?.partialTicket?.productId || "Not specified";
-            const semaphoreId = pcdData.claim?.semaphoreId || "";
+            const semaphoreId = pcdData.claim?.partialTicket?.attendeeSemaphoreId || "";
 
             const ticketType = matchTicketToType(eventId, productId);
             const ticketInfo = ticketType ? whitelistedTickets[ticketType].find(t => t.eventId === eventId && t.productId === productId) : null;
@@ -68,7 +68,7 @@ export default function ZupassButton({ user }: { user: any }) {
                 <div key={index} className="mb-4 p-4 border rounded">
                     <p>Ticket Type: {displayTicketType}</p>
                     <p>Event Name: {displayEventName}</p>
-                    {isLinked ? (
+                    {isLinked.exists && isLinked.isSameWallet ? (
                         <p className="text-green-600 font-semibold mt-2">Signed</p>
                     ) : (
                         <Button 
