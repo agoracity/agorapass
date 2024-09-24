@@ -11,7 +11,7 @@ import { checkSemaphoreAttestation } from '@/utils/checkSemaphoreAttestation';
 import Swal from 'sweetalert2';
 import { showTempErrorAlert } from '@/utils/alertUtils';
 
-export default function ZupassButton({ user, text }: { user: any, text: string }) {
+export default function ZupassButton({ user, text, wallets }: { user: any, text: string, wallets: any }) {
     const { handleZuAuth, isLoading, result, handleSign } = useZuAuth(user);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [signingStates, setSigningStates] = useState<{ [key: string]: boolean }>({});
@@ -46,8 +46,10 @@ export default function ZupassButton({ user, text }: { user: any, text: string }
             }
         });
         try {
-            await handleSign(pcdData);
-            Swal.close();
+            console.log("pcdData", pcdData);
+            console.log("wallets", wallets);
+            console.log("user", user);
+            await handleSign(pcdData, wallets, user);            Swal.close();
         } catch (error) {
             console.log("Error signing:", error);
             showTempErrorAlert(error instanceof Error ? error.message : 'There was an error signing your ticket. Please try again.');

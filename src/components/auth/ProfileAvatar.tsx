@@ -11,17 +11,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePrivy, useLogin } from '@privy-io/react-auth';
 import Link from 'next/link';
-import { Wallet, ChevronDown } from 'lucide-react';
+import { Wallet } from 'lucide-react';
 import createUser from '@/utils/createUser';
 import Swal from 'sweetalert2';
 import { getAvatar } from '../ui/users/getAvatarImg';
 import { useFetchUserProfile } from '@/hooks/useFetchUser';
 import ZupassButton from '../layout/ZupassButton';
-import Image from 'next/image';
-import ZupassLogo from '@/../../public/zupass.webp';
 import ShinyButton from '../ui/ShinyButton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import dynamic from 'next/dynamic';
+import { useWallets } from '@privy-io/react-auth';
+
 const DynamicWrapper = dynamic(() => import('@/components/zupass/components/Wrapper'), {
     ssr: false,
     loading: () => <p>Loading...</p>
@@ -32,6 +32,7 @@ const ProfileAvatar = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
     const { authenticated, logout, ready, user } = usePrivy();
+    const { wallets } = useWallets();
     const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
     const isClient = typeof window !== 'undefined';
@@ -100,7 +101,7 @@ const ProfileAvatar = () => {
 
                     {/* Desktop view */}
                     <div className="block px-2">
-                        <ZupassButton user={user} text={zupassUser ? "Refresh" : "Link Zupass"} />
+                        <ZupassButton user={user} text={zupassUser ? "Refresh" : "Link Zupass"} wallets={wallets}/>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
