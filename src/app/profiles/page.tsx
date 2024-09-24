@@ -22,6 +22,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import {
     useEffect, useMemo, useState
 } from 'react';
+import EnsNameSearch from '@/components/ui/users/Search';
+import communityData from '@/data/communityData.json';
+
 const filters = [
     {
         valueFilter: "desc" as const,
@@ -34,10 +37,12 @@ const filters = [
 ]
 
 function Page() {
+    // Extract the relevant properties from the JSON data
+    const { graphql, id, schema, chainId, verifyingContract } = communityData.AgoraPass;
+
     const [openFilter, setOpenFilter] = useState(false);
     const [valueFilter, setValueFilter] = useState<'asc' | 'desc'>("desc");
     const [searchQuery, setSearchQuery] = useState<string>("");
-
 
     const debouncedSearchQuery = useMemo(
         () => debounce((query: string) => setSearchQuery(query), 300),
@@ -65,11 +70,12 @@ function Page() {
         <div className='flex flex-col w-full p-4'>
             <div className='flex flex-col md:flex-row md:justify-center md:items-center gap-4 p-4'>
                 <div className="relative w-full md:w-[300px]">
-                    <input
-                        type="text"
-                        placeholder="Search by name"
-                        onChange={(e) => debouncedSearchQuery(e.target.value)}
-                        className="border p-2 rounded-md w-full"
+                    <EnsNameSearch
+                        graphql={graphql}
+                        platform={id}
+                        schema={schema}
+                        chain={chainId}
+                        verifyingContract={verifyingContract}
                     />
                 </div>
 

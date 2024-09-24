@@ -17,7 +17,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import { getAvatar } from './getAvatarImg';
 import { BlendIcon } from 'lucide-react';
 import Link from 'next/link';
