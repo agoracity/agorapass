@@ -18,7 +18,9 @@ export default function Page() {
 
   const { login } = useLogin({
     onComplete: () => {
-      router.push('/profiles');
+      if (ready) {
+        router.push('/profiles');
+      }
     },
     onError: () => {
       Swal.fire({
@@ -30,6 +32,10 @@ export default function Page() {
   });
 
   const handleStartVouching = () => {
+    if (!ready) {
+      // Wait for authentication state to be ready
+      return;
+    }
     if (!authenticated) {
       login();
     } else {
