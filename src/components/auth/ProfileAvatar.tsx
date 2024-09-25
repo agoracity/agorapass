@@ -44,7 +44,8 @@ const ProfileAvatar = () => {
     }, [authenticated, user]);
 
     useEffect(() => {
-        if (data && data.rankScore > 0.25 && (!data.podUrl || data.podUrl === '')) {
+        //Absurdly high trust score threshold to prevent people from having one for now
+        if (data && data.rankScore > 25 && (!data.podUrl || data.podUrl === '')) {
             console.log("podConnected is false");
             setIsDialogOpen(true);
         }
