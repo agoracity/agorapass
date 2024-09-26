@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchAttestationsMadePretrust } from '@/lib/fetchers/attestations';
 import prisma from '@/lib/db';
 import { ethers } from 'ethers';
+import { calculateNullifier } from '@/utils/calculateNullifier';
 
 function stringToBytes32(str: string): string {
     // Pad the string to 32 bytes
@@ -16,17 +17,18 @@ export async function POST(request: NextRequest) {
     try {
         const attestations = await fetchAttestationsMadePretrust(
             process.env.SCHEMA_ID_ZUPASS as string,
-            semaphoreId
+            calculateNullifier(semaphoreId, ticketType)
         );
-
+        const calculatedNullifier = calculateNullifier(semaphoreId, ticketType);
+        console.log('calculatedNullifier', calculatedNullifier);
         const matchingAttestations = attestations.filter((attestation: { decodedDataJson: string; recipient: string }) => {
             try {
                 const decodedData = JSON.parse(attestation.decodedDataJson);
-                const subcategoryField = decodedData.find((field: any) => field.name === "subcategory");
-                if (subcategoryField && subcategoryField.value && subcategoryField.value.value) {
-                    const subcategoryValue = subcategoryField.value.value;
-                    const requestTicketTypeBytes32 = stringToBytes32(ticketType);
-                    return subcategoryValue === requestTicketTypeBytes32;
+                const nullifierField = decodedData.find((field: any) => field.name === "nullifier");
+                
+                if (nullifierField?.value?.value) {
+                    const nullifierValue = nullifierField.value.value;
+                    return nullifierValue === calculatedNullifier;
                 }
             } catch (error) {
                 console.error('Error parsing attestation:', error);
