@@ -118,7 +118,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         staleTime: Infinity,
     });
 
-    const avatar = getAvatar(address);
+    const avatar = getAvatar(address, "w-16 h-16");
 
     if (madeLoading || receivedLoading || ensNameLoading) return <div className="w-screen flex items-center justify-center"><Loader /></div>;
     if (madeError || receivedError || ensNameerror) return <div>Error: {madeError?.message || receivedError?.message}</div>;
@@ -149,13 +149,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 className="bg-white bg-opacity-90 shadow-lg p-6 rounded-lg max-w-md w-full"
             >
                 <div className="flex justify-center mb-6">
-                    <Avatar className="w-24 h-24 mx-auto mb-4">
-                        {typeof avatar === 'string' ? (
-                            <AvatarImage src={avatar} alt="Avatar Image" />
-                        ) : (
-                            avatar
-                        )}
-                    </Avatar>
+                    {avatar}
                 </div>
                 <div className="text-center">
                     <div>
