@@ -21,9 +21,10 @@ export function PODCrypto({ wallet }: PODCryptoProps): ReactNode {
     }
     setIsLoading(true);
     try {
+      console.log("wallet", wallet);
       // @ts-expect-error Temporarily ignoring type error
       const ownerIdentity = await z.identity.getIdentityCommitment();
-      
+      console.log("ownerIdentity", ownerIdentity);
       const response = await axios.post('/api/zupass/sign-pod', {
         timestamp: Date.now(),
         owner: ownerIdentity.toString(),

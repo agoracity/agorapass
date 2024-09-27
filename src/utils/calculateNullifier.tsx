@@ -5,7 +5,7 @@ export function calculateNullifier(attendeeSemaphoreId: string, productId: strin
     ethers.keccak256(
       ethers.concat([
         ethers.toUtf8Bytes(attendeeSemaphoreId),
-        ethers.keccak256(ethers.toUtf8Bytes(productId))
+        ethers.toUtf8Bytes(productId)
       ])
     ).slice(0, 66)
   );

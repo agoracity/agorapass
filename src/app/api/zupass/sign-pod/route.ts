@@ -27,6 +27,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(existingUser.podUrl);
     }
 
+    console.log("timestamp", timestamp);
+    console.log("owner", owner);
+    console.log("wallet", wallet);
     // If no existing POD URL, generate a new one
     const pod = POD.sign(
       podEntriesFromSimplifiedJSON(JSON.stringify({
@@ -40,13 +43,13 @@ export async function POST(request: NextRequest) {
       })),
       ZUPASS_SIGNING_KEY
     );
-
+    console.log("pod", pod);
     // Create PODPCD
     const podpcd = new PODPCD(
       uuidv5(`${pod.contentID}`, FROG_NAMESPACE),
       pod
     );
-
+    console.log("podpcd", podpcd);
     const serializedPODPCD = await PODPCDPackage.serialize(podpcd);
 
     const url = constructZupassPcdAddRequestUrl(
