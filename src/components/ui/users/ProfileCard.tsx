@@ -95,7 +95,6 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
 
 
     const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, Zupass } = data || {};
-    console.log('data', data);
     const [remainingTime, setRemainingTime] = useState('00:00:00');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 

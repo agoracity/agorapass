@@ -22,6 +22,16 @@ export const showErrorAlert = (message: string) => {
     });
 };
 
+
+export const showErrorAlertWithSpace = (title: string, message: string) => {
+    MySwal.fire({
+        icon: 'error',
+        title: title,
+        html: message.replace(/\n/g, '<br>'),
+    });
+};
+
+
 export const showSuccessAlert = (message: string, confirmText: string, redirectUrl: string) => {
     MySwal.fire({
         icon: 'success',
