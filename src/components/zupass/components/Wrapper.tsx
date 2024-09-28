@@ -1,37 +1,28 @@
-"use client";
-
-import dynamic from 'next/dynamic';
-import { EmbeddedZupassProvider } from "../utils/hooks/useEmbeddedZupass";
-import { Zupass } from "@/config/siteConfig";
-import { PODCrypto } from './POD';
+import { ReactNode, StrictMode } from "react";
+import { getConnectionInfo } from "../../../hooks/zupass/utils";
+import { useParcnetClient, ParcnetClientProvider } from "../../../hooks/zupass/useParcnetClient";
+import { PODSection } from "./POD";
 
 const zapp = {
   name: "test-client",
   permissions: ["read", "write"]
 };
 
-interface MainProps {
-  wallet: string;
-}
-
-function Main({ wallet }: MainProps) {
+function Main({ wallet, token }: { wallet: string; token: string }): ReactNode {
+  const { connected } = useParcnetClient();
   return (
     <>
-      <PODCrypto wallet={wallet} />
+        <PODSection wallet={wallet} token={token} />
     </>
   );
 }
 
-interface WrapperProps {
-  wallet: string;
-}
-
-function Wrapper({ wallet }: WrapperProps) {
+export default function Wrapper({ wallet, token }: { wallet: string; token: string }): ReactNode {
   return (
-    <EmbeddedZupassProvider zapp={zapp} zupassUrl={Zupass.url}>
-      <Main wallet={wallet} />
-    </EmbeddedZupassProvider>
+    <StrictMode>
+      <ParcnetClientProvider zapp={zapp} connectionInfo={getConnectionInfo()}>
+        <Main wallet={wallet} token={token} />
+      </ParcnetClientProvider>
+    </StrictMode>
   );
 }
-
-export default dynamic(() => Promise.resolve(Wrapper), { ssr: false });

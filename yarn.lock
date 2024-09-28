@@ -204,6 +204,11 @@
   resolved "https://registry.yarnpkg.com/@base2/pretty-print-object/-/pretty-print-object-1.0.1.tgz#371ba8be66d556812dc7fb169ebc3c08378f69d4"
   integrity sha512-4iri8i1AqYHJE2DstZYkyEprg6Pq6sKx3xn5FpySk9sNhH7qN2LLlHJCfDTZRILNwQNPD7mATWM0TBui7uC1pA==
 
+"@brenoroosevelt/toast@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@brenoroosevelt/toast/-/toast-2.0.3.tgz#429772acccb8728c8ee7f8583295a30261c71745"
+  integrity sha512-Tivp/tA5EUkQFP9LVmop8Y9EuxVtuom8x+5gYOFjfib/1oATX7QWAc4cKSELd36HoeDIThXD3vDxTy2FVUsRBA==
+
 "@coinbase/wallet-sdk@4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@coinbase/wallet-sdk/-/wallet-sdk-4.0.3.tgz#fd52dd4c168c35979c7b3294018a6f78d163a593"
@@ -1703,6 +1708,37 @@
     "@parcel/watcher-win32-ia32" "2.4.1"
     "@parcel/watcher-win32-x64" "2.4.1"
 
+"@parcnet-js/app-connector@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/app-connector/-/app-connector-0.0.7.tgz#15cb93b55c206a5aa4697bdeb3cab5d2d40f8bfd"
+  integrity sha512-nmw5gE700JsFR01ErkzUGbsE81Z+bKLMapRlw4JjptXmOLMR+o1e3eafNc9CA8M4wHJ2M6Ik2LTh1VHaOK9j0A==
+  dependencies:
+    "@brenoroosevelt/toast" "^2.0.3"
+    "@parcnet-js/client-rpc" "0.0.4"
+    "@parcnet-js/podspec" "0.0.3"
+    "@pcd/gpc" "^0.0.8"
+    "@pcd/pod" "^0.1.7"
+    nanoevents "^9.0.0"
+    valibot "^0.42.0"
+
+"@parcnet-js/client-rpc@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/client-rpc/-/client-rpc-0.0.4.tgz#3a0edea2bc5832bbdc6bd25cdeb51f8f1de8f5aa"
+  integrity sha512-sY0LZdxxj4sLcTWkg4conj18cZNNKWm7+aR2aCK+zswwPlz2chA8kO0HEbHjjENkqT6oQLCpzgk/URsqoCBSNw==
+  dependencies:
+    "@parcnet-js/podspec" "0.0.3"
+    "@pcd/gpc" "^0.0.8"
+    "@pcd/pod" "^0.1.7"
+    valibot "^0.42.0"
+
+"@parcnet-js/podspec@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/podspec/-/podspec-0.0.3.tgz#23eb9427761e881e617637998b655db18f425275"
+  integrity sha512-/IlXwBXEcOREFtyyMSVHz3Va7azCV5i4x6u1cuF9W0Bs3uLwkOG5ej+TceFScpB0jhdedMw/J3iY5VYaWJJtkA==
+  dependencies:
+    "@pcd/gpc" "0.0.8"
+    "@pcd/pod" "0.1.7"
+
 "@pcd/circom_runtime@0.1.26":
   version "0.1.26"
   resolved "https://registry.yarnpkg.com/@pcd/circom_runtime/-/circom_runtime-0.1.26.tgz#6b201e0c749a504410f6c6328f2786f9d8040155"
@@ -1853,12 +1889,37 @@
     snarkjs "^0.7.4"
     url-join "^4.0.1"
 
+"@pcd/gpc@0.0.8", "@pcd/gpc@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@pcd/gpc/-/gpc-0.0.8.tgz#5ccd6594102c8c1bb7048bda423b483f21b9423d"
+  integrity sha512-rsQZJuOB/fsq2JWZcQZv6hmr2lIX60oFlInAW6JeXyKVcro6AoOGcKHepDpHeRTG7SEze3/98jJ22X/8tMeGsw==
+  dependencies:
+    "@pcd/gpcircuits" "0.1.7"
+    "@pcd/pod" "0.1.7"
+    "@pcd/util" "0.5.4"
+    "@semaphore-protocol/core" "^4.0.3"
+    "@semaphore-protocol/identity" "^3.15.2"
+    "@types/lodash" "^4.17.1"
+    json-bigint "^1.0.0"
+    snarkjs "^0.7.4"
+    url-join "^4.0.1"
+
 "@pcd/gpcircuits@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@pcd/gpcircuits/-/gpcircuits-0.1.5.tgz#13be3173ebaac5f111d25aad08e47e7cc9249bd3"
   integrity sha512-Ivlzyu8+flgOUmq/N+mWw1y6bvzY58HLjI1KAFPxOsGI3evVStrgg5j91z80rRJJK50ohG6aL5lX59zG4sV3YA==
   dependencies:
     "@pcd/pod" "0.1.5"
+    fastfile "0.0.20"
+    snarkjs "^0.7.4"
+    url-join "4.0.1"
+
+"@pcd/gpcircuits@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@pcd/gpcircuits/-/gpcircuits-0.1.7.tgz#ae7e5e59db6ef1957bb3a7f2705146b3f202d574"
+  integrity sha512-7D7KfXHD6BlTyXzg1fJ8HQOW7Kz+AzHYGiAENQxQySelgo7idgxoC/nh5o5/ZLTvU3tLyWV4Wnixyr0WZI4Zpg==
+  dependencies:
+    "@pcd/pod" "0.1.7"
     fastfile "0.0.20"
     snarkjs "^0.7.4"
     url-join "4.0.1"
@@ -1992,7 +2053,7 @@
     json-bigint "^1.0.0"
     uuid "^9.0.0"
 
-"@pcd/pod-pcd@0.1.5", "@pcd/pod-pcd@^0.1.5":
+"@pcd/pod-pcd@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@pcd/pod-pcd/-/pod-pcd-0.1.5.tgz#e54924f00528866f15caad182a77cb906b073cb4"
   integrity sha512-vIfqEDDUEtae1swMwAvLFjTzrJw3TS4fGz6NZV8U0t60BPscPx9wEV9phzG2op2MWzaLdT1OVCH7wG/uZMQ+cg==
@@ -2042,7 +2103,7 @@
     json-bigint "^1.0.0"
     poseidon-lite "^0.2.1"
 
-"@pcd/pod@0.1.7":
+"@pcd/pod@0.1.7", "@pcd/pod@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@pcd/pod/-/pod-0.1.7.tgz#aba96db2bdf687a742f1dd60247c0299334b3f30"
   integrity sha512-y8wPXLw36VPsTBYR05TkURyb5v1S40kQmDwL26sEDxX90ZwAv6vTIjRpC4pmxk5gIFGtxTgxMembfrH2vZDOkA==
@@ -7773,6 +7834,11 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
 
+json-with-bigint@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/json-with-bigint/-/json-with-bigint-2.1.2.tgz#41969917029962c23f4fec7aa84cac4ea4760ab3"
+  integrity sha512-ntVByusL5D7N3Cfka28x1KeKNwMDATNjvT0BBGb4JqErX/K/Cj5X0euRvMXFthFxWSvJzqtj5/3qMcKZLgvoIQ==
+
 json5@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.2.tgz#63d98d60f21b313b77c4d6da18bfa69d80e1d593"
@@ -8344,6 +8410,11 @@ nanoassert@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-2.0.0.tgz#a05f86de6c7a51618038a620f88878ed1e490c09"
   integrity sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==
+
+nanoevents@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/nanoevents/-/nanoevents-9.0.0.tgz#c44fa7dde1615ac092023d5c881a3ee0b0a8c8fd"
+  integrity sha512-X8pU7IOpgKXVLPxYUI55ymXc8XuBE+uypfEyEFBtHkD1EX9KavYTVc+vXZHFyHKzA1TaZoVDqklLdQBBrxIuAw==
 
 nanoid@^3.3.6, nanoid@^3.3.7:
   version "3.3.7"
@@ -10602,6 +10673,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+valibot@^0.42.0:
+  version "0.42.1"
+  resolved "https://registry.yarnpkg.com/valibot/-/valibot-0.42.1.tgz#a31183d8e9d7552f98e22ca0977172cab8815188"
+  integrity sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==
 
 valtio@1.11.2:
   version "1.11.2"

@@ -30,13 +30,14 @@ const DynamicWrapper = dynamic(() => import('@/components/zupass/components/Wrap
 const ProfileAvatar = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [token, setToken] = useState<string | null>(null);
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
-    const { authenticated, logout, ready, user } = usePrivy();
+    const { authenticated, logout, ready, user, getAccessToken } = usePrivy();
     const { wallets } = useWallets();
     const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
     const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
     const isClient = typeof window !== 'undefined';
-
+    
     useEffect(() => {
         if (authenticated && user) {
             setUpdateTrigger(prev => !prev);
@@ -95,6 +96,20 @@ const ProfileAvatar = () => {
 
     const [showWrapper, setShowWrapper] = useState(false);
 
+    useEffect(() => {
+        const fetchToken = async () => {
+            if (ready && authenticated) {
+                try {
+                    const accessToken = await getAccessToken();
+                    setToken(accessToken);
+                } catch (error) {
+                    console.error("Failed to fetch access token:", error);
+                }
+            }
+        };
+        fetchToken();
+    }, [ready, authenticated, getAccessToken]);
+
     return (
         <>
             {authenticated ? (
@@ -144,7 +159,7 @@ const ProfileAvatar = () => {
                         </Button>
                     ) : (
                        <>
-                        <DynamicWrapper wallet={wallet} />
+                        {token && <DynamicWrapper wallet={wallet} token={token}/>}
                         Once added to Zupass, you can close this window.
                        </>
                     )}

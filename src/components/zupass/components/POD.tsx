@@ -1,84 +1,90 @@
-import { ReactNode, useState } from "react";
-import { useEmbeddedZupass } from "../utils/hooks/useEmbeddedZupass";
-import axios from 'axios';
+import type { ParcnetAPI } from "@parcnet-js/app-connector";
+import { POD } from "@pcd/pod";
+import type { ReactNode } from "react";
+import { useState } from "react";
+import { useParcnetClient } from "@/hooks/zupass/useParcnetClient";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { openZupassPopupUrl } from "@pcd/passport-interface";
+import * as p from "@parcnet-js/podspec";
 
-interface PODCryptoProps {
-  wallet: string;
+export function PODSection({ wallet, token }: { wallet: string; token: string }): ReactNode {
+  const { z, connected } = useParcnetClient();
+
+  return !connected ? null : (
+    <div>
+        <InsertPOD z={z} wallet={wallet} token={token} />
+    </div>
+  );
 }
 
-export function PODCrypto({ wallet }: PODCryptoProps): ReactNode {
-  const { z, connected } = useEmbeddedZupass();
-  const [isLoading, setIsLoading] = useState(false);
-  const [PODUrl, setPODUrl] = useState<string | null>(null);
+function InsertPOD({ z, wallet, token }: { z: ParcnetAPI; wallet: string; token: string }): ReactNode {
+  const [pod, setPod] = useState<POD | null>(null);
+  const [insertionState, setInsertionState] = useState<'none' | 'success' | 'failure'>('none');
 
-  const handleGetPOD = async () => {
-    if (!z) {
-      console.error("Zupass client not initialized");
-      return;
-    }
-    setIsLoading(true);
+  const generatePOD = async () => {
+    const owner = (await z.identity.getSemaphoreV4Commitment()).toString();
+    console.log('owner', owner);
     try {
-      console.log("wallet", wallet);
-      // @ts-expect-error Temporarily ignoring type error
-      const ownerIdentity = await z.identity.getIdentityCommitment();
-      console.log("ownerIdentity", ownerIdentity);
-      const response = await axios.post('/api/zupass/sign-pod', {
-        timestamp: Date.now(),
-        owner: ownerIdentity.toString(),
-        wallet: wallet
+      const response = await fetch(process.env.NEXT_PUBLIC_STAMP_API_URL + '/pod/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'x-privy-app-id': 'agora',
+        },
+        body: JSON.stringify({ owner, wallet })
       });
-
-      if (response.data && typeof response.data === 'string') {
-        setPODUrl(response.data);
-      } else {
-        console.error('Invalid response data:', response.data);
-        alert('Failed to get a valid POD URL. Please try again.');
-      }
+      const serializedPOD = await response.text();
+      
+      // Use POD.deserialize to convert the serialized string to a POD object
+      const podObject = POD.deserialize(serializedPOD);
+      console.log('Deserialized POD:', podObject);
+      const query = p.pod({
+        entries: {
+          issuer: {
+            type: "string",
+            equalsEntry: "Stamp"
+          }
+        }
+      });
+      const pods = await z.pod.query(query);
+      console.log('pods', pods);
+      setPod(podObject);
     } catch (error) {
-      console.error("Error getting POD:", error);
-      alert("Failed to get POD. Please try again.");
-    } finally {
-      setIsLoading(false);
+      console.error('Error generating or deserializing POD:', error);
     }
   };
 
-  const handleAddToZupass = () => {
-    if (PODUrl) {
-      openZupassPopupUrl(PODUrl);
+  const savePODToZupass = async () => {
+    if (!pod) return;
+    try {
+      console.log('pod', pod);
+      //@ts-expect-error Lib under development
+      await z.pod.insert(pod);
+
+    setInsertionState('success');
+  } catch (error) {
+      console.error('Error inserting POD:', error);
+      setInsertionState('failure');
     }
   };
 
   return (
-    <div className="flex flex-col items-center">
-      {connected ? (
-        PODUrl ? (
-          <Button
-            onClick={handleAddToZupass}
-            className="mb-4 bg-accentdark hover:bg-accentdarker text-zupass font-semibold font-[arial]"
-          >
-            Add to Zupass
-          </Button>
-        ) : (
-          <Button
-            onClick={handleGetPOD}
-            disabled={isLoading}
-            className="mb-4 bg-accentdark hover:bg- text-zupass font-semibold font-[arial]"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating AgoraPass...
-              </>
-            ) : (
-              "Generate AgoraPass"
-            )}
-          </Button>
-        )
-      ) : (
-        "Connecting..."
+    <div>
+      <Button onClick={generatePOD} variant="default">Generate POD</Button>
+      
+      {pod && (
+        <Button onClick={savePODToZupass} variant="default">Save to Zupass</Button>
+      )}
+
+      {insertionState !== 'none' && (
+        <div className="my-2">
+          {insertionState === 'success' && (
+            <div>POD inserted successfully!</div>
+          )}
+          {insertionState === 'failure' && (
+            <div>An error occurred while inserting your POD.</div>
+          )}
+        </div>
       )}
     </div>
   );

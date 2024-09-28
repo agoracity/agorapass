@@ -31,7 +31,10 @@ export const fetchAggregateAttestations = async () => {
             where: {
                 schemaId: {
                     equals: process.env.NEXT_PUBLIC_SCHEMA_ID
-                }
+                },
+                decodedDataJson: {
+                    contains: "0x41676f7261506173730000000000000000000000000000000000000000000000"
+                },
             }
         },
     });
