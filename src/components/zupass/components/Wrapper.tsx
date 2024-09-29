@@ -4,7 +4,7 @@ import { useParcnetClient, ParcnetClientProvider } from "../../../hooks/zupass/u
 import { PODSection } from "./POD";
 
 const zapp = {
-  name: "test-client",
+  name: "stamp",
   permissions: ["read", "write"]
 };
 
