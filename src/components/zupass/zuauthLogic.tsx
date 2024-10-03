@@ -93,10 +93,14 @@ export const useZuAuth = (user: any) => {
                     user: user,
                 }),
             });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
             const data = await response.json();
+
+            if (!response.ok) {
+                setApiResponse(data); // Set the entire response object
+                console.error("API error:", data);
+                return; // Exit the function early
+            }
+            
             setApiResponse(data);
             console.log("API response:", data);
         } catch (error) {
