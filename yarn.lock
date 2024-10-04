@@ -1708,33 +1708,33 @@
     "@parcel/watcher-win32-ia32" "2.4.1"
     "@parcel/watcher-win32-x64" "2.4.1"
 
-"@parcnet-js/app-connector@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@parcnet-js/app-connector/-/app-connector-0.0.7.tgz#15cb93b55c206a5aa4697bdeb3cab5d2d40f8bfd"
-  integrity sha512-nmw5gE700JsFR01ErkzUGbsE81Z+bKLMapRlw4JjptXmOLMR+o1e3eafNc9CA8M4wHJ2M6Ik2LTh1VHaOK9j0A==
+"@parcnet-js/app-connector@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/app-connector/-/app-connector-0.0.8.tgz#6fd4836c1185972c60dd9ff1e9269cc2bbfa3c51"
+  integrity sha512-XLpHFD7SfwJb+c/0UFwnfsSW3jvHZCHgJ6XvqbXMVR/tKSCEoHXNKvBKyOHCi9FmyEkd2/aue69d3qU7hz/bxg==
   dependencies:
     "@brenoroosevelt/toast" "^2.0.3"
-    "@parcnet-js/client-rpc" "0.0.4"
-    "@parcnet-js/podspec" "0.0.3"
+    "@parcnet-js/client-rpc" "0.0.5"
+    "@parcnet-js/podspec" "0.0.4"
     "@pcd/gpc" "^0.0.8"
     "@pcd/pod" "^0.1.7"
     nanoevents "^9.0.0"
     valibot "^0.42.0"
 
-"@parcnet-js/client-rpc@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@parcnet-js/client-rpc/-/client-rpc-0.0.4.tgz#3a0edea2bc5832bbdc6bd25cdeb51f8f1de8f5aa"
-  integrity sha512-sY0LZdxxj4sLcTWkg4conj18cZNNKWm7+aR2aCK+zswwPlz2chA8kO0HEbHjjENkqT6oQLCpzgk/URsqoCBSNw==
+"@parcnet-js/client-rpc@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/client-rpc/-/client-rpc-0.0.5.tgz#a5b6d307a7f7566ae2f9ec1f00f46147ce5d3611"
+  integrity sha512-FihFd8gWD2c7rsvRVCkUxR/wo7VsRG0RwMO/PpHcRcSe9mzQ11v4zqgXVQMIhSSa6tT73nUK97dUzoRDdgHYmQ==
   dependencies:
-    "@parcnet-js/podspec" "0.0.3"
+    "@parcnet-js/podspec" "0.0.4"
     "@pcd/gpc" "^0.0.8"
     "@pcd/pod" "^0.1.7"
     valibot "^0.42.0"
 
-"@parcnet-js/podspec@0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@parcnet-js/podspec/-/podspec-0.0.3.tgz#23eb9427761e881e617637998b655db18f425275"
-  integrity sha512-/IlXwBXEcOREFtyyMSVHz3Va7azCV5i4x6u1cuF9W0Bs3uLwkOG5ej+TceFScpB0jhdedMw/J3iY5VYaWJJtkA==
+"@parcnet-js/podspec@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@parcnet-js/podspec/-/podspec-0.0.4.tgz#ca4daa63a3a65ebea9e4aab693ccc59f02baa32d"
+  integrity sha512-wy263kp8VRMY7D2x/6RiUXiJf3WBybETwGx5PGqB761OEjpRoYQMbN3Nd4Um4opRC0bJQPRG98IbsRZIr0xrjg==
   dependencies:
     "@pcd/gpc" "0.0.8"
     "@pcd/pod" "0.1.7"

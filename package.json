@@ -19,7 +19,7 @@
     "@ethereum-attestation-service/eas-sdk": "^2.5.0",
     "@hookform/resolvers": "^3.9.0",
     "@metamask/jazzicon": "^2.0.0",
-    "@parcnet-js/app-connector": "^0.0.7",
+    "@parcnet-js/app-connector": "^0.0.8",
     "@pcd/passport-interface": "^0.11.9",
     "@pcd/pod": "^0.1.5",
     "@pcd/util": "^0.5.4",
