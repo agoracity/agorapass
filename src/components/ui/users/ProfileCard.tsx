@@ -22,6 +22,7 @@ import withReactContent from 'sweetalert2-react-content';
 import LinkedButton from './LinkedButton';
 import UnlinkAccounts from './UnlinkAccounts';
 import truncateWallet from '@/utils/truncateWallet'
+import { useContract } from '@/hooks/useContract';
 const ShareProfile = lazy(() => import('./ShareProfile'));
 
 
@@ -39,6 +40,9 @@ interface ProfileCardProps {
 
 export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
     const { user, unlinkTwitter, unlinkFarcaster, getAccessToken } = usePrivy();
+    const { getCurrentSeason, getVouchingSeason, getAccountVouches } = useContract();
+    const [vouchesAvailable, setVouchesAvailable] = useState<number | null>(null);
+    const [remainingTime, setRemainingTime] = useState('');
 
     const { linkTwitter, linkFarcaster } = useLinkAccount({
         onSuccess: (user, linkMethod, linkedAccount) => {
@@ -95,7 +99,6 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
 
 
     const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, Zupass } = data || {};
-    const [remainingTime, setRemainingTime] = useState('00:00:00');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const formattedDate = DateTime.fromISO(createdAt).toLocaleString(DateTime.DATE_FULL);
@@ -111,30 +114,45 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
     }, [name, bio, form]);
 
     useEffect(() => {
-        const updateRemainingTime = () => {
-            const now = DateTime.now();
-            const remainingDuration = vouchResetDate.diff(now, ['days', 'hours', 'minutes']);
+        const fetchSeasonInfo = async () => {
+            try {
+                const currentSeason = await getCurrentSeason();
+                if (currentSeason !== null && wallet) {
+                    const seasonInfo = await getVouchingSeason(currentSeason);
+                    const accountVouchesInfo = await getAccountVouches(wallet, currentSeason);
+                    
+                    if (seasonInfo && accountVouchesInfo) {
+                        const maxVouches = Number(seasonInfo.maxAccountVouches);
+                        setVouchesAvailable(maxVouches - accountVouchesInfo.totalVouches);
 
-            if (remainingDuration.as('milliseconds') <= 0) {
-                setRemainingTime('00:00');
-            } else {
-                // Extract values with default to 0 if undefined
-                const { days = 0, hours = 0, minutes = 0 } = remainingDuration.shiftTo('days', 'hours', 'minutes').toObject();
+                        // Set up timer for remaining time
+                        const endTimestamp = Number(seasonInfo.endTimestamp) * 1000; // Convert to milliseconds
+                        const updateRemainingTime = () => {
+                            const now = DateTime.now();
+                            const end = DateTime.fromMillis(endTimestamp);
+                            const diff = end.diff(now, ['days', 'hours', 'minutes']);
+                            
+                            if (diff.as('milliseconds') <= 0) {
+                                setRemainingTime('Season ended');
+                            } else {
+                                const { days = 0, hours = 0, minutes = 0 } = diff.toObject();
+                                setRemainingTime(`${Math.floor(days)}d ${Math.floor(hours)}h ${Math.floor(minutes)}m`);
+                            }
+                        };
 
-                // Format remaining time
-                const formattedTime = days > 0
-                    ? `${String(Math.floor(days)).padStart(2, '0')}d ${String(Math.floor(hours)).padStart(2, '0')}h ${String(Math.floor(minutes)).padStart(2, '0')}m`
-                    : `${String(Math.floor(hours)).padStart(2, '0')}:${String(Math.floor(minutes)).padStart(2, '0')}`;
+                        updateRemainingTime();
+                        const intervalId = setInterval(updateRemainingTime, 60000); // Update every minute
 
-                setRemainingTime(formattedTime);
+                        return () => clearInterval(intervalId);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching season info:', error);
             }
         };
 
-        updateRemainingTime();
-        const intervalId = setInterval(updateRemainingTime, 60000); // Update every minute
-
-        return () => clearInterval(intervalId);
-    }, [vouchResetDate]);
+        fetchSeasonInfo();
+    }, [wallet, getCurrentSeason, getVouchingSeason, getAccountVouches]);
 
 
     const handleFormSubmit = (data: z.infer<typeof FormSchema>) => {
@@ -326,10 +344,10 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
                     <div className='mt-2'>
                         <div className='width-full display-flex flex flex-row justify-between'>
                             <p>Available</p>
-                            <p>{vouchesAvailables}</p>
+                            <p>{vouchesAvailable !== null ? vouchesAvailable : 'Loading...'}</p>
                         </div>
                         <div className='width-full display-flex flex flex-row justify-between'>
-                            <p>Refreshes in</p>
+                            <p>Season ends in</p>
                             <p>{remainingTime}</p>
                         </div>
                     </div>
