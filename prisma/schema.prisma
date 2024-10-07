@@ -21,8 +21,6 @@ model User {
   wallet            String    @unique
   twitter           String?
   farcaster         String?
-  vouchesAvailables Int       @default(3)
-  vouchReset        DateTime?
   createdAt         DateTime  @default(now())
   rankScore         Float     @default(0)
   podUrl            String?

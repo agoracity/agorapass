@@ -6,8 +6,6 @@ export interface User {
     wallet: string;
     twitter?: string | null;
     farcaster?: string | null;
-    vouchesAvailables: number;
-    vouchReset?: Date | null;
     createdAt: Date;
     rankScore: number;
     Zupass?: ZupassEntry[];

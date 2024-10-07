@@ -25,9 +25,7 @@ export async function GET(request: NextRequest) {
             },
             select: {
                 email: true,
-                vouchesAvailables: true,
                 createdAt:true,
-                vouchReset:true,
                 name:true,
                 bio:true,
                 wallet: true,

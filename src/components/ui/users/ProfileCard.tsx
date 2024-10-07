@@ -98,11 +98,10 @@ export function ProfileCard({ data, onSubmit }: ProfileCardProps) {
     });
 
 
-    const { email, wallet, vouchesAvailables, createdAt, vouchReset, name, bio, Zupass } = data || {};
+    const { email, wallet, createdAt, name, bio, Zupass } = data || {};
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const formattedDate = DateTime.fromISO(createdAt).toLocaleString(DateTime.DATE_FULL);
-    const vouchResetDate = DateTime.fromISO(vouchReset);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
