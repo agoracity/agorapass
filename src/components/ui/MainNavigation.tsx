@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import {  useCallback, useMemo } from "react"
 import Link from 'next/link'
 import { User, LogOut, UserCircle, HelpCircle } from 'lucide-react'
-import { usePrivy } from '@privy-io/react-auth'
+import { usePrivy, useLogin } from '@privy-io/react-auth'
 import ProfileAvatar from "@/components/ui/ProfileAvatar"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -19,13 +19,63 @@ import AgoraLogo from "@/../public/agora.png"
 import { siteName } from "@/config/site"
 import { useWallets } from '@privy-io/react-auth';
 import ZupassButton from "@/components/zupass/ui/ZupassButton";
+import Swal from "sweetalert2"
+import createUser from "@/utils/API/createUser"
 
 export default function MainNavigation() {
-  const { ready, authenticated, login, user, logout } = usePrivy()
+  const { ready, authenticated, user, logout, getAccessToken } = usePrivy()
   const isClient = typeof window !== 'undefined';
   const wallet = user?.wallet?.address || 'Unknown';
   const { wallets } = useWallets();
   const avatar = useMemo(() => isClient ? ProfileAvatar(wallet) : null, [wallet, isClient]);
+
+  const handleNewUserCreation = useCallback(async (user: any) => {
+    Swal.fire({
+        title: 'Creating user...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+      const accessToken = await getAccessToken();
+      if (!accessToken) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to get access token. Please try again.'
+        });
+        return;
+      }
+        await createUser(user, accessToken);
+        Swal.fire({
+            icon: 'success',
+            title: 'User created successfully!',
+            showConfirmButton: false,
+            timer: 1500
+        }).then(() => window.location.reload());
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to create user. Please try again.'
+        });
+    }
+}, []);
+
+  const { login } = useLogin({
+    onComplete: async (user, isNewUser) => {
+        if (isNewUser) await handleNewUserCreation(user);
+    },
+    onError: () => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Login failed. Please try again.'
+        });
+    },
+});
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-transparent">
@@ -49,21 +99,21 @@ export default function MainNavigation() {
                 </Avatar>
               )}
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg rounded-md border border-gray-200">
+            <DropdownMenuContent align="end" className="w-56 bg-gray-900 text-white shadow-lg rounded-md border border-gray-700">
               <DropdownMenuItem asChild>
-                <Link href="/profile" className="flex items-center">
+                <Link href="/profile" className="flex items-center hover:bg-gray-800">
                   <UserCircle className="mr-2 h-4 w-4" />
                   <span>View Profile</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/support" className="flex items-center">
+                <Link href="/support" className="flex items-center hover:bg-gray-800">
                   <HelpCircle className="mr-2 h-4 w-4" />
                   <span>Contact Support</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-gray-200" />
-              <DropdownMenuItem onClick={logout} className="flex items-center text-red-600 hover:text-red-700 hover:bg-red-50">
+              <DropdownMenuSeparator className="bg-gray-700" />
+              <DropdownMenuItem onClick={logout} className="flex items-center text-red-400 hover:text-red-300 hover:bg-gray-800">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log Out</span>
               </DropdownMenuItem>

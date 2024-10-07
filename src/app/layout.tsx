@@ -18,17 +18,14 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children, 
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${Plex_Sans.className} antialiased`}
-      >
+    <html lang="en" className="dark">
+      <body className={`${Plex_Sans.className} antialiased bg-background text-foreground`}>
         <Providers>
-          {/* <Navbar /> */}
           <MainNavigation />
           {children}
         </Providers>

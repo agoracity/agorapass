@@ -31,7 +31,6 @@ const config = Object.entries(whitelistedTickets).flatMap(
                 (ticket): ticket is NonNullable<typeof ticket> => ticket !== null
             )
 );
-console.log("config", config);
 export const useZuAuth = (user: any) => {
     const { getAccessToken } = usePrivy(); // Add this line
     const [result, setResult] = useState<any>(null);

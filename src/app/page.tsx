@@ -5,10 +5,10 @@ import { communityData } from '@/config/site'
 
 function page() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black"> {/* Add bg-black here */}
       <BackgroundBeams />
-      <main className="flex-grow pt-20 px-4 sm:px-6 lg:px-8 z-10"> {/* Add padding-top and horizontal padding */}
-        <div className="max-w-7xl mx-auto"> {/* Center content and limit max width */}
+      <main className="flex-grow pt-20 px-4 sm:px-6 lg:px-8 z-10">
+        <div className="max-w-7xl mx-auto">
           <UserGrid communityData={communityData}/>
         </div>
       </main>
