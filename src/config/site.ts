@@ -14,4 +14,5 @@ export const communityData = {
     graphql: "https://base-sepolia.easscan.org/graphql",
     schema: process.env.VOUCH_SCHEMA || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7",
     platform: "AgoraPass",
+    verifyingContract: "0x4200000000000000000000000000000000000021",
 }

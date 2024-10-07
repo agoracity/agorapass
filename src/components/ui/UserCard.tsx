@@ -4,25 +4,25 @@ import getAvatar from '@/components/ui/ProfileAvatar';
 import Link from 'next/link';
 import VouchButtonCustom from './VouchButtonWithDialog';
 import { Twitter, Zap } from 'lucide-react';
-
+import { truncateAddress } from '@/utils/ui/truncateAddress';
 interface UserCardProps {
   recipient: string;
   communityData: any;
-  name?: string; // Add this line
+  name?: string; 
   bio?: string;
   twitter?: string;
   farcaster?: string;
+  rankScore?: number;
 }
 
-export function UserCard({ recipient, communityData, name, bio, twitter, farcaster }: UserCardProps) {
+export function UserCard({ recipient, communityData, name, bio, twitter, farcaster, rankScore }: UserCardProps) {
   const avatar = getAvatar(recipient, "w-8 h-8");
 
   const truncateBio = (text: string) => {
     return text.length > 20 ? text.slice(0, 20) + '...' : text;
   };
 
-  const displayName = name || recipient;
-
+  const displayName = name || truncateAddress(recipient);
   return (
     <Card>
       <CardContent className="p-4 flex flex-col h-full">
@@ -56,6 +56,10 @@ export function UserCard({ recipient, communityData, name, bio, twitter, farcast
           chain={communityData.chainId.toString()}
           platform={communityData.platform}
           verifyingContract={communityData.verifyingContract}
+          name={displayName}
+          bio={bio}
+          twitter={twitter}
+          farcaster={farcaster}
         />
       </CardContent>
     </Card>

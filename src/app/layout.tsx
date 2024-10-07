@@ -1,10 +1,10 @@
+import React from 'react';
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { IBM_Plex_Sans } from 'next/font/google';
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
-// import Navbar from "@/components/ui/navbar";
 import MainNavigation from '@/components/ui/MainNavigation'
-import { IBM_Plex_Sans } from 'next/font/google';
+import { BackgroundBeams } from '@/components/ui/background-beams'
 import { siteName } from '@/config/site';
 
 const Plex_Sans = IBM_Plex_Sans({
@@ -26,8 +26,13 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${Plex_Sans.className} antialiased bg-background text-foreground`}>
         <Providers>
-          <MainNavigation />
-          {children}
+          <div className="min-h-screen flex flex-col bg-black relative">
+            <BackgroundBeams />
+            <MainNavigation />
+            <main className="flex-grow z-10">
+              {children}
+            </main>
+          </div>
         </Providers>
       </body>
     </html>

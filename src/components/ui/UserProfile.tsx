@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ethers } from 'ethers';
-import { Copy } from 'lucide-react';
+import { Copy, Twitter, Zap } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAttestationCounts } from '@/utils/hooks/useAttestationCount';
 import { useEnsName } from '@/utils/hooks/useEnsName';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 import getAvatar from '@/components/ui/ProfileAvatar';
 import { showCopySuccessAlert } from '@/utils/alertUtils';
 import { CyberpunkLoader } from '@/components/ui/CyberpunkLoader';
+import { truncateAddress } from '@/utils/ui/truncateAddress';
 
 interface UserProfileProps {
   isOwnProfile: boolean;
@@ -19,6 +20,12 @@ interface UserProfileProps {
   graphqlEndpoint: string;
   platform?: string;
   isAuthenticated: boolean;
+  // New props
+  name?: string;
+  bio?: string;
+  twitter?: string;
+  farcaster?: string;
+  rankScore?: number;
 }
 
 export function UserProfile({
@@ -28,7 +35,13 @@ export function UserProfile({
   onCancel,
   graphqlEndpoint,
   platform,
-  isAuthenticated
+  isAuthenticated,
+  // New props
+  name,
+  bio,
+  twitter,
+  farcaster,
+  rankScore
 }: UserProfileProps) {
   const { ready, authenticated, user } = usePrivy();
   const [formattedAddress, setFormattedAddress] = useState<string | undefined>(undefined);
@@ -62,17 +75,18 @@ export function UserProfile({
   const receivedCount = vouchesReceived?.data?.aggregateAttestation?._count?.recipient ?? 0;
   const madeCount = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
 
-  const truncateAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     showCopySuccessAlert();
   };
 
   if (!formattedAddress) {
-    return <DialogContent>Loading...</DialogContent>;
+    return (
+      <DialogContent>
+          <DialogTitle className='hidden'>Loading Profile</DialogTitle>
+        Loading...
+      </DialogContent>
+    );
   }
   const avatar = getAvatar(formattedAddress, "w-16 h-16");
   
@@ -89,8 +103,8 @@ export function UserProfile({
             <div className="flex-grow">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-lg truncate">
-                  <Link href={`/${platform}/${formattedAddress}`} className="underline">
-                    {isLoading ? 'Loading...' : (ensName || truncateAddress(formattedAddress))}
+                  <Link href={`/address/${formattedAddress}`} className="underline">
+                    {isLoading ? 'Loading...' : (name || ensName || truncateAddress(formattedAddress))}
                   </Link>
                 </span>
                 <Button
@@ -104,6 +118,32 @@ export function UserProfile({
               <span className="text-xs text-gray-500 break-all">{formattedAddress}</span>
             </div>
           </div>
+
+          {bio && (
+            <div className="text-sm text-gray-600">
+              {bio}
+            </div>
+          )}
+
+          <div className="flex space-x-2">
+            {twitter && (
+              <Link href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer">
+                <Twitter className="w-5 h-5 text-blue-400" />
+              </Link>
+            )}
+            {farcaster && (
+              <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
+                <Zap className="w-5 h-5 text-purple-600" />
+              </Link>
+            )}
+          </div>
+
+          {rankScore !== undefined && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="col-span-2">Rank Score:</span>
+              <span className="col-span-2">{rankScore.toFixed(2)}</span>
+            </div>
+          )}
 
           <div className="grid grid-cols-4 items-center gap-4">
             <span className="col-span-2">Vouches Received:</span>

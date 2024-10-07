@@ -12,6 +12,7 @@ interface User {
   twitter?: string;
   farcaster?: string;
   name?: string;
+  rankScore?: number;
 }
 
 interface UserGridProps {
@@ -72,6 +73,7 @@ export function UserGrid({ communityData }: UserGridProps) {
                     twitter={user.twitter}
                     farcaster={user.farcaster}
                     name={user.name}
+                    rankScore={user.rankScore}
                   />
                 ))}
               </React.Fragment>
