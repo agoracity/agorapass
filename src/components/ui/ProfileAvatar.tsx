@@ -1,11 +1,11 @@
 import React from 'react';
 import { createAvatar } from '@dicebear/core';
-import { funEmoji } from '@dicebear/collection';
+import { thumbs } from '@dicebear/collection';
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
 
 export default function ProfileAvatar(wallet: string, className?: string): React.ReactElement {
     const seed = wallet.toLowerCase();
-    const avatarSvg = createAvatar(funEmoji, {
+    const avatarSvg = createAvatar(thumbs, {
         seed: seed,
         size: 100,
         radius: 50,

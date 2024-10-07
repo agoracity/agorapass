@@ -16,7 +16,7 @@ export function UserCard({ recipient, communityData }: UserCardProps) {
       <CardContent className="p-4">
         <div className="flex items-center mb-2">
           {avatar}
-          <Link href={`/${communityData.id}/${recipient}`} className="text-sm font-medium truncate hover:underline">
+          <Link href={`/address/${recipient}`} className="text-sm font-medium truncate hover:underline">
             {recipient}
           </Link>
         </div>

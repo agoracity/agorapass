@@ -12,6 +12,7 @@
     "@dicebear/collection": "^9.2.2",
     "@dicebear/core": "^9.2.2",
     "@ethereum-attestation-service/eas-sdk": "^2.7.0",
+    "@pcd/passport-interface": "^0.11.9",
     "@pcd/zuauth": "^1.4.5",
     "@privy-io/react-auth": "^1.88.4",
     "@privy-io/server-auth": "^1.14.2",
@@ -47,6 +48,7 @@
     "eslint": "^9.12.0",
     "eslint-config-next": "14.2.14",
     "postcss": "^8.4.47",
+    "prisma": "^5.20.0",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
   }
