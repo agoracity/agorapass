@@ -155,7 +155,7 @@ export function UserProfile({
           </div>
           {!isOwnProfile && (
             <div className="flex justify-end space-x-2">
-              <Button onClick={isAuthenticated ? onVouch : () => onVouch?.()} variant={isAuthenticated ? "default" : "outline"} className='rounded-xl'>
+              <Button onClick={isAuthenticated ? onVouch : () => onVouch?.()} variant={isAuthenticated ? "default" : "outline"} className='rounded-xl bg-[#19473f] hover:bg-[#19473f]/90'>
                 {isAuthenticated ? "Vouch" : "Login to Vouch"}
               </Button>
               <Button variant="secondary" onClick={onCancel} className='rounded-xl'>

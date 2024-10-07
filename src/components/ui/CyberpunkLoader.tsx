@@ -6,7 +6,7 @@ interface CyberpunkLoaderProps {
 
 export const CyberpunkLoader: React.FC<CyberpunkLoaderProps> = ({ isLoading }) => {
   return (
-    <div className={`absolute inset-0 z-50 bg-black rounded-xl overflow-hidden transition-opacity duration-1000 ease-in-out ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`absolute inset-0 z-50 bg-white rounded-xl overflow-hidden transition-opacity duration-1000 ease-in-out ${isLoading ? 'opacity-100' : 'opacity-0'}`}>
       <div className="absolute inset-0">
         {[...Array(100)].map((_, i) => (
           <div

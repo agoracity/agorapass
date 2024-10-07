@@ -24,6 +24,7 @@ interface VouchButtonCustomProps {
     twitter?: string;
     farcaster?: string;
     rankScore?: number;
+    directVouch?: boolean; 
 }
 
 const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ 
@@ -39,7 +40,8 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
     bio,
     twitter,
     farcaster,
-    rankScore
+    rankScore,
+    directVouch = false // Default to false for existing behavior
 }) => {
     
     const { getAccessToken, user, login, authenticated, ready } = usePrivy();
@@ -56,10 +58,26 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
         setIsDialogOpen(false);
     };
 
-    const buttonStyles = `inline-flex w-full items-center justify-center rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 px-6 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-50 ${className}`;
+    const handleDirectVouch = () => {
+        if (authStatus) {
+            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, platform, verifyingContract);
+        } else {
+            login();
+        }
+    };
+
+    const buttonStyles = `inline-flex w-full items-center justify-center rounded-xl bg-[#19473f] text-primary-foreground hover:bg-[#19473f]/90 px-6 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-gray-50 ${className}`;
 
     const avatar = getAvatar(recipient, "w-16 h-16");
     const displayName = name || recipient;
+    if (directVouch) {
+        return (
+            <Button className={buttonStyles} onClick={handleDirectVouch}>
+                {buttonText}
+            </Button>
+        );
+    }
+
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>

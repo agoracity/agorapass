@@ -23,10 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">{/* Changed from "dark" to "light" */}
       <body className={`${Plex_Sans.className} antialiased bg-background text-foreground`}>
         <Providers>
-          <div className="min-h-screen flex flex-col bg-black relative">
+          <div className="min-h-screen flex flex-col bg-white relative">{/* Changed from bg-black to bg-white */}
             <BackgroundBeams />
             <MainNavigation />
             <main className="flex-grow z-10">

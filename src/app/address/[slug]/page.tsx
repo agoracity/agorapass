@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ethers } from 'ethers';
-import { usePrivy } from '@privy-io/react-auth';
 import { useAttestationCounts } from '@/utils/hooks/useAttestationCount';
 import { useEnsName } from '@/utils/hooks/useEnsName';
 import Link from 'next/link';
@@ -15,11 +14,15 @@ import { truncateAddress } from '@/utils/ui/truncateAddress';
 import { communityData } from '@/config/site';
 import VouchButtonCustom from '@/components/ui/VouchButtonWithDialog';
 import displayRanking from '@/utils/ui/displayRanking';
+import { usePrivy } from '@privy-io/react-auth';
+import EditProfileDialog from '@/components/ui/EditProfileDialog';
+
 const CyberpunkProfilePage = () => {
   const { slug } = useParams();
   const [userData, setUserData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { ready, authenticated, user } = usePrivy();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const formattedAddress = slug as string;
 
   const { data: ensName } = useEnsName(formattedAddress);
@@ -29,6 +32,9 @@ const CyberpunkProfilePage = () => {
     formattedAddress,
     ethers.encodeBytes32String(communityData.platform || '')
   );
+
+  const { user } = usePrivy();
+  const isOwnProfile = user?.wallet?.address?.toLowerCase() === formattedAddress.toLowerCase();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,11 +66,16 @@ const CyberpunkProfilePage = () => {
   const avatar = getAvatar(formattedAddress, "w-24 h-24 sm:w-32 sm:h-32");
 
   if (isLoading) {
-    return <div className="min-h-screen bg-black text-cyan-400 flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen bg-white text-cyan-400 flex items-center justify-center">Loading...</div>;
   }
 
   const receivedCount = vouchesReceived?.data?.aggregateAttestation?._count?.recipient ?? 0;
   const madeCount = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
+
+  const handleSaveProfile = (updatedData: { name: string; bio: string }) => {
+    setUserData({ ...userData, ...updatedData });
+    setIsDialogOpen(false);
+  };
 
   return (
     <div className="min-h-screen bg-transparent text-cyan-400 p-4 sm:p-8">
@@ -127,23 +138,43 @@ const CyberpunkProfilePage = () => {
               )}
             </div>
 
-            <VouchButtonCustom
-              recipient={formattedAddress}
-              graphqlEndpoint={communityData.graphql}
-              schema={communityData.schema}
-              chain={communityData.chainId.toString()}
-              platform={communityData.platform}
-              verifyingContract={communityData.verifyingContract}
-              name={userData.name || ensName}
-              bio={userData.bio}
-              twitter={userData.twitter}
-              farcaster={userData.farcaster}
-              buttonText="Vouch for User"
-              className="w-full py-3 text-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
-            />
+            {isOwnProfile && (
+              <Button
+                onClick={() => setIsDialogOpen(true)}
+                className="w-full py-3 text-lg bg-cyan-600 hover:bg-cyan-700 text-white mb-4"
+              >
+                Edit Profile
+              </Button>
+            )}
+
+            {!isOwnProfile && (
+              <VouchButtonCustom
+                recipient={formattedAddress}
+                graphqlEndpoint={communityData.graphql}
+                schema={communityData.schema}
+                chain={communityData.chainId.toString()}
+                platform={communityData.platform}
+                verifyingContract={communityData.verifyingContract}
+                name={userData.name || ensName}
+                bio={userData.bio}
+                twitter={userData.twitter}
+                farcaster={userData.farcaster}
+                buttonText="Vouch for User"
+                className="w-full py-3 text-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
+                directVouch={true} 
+              />
+            )}
           </div>
         </div>
       </div>
+      {isOwnProfile && (
+        <EditProfileDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          onSave={handleSaveProfile}
+          initialData={{ name: userData.name, bio: userData.bio }}
+        />
+      )}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { thumbs } from '@dicebear/collection';
 import { Avatar, AvatarImage, AvatarFallback } from './avatar';
 
 export default function ProfileAvatar(wallet: string, className?: string): React.ReactElement {
-    const seed = wallet.toLowerCase();
+    const seed = wallet ? wallet.toLowerCase() : 'default';
     const avatarSvg = createAvatar(thumbs, {
         seed: seed,
         size: 100,

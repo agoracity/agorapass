@@ -100,21 +100,21 @@ export default function MainNavigation() {
                   </Avatar>
                 )}
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-gray-900 text-white shadow-lg rounded-md border border-gray-700">
+              <DropdownMenuContent align="end" className="w-56 bg-white text-gray-800 shadow-lg rounded-md border border-gray-200">
                 <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center hover:bg-gray-800 cursor-pointer">
-                    <UserCircle className="mr-2 h-4 w-4" />
+                  <Link href={`/address/${wallet}`} className="flex items-center hover:bg-gray-100 cursor-pointer">
+                    <UserCircle className="mr-2 h-4 w-4 text-[#19473f]" />
                     <span>View Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer'>
-                    <HelpCircle className="mr-2 h-4 w-4" />
+                  <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer flex items-center hover:bg-gray-100'>
+                    <HelpCircle className="mr-2 h-4 w-4 text-[#19473f]" />
                     <span>Support</span>
                   </a>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-700" />
-                <DropdownMenuItem onClick={logout} className="flex items-center text-red-400 hover:text-red-300 hover:bg-gray-800 cursor-pointer">
+                <DropdownMenuSeparator className="bg-gray-200" />
+                <DropdownMenuItem onClick={logout} className="flex items-center text-[#19473f] hover:text-white hover:bg-[#19473f] cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log Out</span>
                 </DropdownMenuItem>

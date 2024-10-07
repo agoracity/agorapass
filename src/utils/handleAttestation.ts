@@ -101,7 +101,11 @@ export const handleVouch = async (
             message: value,
         };
         
-        console.log('wallets', wallets)
+        console.log('wallets', wallets);
+        if (!wallets || !Array.isArray(wallets) || wallets.length === 0) {
+            showErrorAlert('No valid wallets found. Please log in again.');
+            return;
+        }
         const signature = await signTypedData(user, wallets, chainId, typedData);
 
 
