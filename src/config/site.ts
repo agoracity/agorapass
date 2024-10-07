@@ -7,10 +7,10 @@ export const EAS_CONFIG = {
     GRAPHQL_URL: process.env.GRAPHQL_URL || "https://base-sepolia.easscan.org/graphql",
 }
 export const communityData = {
-    endorsementType: "Vouch",
-    power: 1,
+    endorsementType: "Social",
+    power: "1",
     chainId: 84532,
-    category: "Community",
+    category: "Zuzalu",
     graphql: "https://base-sepolia.easscan.org/graphql",
     schema: process.env.VOUCH_SCHEMA || "0xfbc2df315b41c1b399470f3f4e5ba5caa772a328bb75d1a20bb5dbac1e75e8e7",
     platform: "AgoraPass",
