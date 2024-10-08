@@ -78,3 +78,13 @@ export const showErrorAlertWithSpace = (title: string, message: string) => {
         html: message.replace(/\n/g, '<br>'),
     });
 };
+
+export const showSuccessAlertWithoutRedirect = (message: string, confirmText: string = 'OK') => {
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: message,
+        confirmButtonText: confirmText,
+        confirmButtonColor: '#3085d6',
+    });
+};

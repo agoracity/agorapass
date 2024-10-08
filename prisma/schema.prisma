@@ -30,14 +30,19 @@
   model Zupass {
     user           User     @relation(fields: [userId], references: [id])
     userId         String
-    email          String
     nullifier      String
-    group          String
-    ticketType     String
-    semaphoreId    String
-    issuer         String
     attestationUID String   @unique
     createdAt      DateTime @default(now())
+    category       String?
+    subcategory    String?
+    credentialType String?
+    platform       String?
+    // Optional fields for backward compatibility
+    email          String?
+    group          String?
+    ticketType     String?
+    semaphoreId    String?
+    issuer         String?
   }
 
   model Ranking {

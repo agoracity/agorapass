@@ -1,11 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { EAS_CONFIG } from '@/config/site';
 
-const useAttestationCheck = (decodedData: string[]) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['attestationCheck', EAS_CONFIG.PRETRUST_SCHEMA, decodedData],
+const useAttestationCheck = (recipient: string) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['attestationCheck', EAS_CONFIG.PRETRUST_SCHEMA, recipient],
     queryFn: async () => {
-      const orConditions = decodedData.map(data => ({ decodedDataJson: { contains: data } }));
 
       const response = await fetch(EAS_CONFIG.GRAPHQL_URL, {
         method: 'POST',
@@ -14,11 +13,11 @@ const useAttestationCheck = (decodedData: string[]) => {
         },
         body: JSON.stringify({
           query: `
-            query AttestationPretrustCheck($schemaId: String!, $orConditions: [AttestationWhereInput!]) {
+            query AttestationPretrustCheck($schemaId: String!, $recipient: String!) {
               attestations(
                 where: {
                   schemaId: { equals: $schemaId },
-                  OR: $orConditions
+                  recipient: { equals: $recipient }
                 }
               ) {
                 id
@@ -27,7 +26,7 @@ const useAttestationCheck = (decodedData: string[]) => {
               }
             }
           `,
-          variables: { schemaId: EAS_CONFIG.PRETRUST_SCHEMA, orConditions },
+          variables: { schemaId: EAS_CONFIG.PRETRUST_SCHEMA, recipient },
         }),
       });
 
@@ -42,10 +41,10 @@ const useAttestationCheck = (decodedData: string[]) => {
 
       return result.data.attestations;
     },
-    enabled: !!EAS_CONFIG.PRETRUST_SCHEMA && decodedData.length > 0,
+    enabled: false, // Set to false so it doesn't run on mount
   });
 
-  return { data, isLoading, error };
+  return { data, isLoading, error, refetch };
 };
 
 export default useAttestationCheck;

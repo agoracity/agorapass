@@ -1,6 +1,6 @@
 "use client"
 
-import {  useCallback, useMemo } from "react"
+import { useCallback, useMemo, useEffect, useState } from "react"
 import Link from 'next/link'
 import { User, LogOut, UserCircle, HelpCircle } from 'lucide-react'
 import { usePrivy, useLogin } from '@privy-io/react-auth'
@@ -24,10 +24,31 @@ import createUser from "@/utils/API/createUser"
 
 export default function MainNavigation() {
   const { ready, authenticated, user, logout, getAccessToken } = usePrivy()
+  const [hasZupass, setHasZupass] = useState(false)
   const isClient = typeof window !== 'undefined';
   const wallet = user?.wallet?.address || 'Unknown';
   const { wallets } = useWallets();
   const avatar = useMemo(() => isClient ? ProfileAvatar(wallet) : null, [wallet, isClient]);
+
+  useEffect(() => {
+    const fetchZupassInfo = async () => {
+      if (user?.wallet?.address) {
+        try {
+          const response = await fetch(`/api/users/wallet/${user.wallet.address}`)
+          if (response.ok) {
+            const data = await response.json()
+            setHasZupass(!!data.zupass)
+          }
+        } catch (error) {
+          console.error('Error fetching Zupass info:', error)
+        }
+      }
+    }
+
+    if (authenticated && user) {
+      fetchZupassInfo()
+    }
+  }, [authenticated, user])
 
   const handleNewUserCreation = useCallback(async (user: any) => {
     Swal.fire({
@@ -88,7 +109,11 @@ export default function MainNavigation() {
         </Link>
         <div className="flex items-center space-x-4">
           {ready && authenticated && user && (
-            <ZupassButton user={user} text="Link Zupass" wallets={wallets} />
+            <ZupassButton 
+              user={user} 
+              text={hasZupass ? "Refresh Zupass" : "Link Zupass"} 
+              wallets={wallets} 
+            />
           )}
           {ready && authenticated && user ? (
             <DropdownMenu>
