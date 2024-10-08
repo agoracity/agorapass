@@ -16,12 +16,18 @@ import VouchButtonCustom from '@/components/ui/VouchButtonWithDialog';
 import displayRanking from '@/utils/ui/displayRanking';
 import { usePrivy } from '@privy-io/react-auth';
 import EditProfileDialog from '@/components/ui/EditProfileDialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useAttestationsMade, useAttestationsReceived } from '@/graphql/queries/UserProfile/Attestations';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { EAS_CONFIG } from '@/config/site';
 
 const CyberpunkProfilePage = () => {
   const { slug } = useParams();
   const [userData, setUserData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAttestationsDialogOpen, setIsAttestationsDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<'received' | 'made'>('received');
 
   const formattedAddress = slug as string;
 
@@ -32,6 +38,9 @@ const CyberpunkProfilePage = () => {
     formattedAddress,
     ethers.encodeBytes32String(communityData.platform || '')
   );
+
+  const { data: attestationsMade, refetch: refetchMade } = useAttestationsMade(communityData.schema, formattedAddress, 100);
+  const { data: attestationsReceived, refetch: refetchReceived } = useAttestationsReceived(communityData.schema, formattedAddress, 100);
 
   const { user } = usePrivy();
   const isOwnProfile = user?.wallet?.address?.toLowerCase() === formattedAddress.toLowerCase();
@@ -77,6 +86,21 @@ const CyberpunkProfilePage = () => {
     setIsDialogOpen(false);
   };
 
+  const handleOpenAttestationsDialog = (type: 'received' | 'made') => {
+    setDialogType(type);
+    setIsAttestationsDialogOpen(true);
+    if (type === 'received') {
+      refetchReceived();
+    } else {
+      refetchMade();
+    }
+  };
+
+  const getAttestationViewUrl = (id: string) => {
+    const baseUrl = EAS_CONFIG.GRAPHQL_URL.replace('/graphql', '');
+    return `${baseUrl}/attestation/view/${id}`;
+  };
+
   return (
     <div className="min-h-screen bg-transparent text-cyan-400 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
@@ -108,11 +132,17 @@ const CyberpunkProfilePage = () => {
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div className="bg-gray-800 rounded-lg p-4 border border-cyan-400">
+              <div 
+                className="bg-gray-800 rounded-lg p-4 border border-cyan-400 cursor-pointer hover:bg-gray-700 transition-colors"
+                onClick={() => handleOpenAttestationsDialog('received')}
+              >
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-fuchsia-400">Vouches Received</h2>
                 <p className="text-2xl sm:text-3xl">{receivedCount}</p>
               </div>
-              <div className="bg-gray-800 rounded-lg p-4 border border-cyan-400">
+              <div 
+                className="bg-gray-800 rounded-lg p-4 border border-cyan-400 cursor-pointer hover:bg-gray-700 transition-colors"
+                onClick={() => handleOpenAttestationsDialog('made')}
+              >
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-fuchsia-400">Vouches Made</h2>
                 <p className="text-2xl sm:text-3xl">{madeCount}</p>
               </div>
@@ -175,6 +205,48 @@ const CyberpunkProfilePage = () => {
           initialData={{ name: userData.name, bio: userData.bio }}
         />
       )}
+      <Dialog open={isAttestationsDialogOpen} onOpenChange={setIsAttestationsDialogOpen}>
+        <DialogContent className="bg-gray-900 text-cyan-400 border-2 border-cyan-400">
+          <DialogHeader>
+            <DialogTitle className="text-fuchsia-400">
+              {dialogType === 'received' ? 'Vouches Received' : 'Vouches Made'}
+            </DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="h-[60vh] mt-4">
+            {dialogType === 'received' ? (
+              attestationsReceived?.map((attestation: any) => (
+                <a 
+                  href={getAttestationViewUrl(attestation.id)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  key={attestation.id} 
+                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${
+                    attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
+                  }`}
+                >
+                  <p>{`${truncateAddress(attestation.attester)} vouched for this user`}</p>
+                  <p className="text-xs text-gray-400">{new Date(attestation.timeCreated * 1000).toLocaleString()}</p>
+                </a>
+              ))
+            ) : (
+              attestationsMade?.map((attestation: any) => (
+                <a 
+                  href={getAttestationViewUrl(attestation.id)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  key={attestation.id} 
+                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${
+                    attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
+                  }`}
+                >
+                  <p>{`Vouched for ${truncateAddress(attestation.recipient)}`}</p>
+                  <p className="text-xs text-gray-400">{new Date(attestation.timeCreated * 1000).toLocaleString()}</p>
+                </a>
+              ))
+            )}
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
