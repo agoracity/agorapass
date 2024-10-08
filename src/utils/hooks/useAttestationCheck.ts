@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { EAS_CONFIG } from '../../../config/siteConfig';
+import { EAS_CONFIG } from '@/config/site';
 
 const useAttestationCheck = (decodedData: string[]) => {
   const { data, isLoading, error } = useQuery({
