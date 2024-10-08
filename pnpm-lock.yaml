@@ -127,7 +127,7 @@ importers:
         specifier: ^8.4.47
         version: 8.4.47
       prisma:
-        specifier: ^5.20.0
+        specifier: 5.20.0
         version: 5.20.0
       tailwindcss:
         specifier: ^3.4.13
