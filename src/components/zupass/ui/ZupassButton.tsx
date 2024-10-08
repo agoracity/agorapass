@@ -196,7 +196,7 @@ export default function ZupassButton({ user, text, wallets }: { user: any, text:
                     <DialogHeader>
                         <DialogTitle className="text-[#f0b90b] text-2xl">Connect with Zupass</DialogTitle>
                         <DialogDescription className="text-white/80">
-                            Choose an option to connect or manage your Zupass account.
+                            Connect your Zupass, if you want to add more tickets, also click on the button below.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
@@ -205,7 +205,7 @@ export default function ZupassButton({ user, text, wallets }: { user: any, text:
                             disabled={isLoading || isLoadingBackend || isLoadingAttestations}
                             className="bg-[#f0b90b] hover:bg-[#d9a60b] text-[#19473f] font-semibold"
                         >
-                            {isLoading || isLoadingBackend || isLoadingAttestations ? 'Connecting...' : 'First time? Connect your Zupass'}
+                            {isLoading || isLoadingBackend || isLoadingAttestations ? 'Connecting...' : 'Connect your Zupass'}
                         </Button>
                         <p className="text-sm text-center text-gray-300 mt-2">
                             <button 
