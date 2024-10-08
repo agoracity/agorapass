@@ -9,7 +9,7 @@ import { useEnsName } from '@/utils/hooks/useEnsName';
 import Link from 'next/link';
 import getAvatar from '@/components/ui/ProfileAvatar';
 import { showCopySuccessAlert } from '@/utils/alertUtils';
-import { CyberpunkLoader } from '@/components/ui/CyberpunkLoader';
+import { Skeleton } from "@/components/ui/skeleton";
 import { truncateAddress } from '@/utils/ui/truncateAddress';
 
 interface UserProfileProps {
@@ -63,14 +63,6 @@ export function UserProfile({
   );
 
   const isLoading = isEnsLoading || isAttestationsLoading;
-  const [showLoader, setShowLoader] = useState(true);
-
-  useEffect(() => {
-    if (!isLoading) {
-      // Delay hiding the loader to allow for a longer fade-out animation
-      setTimeout(() => setShowLoader(false), 1500);
-    }
-  }, [isLoading]);
 
   const receivedCount = vouchesReceived?.data?.aggregateAttestation?._count?.recipient ?? 0;
   const madeCount = vouchesMade?.data?.aggregateAttestation?._count?.attester ?? 0;
@@ -83,8 +75,8 @@ export function UserProfile({
   if (!formattedAddress) {
     return (
       <DialogContent>
-          <DialogTitle className='hidden'>Loading Profile</DialogTitle>
-        Loading...
+        <DialogTitle className='hidden'>Loading Profile</DialogTitle>
+        <Skeleton className="w-full h-64" />
       </DialogContent>
     );
   }
@@ -92,20 +84,23 @@ export function UserProfile({
   
   return (
     <DialogContent className="rounded-xl p-0 overflow-hidden">
-      {showLoader && <CyberpunkLoader isLoading={isLoading} />}
-      <div className={`p-6 transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+      <div className="p-6">
         <DialogHeader>
           <DialogTitle>{isOwnProfile ? "Your Profile" : "User Profile"}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex items-center gap-4">
-            {avatar}
+            {isLoading ? <Skeleton className="w-16 h-16 rounded-full" /> : avatar}
             <div className="flex-grow">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-lg truncate">
-                  <Link href={`/address/${formattedAddress}`} className="underline">
-                    {isLoading ? 'Loading...' : (name || ensName || truncateAddress(formattedAddress))}
-                  </Link>
+                  {isLoading ? (
+                    <Skeleton className="w-32 h-6" />
+                  ) : (
+                    <Link href={`/address/${formattedAddress}`} className="underline">
+                      {name || ensName || truncateAddress(formattedAddress)}
+                    </Link>
+                  )}
                 </span>
                 <Button
                   variant="ghost"
@@ -115,13 +110,17 @@ export function UserProfile({
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
-              <span className="text-xs text-gray-500 break-all">{formattedAddress}</span>
+              {isLoading ? (
+                <Skeleton className="w-48 h-4 mt-1" />
+              ) : (
+                <span className="text-xs text-gray-500 break-all">{formattedAddress}</span>
+              )}
             </div>
           </div>
 
           {bio && (
             <div className="text-sm text-gray-600">
-              {bio}
+              {isLoading ? <Skeleton className="w-full h-16" /> : bio}
             </div>
           )}
 
@@ -141,17 +140,23 @@ export function UserProfile({
           {rankScore !== undefined && (
             <div className="grid grid-cols-4 items-center gap-4">
               <span className="col-span-2">Rank Score:</span>
-              <span className="col-span-2">{rankScore.toFixed(2)}</span>
+              <span className="col-span-2">
+                {isLoading ? <Skeleton className="w-16 h-4" /> : rankScore.toFixed(2)}
+              </span>
             </div>
           )}
 
           <div className="grid grid-cols-4 items-center gap-4">
             <span className="col-span-2">Vouches Received:</span>
-            <span className="col-span-2">{isLoading ? 'Loading...' : receivedCount}</span>
+            <span className="col-span-2">
+              {isLoading ? <Skeleton className="w-16 h-4" /> : receivedCount}
+            </span>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <span className="col-span-2">Vouches Made:</span>
-            <span className="col-span-2">{isLoading ? 'Loading...' : madeCount}</span>
+            <span className="col-span-2">
+              {isLoading ? <Skeleton className="w-16 h-4" /> : madeCount}
+            </span>
           </div>
           {!isOwnProfile && (
             <div className="flex justify-end space-x-2">
@@ -168,3 +173,8 @@ export function UserProfile({
     </DialogContent>
   );
 }
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text);
+  showCopySuccessAlert();
+};
