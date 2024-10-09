@@ -36,7 +36,6 @@ export function UserProfile({
   graphqlEndpoint,
   platform,
   isAuthenticated,
-  // New props
   name,
   bio,
   twitter,
