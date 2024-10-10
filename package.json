@@ -13,6 +13,8 @@
     "@dicebear/collection": "^9.2.2",
     "@dicebear/core": "^9.2.2",
     "@ethereum-attestation-service/eas-sdk": "^2.7.0",
+    "@parcnet-js/app-connector": "^1.0.0",
+    "@parcnet-js/podspec": "^1.0.0",
     "@pcd/passport-interface": "^0.11.9",
     "@pcd/zuauth": "^1.4.5",
     "@prisma/client": "5.20.0",

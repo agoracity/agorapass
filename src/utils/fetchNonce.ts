@@ -4,7 +4,7 @@ const fetchNonce = async (wallet: string, accessToken: string) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`,
-            'x-privy-app-id': process.env.NEXT_PUBLIC_PRIVY_APP_ID || '',
+            'x-privy-app-id': 'agora',
         },
     });
 

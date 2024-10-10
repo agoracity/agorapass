@@ -17,6 +17,12 @@ importers:
       '@ethereum-attestation-service/eas-sdk':
         specifier: ^2.7.0
         version: 2.7.0(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)(zod@3.23.8)
+      '@parcnet-js/app-connector':
+        specifier: ^1.0.0
+        version: 1.0.0(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)
+      '@parcnet-js/podspec':
+        specifier: ^1.0.0
+        version: 1.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@pcd/passport-interface':
         specifier: ^0.11.9
         version: 0.11.9(bufferutil@4.0.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(utf-8-validate@5.0.10)
@@ -154,6 +160,9 @@ packages:
   '@babel/runtime@7.25.7':
     resolution: {integrity: sha512-FjoyLe754PMiYsFaN5C94ttGiOmBNYTf6pLr4xXHAT5uctHb092PBszndLDR5XA/jghQvn4n7JMHl7dmTgbm9w==}
     engines: {node: '>=6.9.0'}
+
+  '@brenoroosevelt/toast@2.0.3':
+    resolution: {integrity: sha512-Tivp/tA5EUkQFP9LVmop8Y9EuxVtuom8x+5gYOFjfib/1oATX7QWAc4cKSELd36HoeDIThXD3vDxTy2FVUsRBA==}
 
   '@coinbase/wallet-sdk@4.0.3':
     resolution: {integrity: sha512-y/OGEjlvosikjfB+wk+4CVb9OxD1ob9cidEBLI5h8Hxaf/Qoob2XoVT1uvhtAzBx34KpGYSd+alKvh/GCRre4Q==}
@@ -923,6 +932,15 @@ packages:
     resolution: {integrity: sha512-HNjmfLQEVRZmHRET336f20H/8kOozUGwk7yajvsonjNxbj2wBTK1WsQuHkD5yYh9RxFGL2EyDHryOihOwUoKDA==}
     engines: {node: '>= 10.0.0'}
 
+  '@parcnet-js/app-connector@1.0.0':
+    resolution: {integrity: sha512-3AxQe9QT62UP3c9IJd/q50vwXAM7P8BEOXowBR2x2BPBaRNhdYEqhL3NChPK70yk0WSWxh8/clhRGmg3TIBYDw==}
+
+  '@parcnet-js/client-rpc@1.0.0':
+    resolution: {integrity: sha512-eu/6xf6eZSiOgCaNC1pR8th8FJ0SULAba8Ufdm1E42XSUwC1th9gFM/1AY9aViUvz4zWT51BGPRFdkIB310pHw==}
+
+  '@parcnet-js/podspec@1.0.0':
+    resolution: {integrity: sha512-ea4o1dTP4crplo/iGnWYkdXGKAaBsOMkSjNhKw0NttuEVlIqELOLXtjV2byAClFnqnmbxkmRUZr6i0s9X3VILg==}
+
   '@pcd/circom_runtime@0.1.28':
     resolution: {integrity: sha512-TRWFEZoFngWW6xvEGdiem9llmK47ZhPXN+gfVETpVZw29tVYVkDMEBrPiUycK6vvHp0IINZkceK426GrO28nfg==}
     hasBin: true
@@ -941,6 +959,12 @@ packages:
 
   '@pcd/emitter@0.5.4':
     resolution: {integrity: sha512-bxfJcSzcCI0kGmxaiVT/vtEo2YDmQsg0JEn3zvPeSCYBckvvT3D9ozaISPhp/5+P5jTeSruTNw0YTP4DwQkxxA==}
+
+  '@pcd/gpc@0.0.8':
+    resolution: {integrity: sha512-rsQZJuOB/fsq2JWZcQZv6hmr2lIX60oFlInAW6JeXyKVcro6AoOGcKHepDpHeRTG7SEze3/98jJ22X/8tMeGsw==}
+
+  '@pcd/gpcircuits@0.1.7':
+    resolution: {integrity: sha512-7D7KfXHD6BlTyXzg1fJ8HQOW7Kz+AzHYGiAENQxQySelgo7idgxoC/nh5o5/ZLTvU3tLyWV4Wnixyr0WZI4Zpg==}
 
   '@pcd/passport-crypto@0.11.4':
     resolution: {integrity: sha512-7nPrBldG4713CSA63NFAR6Ti8BBMwn26IuoHkiTyExFmFy5a0PCMssd3eg1amLMqG5o3KIMgxOfXSf9DJYB04g==}
@@ -1709,6 +1733,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/lodash@4.17.10':
+    resolution: {integrity: sha512-YpS0zzoduEhuOWjAotS6A5AVCva7X4lVlYLF0FYHAY9sdraBfnatttHItlWeZdGhuEkf+OzMNg2ZYAx8t+52uQ==}
 
   '@types/lru-cache@5.1.1':
     resolution: {integrity: sha512-ssE3Vlrys7sdIzs5LOxCzTVMsU7i9oa/IaW92wF32JFb3CVczqOkru2xspuKczHEbG3nvmPY7IFqVmGGHdNbYw==}
@@ -3878,6 +3905,10 @@ packages:
   nanoassert@2.0.0:
     resolution: {integrity: sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==}
 
+  nanoevents@9.0.0:
+    resolution: {integrity: sha512-X8pU7IOpgKXVLPxYUI55ymXc8XuBE+uypfEyEFBtHkD1EX9KavYTVc+vXZHFyHKzA1TaZoVDqklLdQBBrxIuAw==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -5031,6 +5062,14 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
+  valibot@0.42.1:
+    resolution: {integrity: sha512-3keXV29Ar5b//Hqi4MbSdV7lfVp6zuYLZuA9V1PvQUsXqogr+u5lvLPLk3A4f74VUXDnf/JfWMN6sB+koJ/FFw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   valtio@1.11.2:
     resolution: {integrity: sha512-1XfIxnUXzyswPAPXo1P3Pdx2mq/pIqZICkWN60Hby0d9Iqb+MEIpqgYVlbflvHdrp2YR/q3jyKWRPJJ100yxaw==}
     engines: {node: '>=12.20.0'}
@@ -5295,6 +5334,8 @@ snapshots:
   '@babel/runtime@7.25.7':
     dependencies:
       regenerator-runtime: 0.14.1
+
+  '@brenoroosevelt/toast@2.0.3': {}
 
   '@coinbase/wallet-sdk@4.0.3':
     dependencies:
@@ -6216,6 +6257,39 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.4.1
       '@parcel/watcher-win32-x64': 2.4.1
 
+  '@parcnet-js/app-connector@1.0.0(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@brenoroosevelt/toast': 2.0.3
+      '@parcnet-js/client-rpc': 1.0.0(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)
+      '@parcnet-js/podspec': 1.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pcd/gpc': 0.0.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pcd/pod': 0.1.7
+      nanoevents: 9.0.0
+      valibot: 0.42.1(typescript@5.6.2)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+
+  '@parcnet-js/client-rpc@1.0.0(bufferutil@4.0.8)(typescript@5.6.2)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@parcnet-js/podspec': 1.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pcd/gpc': 0.0.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pcd/pod': 0.1.7
+      valibot: 0.42.1(typescript@5.6.2)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+
+  '@parcnet-js/podspec@1.0.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@pcd/gpc': 0.0.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@pcd/pod': 0.1.7
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@pcd/circom_runtime@0.1.28':
     dependencies:
       ffjavascript: 0.3.0
@@ -6273,6 +6347,28 @@ snapshots:
   '@pcd/emitter@0.5.4':
     dependencies:
       chai: 4.5.0
+
+  '@pcd/gpc@0.0.8(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
+    dependencies:
+      '@pcd/gpcircuits': 0.1.7
+      '@pcd/pod': 0.1.7
+      '@pcd/util': 0.5.4
+      '@semaphore-protocol/core': 4.3.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
+      '@semaphore-protocol/identity': 3.15.2
+      '@types/lodash': 4.17.10
+      json-bigint: 1.0.0
+      snarkjs: 0.7.4
+      url-join: 4.0.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
+  '@pcd/gpcircuits@0.1.7':
+    dependencies:
+      '@pcd/pod': 0.1.7
+      fastfile: 0.0.20
+      snarkjs: 0.7.4
+      url-join: 4.0.1
 
   '@pcd/passport-crypto@0.11.4':
     dependencies:
@@ -7086,7 +7182,7 @@ snapshots:
 
   '@solana/wallet-standard-util@1.1.1':
     dependencies:
-      '@noble/curves': 1.4.0
+      '@noble/curves': 1.6.0
       '@solana/wallet-standard-chains': 1.1.0
       '@solana/wallet-standard-features': 1.2.0
 
@@ -7390,6 +7486,8 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/lodash@4.17.10': {}
 
   '@types/lru-cache@5.1.1': {}
 
@@ -10208,6 +10306,8 @@ snapshots:
 
   nanoassert@2.0.0: {}
 
+  nanoevents@9.0.0: {}
+
   nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
@@ -11382,6 +11482,10 @@ snapshots:
   uuid@8.3.2: {}
 
   uuid@9.0.1: {}
+
+  valibot@0.42.1(typescript@5.6.2):
+    optionalDependencies:
+      typescript: 5.6.2
 
   valtio@1.11.2(@types/react@18.3.11)(react@18.3.1):
     dependencies:

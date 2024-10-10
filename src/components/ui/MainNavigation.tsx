@@ -6,6 +6,13 @@ import { User, LogOut, UserCircle, HelpCircle } from 'lucide-react'
 import { usePrivy, useLogin } from '@privy-io/react-auth'
 import ProfileAvatar from "@/components/ui/ProfileAvatar"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -21,10 +28,11 @@ import { useWallets } from '@privy-io/react-auth';
 import ZupassButton from "@/components/zupass/ui/ZupassButton";
 import Swal from "sweetalert2"
 import createUser from "@/utils/API/createUser"
-
+import PODWrapper from "@/components/zupass/POD/Wrapper"
 export default function MainNavigation() {
   const { ready, authenticated, user, logout, getAccessToken } = usePrivy()
   const [hasZupass, setHasZupass] = useState(false)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
   const isClient = typeof window !== 'undefined';
   const wallet = user?.wallet?.address || 'Unknown';
   const { wallets } = useWallets();
@@ -50,53 +58,64 @@ export default function MainNavigation() {
     }
   }, [authenticated, user])
 
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      if (authenticated && user) {
+        const token = await getAccessToken()
+        setAccessToken(token)
+      }
+    }
+
+    fetchAccessToken()
+  }, [authenticated, user, getAccessToken])
+
   const handleNewUserCreation = useCallback(async (user: any) => {
     Swal.fire({
-        title: 'Creating user...',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+      title: 'Creating user...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
     });
 
     try {
       const accessToken = await getAccessToken();
       if (!accessToken) {
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to get access token. Please try again.'
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to get access token. Please try again.'
         });
         return;
       }
-        await createUser(user, accessToken);
-        Swal.fire({
-            icon: 'success',
-            title: 'User created successfully!',
-            showConfirmButton: false,
-            timer: 1500
-        }).then(() => window.location.reload());
+      await createUser(user, accessToken);
+      Swal.fire({
+        icon: 'success',
+        title: 'User created successfully!',
+        showConfirmButton: false,
+        timer: 1500
+      }).then(() => window.location.reload());
     } catch (error) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Failed to create user. Please try again.'
-        });
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to create user. Please try again.'
+      });
     }
-}, []);
+  }, []);
 
   const { login } = useLogin({
     onComplete: async (user, isNewUser) => {
-        if (isNewUser) await handleNewUserCreation(user);
+      if (isNewUser) await handleNewUserCreation(user);
     },
     onError: () => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Login failed. Please try again.'
-        });
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Login failed. Please try again.'
+      });
     },
-});
+  });
 
   return (
     <>
@@ -109,11 +128,30 @@ export default function MainNavigation() {
         </Link>
         <div className="flex items-center space-x-4">
           {ready && authenticated && user && (
-            <ZupassButton 
-              user={user} 
-              text={hasZupass ? "Refresh Zupass" : "Link Zupass"} 
-              wallets={wallets} 
+            <ZupassButton
+              user={user}
+              text={hasZupass ? "Refresh Zupass" : "Link Zupass"}
+              wallets={wallets}
             />
+          )}
+          {ready && authenticated && user && (
+            <>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Get AgoraPass</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Get AgoraPass</DialogTitle>
+                  </DialogHeader>
+                  {accessToken ? (
+                    <PODWrapper user={user} accessToken={accessToken} />
+                  ) : (
+                    <div>Loading...</div>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </>
           )}
           {ready && authenticated && user ? (
             <DropdownMenu>
