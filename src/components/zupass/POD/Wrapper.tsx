@@ -43,7 +43,13 @@ const PODWrapper: React.FC<PODWrapper> = ({ user, accessToken }) => {
         try {
             const query = p.pod({
                 entries: {
-                    issuer: { type: "string" }
+                    zupass_display: { type: "string" },
+                    zupass_title: { type: "string" },
+                    zupass_image_url: { type: "string" },
+                    timestamp: { type: "string" },
+                    issuer: { type: "string" },
+                    wallet: { type: "string" },
+                    AgoraScore: { type: "string" }
                 }
             });
 
