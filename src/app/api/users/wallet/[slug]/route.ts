@@ -12,6 +12,7 @@ export async function GET(
       where: { wallet },
       select: { 
         id: true,
+        rankScore: true,
         Zupass: {
           select: {
             attestationUID: true,
@@ -26,6 +27,7 @@ export async function GET(
 
     const response = {
       id: user.id,
+      rankScore: user.rankScore,
       zupass: user.Zupass.length > 0 ? user.Zupass[0] : null
     };
 

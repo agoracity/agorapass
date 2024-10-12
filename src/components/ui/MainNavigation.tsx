@@ -37,24 +37,27 @@ export default function MainNavigation() {
   const wallet = user?.wallet?.address || 'Unknown';
   const { wallets } = useWallets();
   const avatar = useMemo(() => isClient ? ProfileAvatar(wallet) : null, [wallet, isClient]);
+  const [rankScore, setRankScore] = useState<number | null>(null)
+  const neededScore = Number(process.env.NEXT_PUBLIC_NEEDED_SCORE) || 0
 
   useEffect(() => {
-    const fetchZupassInfo = async () => {
+    const fetchUserData = async () => {
       if (user?.wallet?.address) {
         try {
           const response = await fetch(`/api/users/wallet/${user.wallet.address}`)
           if (response.ok) {
             const data = await response.json()
             setHasZupass(!!data.zupass)
+            setRankScore(data.rankScore)
           }
         } catch (error) {
-          console.error('Error fetching Zupass info:', error)
+          console.error('Error fetching user data:', error)
         }
       }
     }
 
     if (authenticated && user) {
-      fetchZupassInfo()
+      fetchUserData()
     }
   }, [authenticated, user])
 
@@ -134,7 +137,7 @@ export default function MainNavigation() {
               wallets={wallets}
             />
           )}
-          {ready && authenticated && user && (
+          {ready && authenticated && user && rankScore !== null && rankScore >= neededScore && (
             <>
               <Dialog>
                 <DialogTrigger asChild>
