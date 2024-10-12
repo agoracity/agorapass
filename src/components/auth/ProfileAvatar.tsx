@@ -25,7 +25,7 @@ import { useWallets } from '@privy-io/react-auth';
 const DynamicWrapper = dynamic(() => import('@/components/zupass/components/Wrapper'), {
     ssr: false,
     loading: () => <p>Loading...</p>
-  });
+});
 
 const ProfileAvatar = () => {
     const [updateTrigger, setUpdateTrigger] = useState(false);
@@ -34,10 +34,20 @@ const ProfileAvatar = () => {
     const { data, isLoading, error } = useFetchUserProfile(updateTrigger);
     const { authenticated, logout, ready, user, getAccessToken } = usePrivy();
     const { wallets } = useWallets();
-    const zupassUser = data?.Zupass && data.Zupass.length > 0 ? data.Zupass[0] : null;
+    const [zupassUser, setZupassUser] = useState(null);
     const wallet = data?.wallet || user?.wallet?.address || 'Unknown';
     const isClient = typeof window !== 'undefined';
-    
+
+    useEffect(() => {
+        // FIXME: Data is not being populated correctly
+        console.log("🚀 ~ useEffect ~ data:", data)
+        if (data?.Zupass && data.Zupass.length > 0) {
+            setZupassUser(data.Zupass[0]);
+        } else {
+            setZupassUser(null);
+        }
+    }, [data]);
+
     useEffect(() => {
         if (authenticated && user) {
             setUpdateTrigger(prev => !prev);
@@ -117,12 +127,12 @@ const ProfileAvatar = () => {
 
                     {/* Desktop view */}
                     <div className="block px-2">
-                        <ZupassButton user={user} text={zupassUser ? "Refresh" : "Link Zupass"} wallets={wallets}/>
+                        <ZupassButton user={user} text={zupassUser ? "Refresh" : "Link Zupass"} wallets={wallets} />
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon" className="rounded-full">
-                              {avatar}
+                                {avatar}
                                 <span className="sr-only">Toggle user menu</span>
                             </Button>
                         </DropdownMenuTrigger>
@@ -146,7 +156,7 @@ const ProfileAvatar = () => {
                     <p className='flex items-center flex-row whitespace-nowrap'>Sign in <Wallet className='h-5 w-5 ml-2' /></p>
                 </ShinyButton>
             )}
-            
+
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -158,10 +168,10 @@ const ProfileAvatar = () => {
                             Connect to Zupass
                         </Button>
                     ) : (
-                       <>
-                        {token && <DynamicWrapper wallet={wallet} token={token}/>}
-                        Once added to Zupass, you can close this window.
-                       </>
+                        <>
+                            {token && <DynamicWrapper wallet={wallet} token={token} />}
+                            Once added to Zupass, you can close this window.
+                        </>
                     )}
                 </DialogContent>
             </Dialog>

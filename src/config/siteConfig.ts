@@ -1,13 +1,8 @@
 // navConfig.js
 export const navSections = [
     {
-        label: "Home",
-        href: "/",
-        className: "transition-colors hover:text-foreground"
-    },
-    {
         label: "Vouch",
-        href: "/profiles",
+        href: "/",
         className: "transition-colors hover:text-foreground"
     },
     {
@@ -38,5 +33,5 @@ export const EAS_CONFIG = {
     CATEGORY: "Community",
     PLATFORM: "Zupass",
     CREDENTIAL_TYPE: "Ticket",
-    CHAIN_ID: 84532 
+    CHAIN_ID: 84532
 }

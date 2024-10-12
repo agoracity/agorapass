@@ -57,7 +57,7 @@ function MainNav() {
                     </Link>
                 </div>
                 <div className='w-full flex justify-center'>
-                    {/* <div className='hidden lg:flex flex-row bg-white rounded-full border border-gray-200 font-medium shadow-md lg:gap-4 lg:text-lg'>
+                    <div className='hidden lg:flex flex-row bg-white rounded-full border border-gray-200 font-medium shadow-md lg:gap-4 lg:text-lg'>
                         {navSections.map((section, index) => (
                             <Link
                                 key={index}
@@ -67,7 +67,7 @@ function MainNav() {
                                 {section.label}
                             </Link>
                         ))}
-                    </div> */}
+                    </div>
                 </div>
                 <div className='min-w-[24px] sm:w-full flex justify-end'><ProfileAvatar /></div>
 

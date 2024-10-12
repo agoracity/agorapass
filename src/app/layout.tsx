@@ -25,7 +25,6 @@ export default function RootLayout({
     <html lang="en" className="min-h-screen flex flex-col ">
       <body className={`${Plex_Sans.className} flex-grow flex`}>
         <Providers>
-          {/* <MainNav /> */}
           <div className="flex flex-col flex-grow">
             <MainNav />
             <div className="flex flex-grow">

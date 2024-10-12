@@ -39,7 +39,7 @@ const fetchUserProfile = async (getAccessToken: () => Promise<string | null>, pr
     }
 
     try {
-        const response = await fetch('/api/user/profile', {
+        const response = await fetch(`/api/user/${privyUser.wallet.address}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
