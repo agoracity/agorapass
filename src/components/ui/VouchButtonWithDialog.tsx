@@ -35,13 +35,13 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
     chain, 
     platform, 
     verifyingContract,
-    buttonText = 'View', // Default text if not provided
+    buttonText = 'View', 
     name,
     bio,
     twitter,
     farcaster,
     rankScore,
-    directVouch = false // Default to false for existing behavior
+    directVouch = false 
 }) => {
     
     const { getAccessToken, user, login, authenticated, ready } = usePrivy();
@@ -53,8 +53,13 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
             setAuthStatus(authenticated);
         }
     }, [ready, authenticated]);
+
     const handleVouchConfirm = () => {
-        handleVouch(recipient, user, wallets, getAccessToken, schema, chain, platform, verifyingContract);
+        if (authStatus) {
+            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, platform, verifyingContract);
+        } else {
+            login();
+        }
         setIsDialogOpen(false);
     };
 
@@ -70,6 +75,7 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
 
     const avatar = getAvatar(recipient, "w-16 h-16");
     const displayName = name || recipient;
+
     if (directVouch) {
         return (
             <Button className={buttonStyles} onClick={handleDirectVouch}>
@@ -87,61 +93,45 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle className="hidden">User Profile</DialogTitle>
-                {authStatus ? (
-                    <div className="space-y-4">
-                        <div className="flex items-center space-x-4">
-                            {avatar}
-                            <div>
-                                <h2 className="text-xl font-bold">{displayName}</h2>
-                                <p className="text-sm text-gray-500">{recipient}</p>
-                            </div>
+                <div className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                        {avatar}
+                        <div>
+                            <h2 className="text-xl font-bold">{displayName}</h2>
+                            <p className="text-sm text-gray-500">{recipient}</p>
                         </div>
-                        {bio && <p className="text-sm">{bio}</p>}
-                        <div className="flex space-x-2">
-                            {twitter && (
-                                <Link href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer">
-                                    <Twitter className="w-5 h-5 text-blue-400" />
-                                </Link>
-                            )}
-                            {farcaster && (
-                                <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
-                                    <Zap className="w-5 h-5 text-purple-600" />
-                                </Link>
-                            )}
-                        </div>
-                        {rankScore !== undefined && (
-                            <p className="text-sm">Rank Score: {rankScore.toFixed(2)}</p>
-                        )}
-                        <UserProfile
-                            isOwnProfile={false}
-                            recipient={recipient}
-                            onVouch={handleVouchConfirm}
-                            onCancel={() => setIsDialogOpen(false)}
-                            graphqlEndpoint={graphqlEndpoint}
-                            platform={platform}
-                            isAuthenticated={authStatus}
-                            name={displayName}
-                            bio={bio}
-                            twitter={twitter}
-                            farcaster={farcaster}
-                        />
                     </div>
-                ) : (
-                    <>
-                        <DialogTitle>Login Required</DialogTitle>
-                        <DialogDescription>
-                            You need to be logged in to vouch for a user.
-                        </DialogDescription>
-                        <DialogFooter>
-                            <Button onClick={() => { login(); setIsDialogOpen(false); }}>
-                                Log In
-                            </Button>
-                            <Button variant="secondary" onClick={() => setIsDialogOpen(false)}>
-                                Cancel
-                            </Button>
-                        </DialogFooter>
-                    </>
-                )}
+                    {bio && <p className="text-sm">{bio}</p>}
+                    <div className="flex space-x-2">
+                        {twitter && (
+                            <Link href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer">
+                                <Twitter className="w-5 h-5 text-blue-400" />
+                            </Link>
+                        )}
+                        {farcaster && (
+                            <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
+                                <Zap className="w-5 h-5 text-purple-600" />
+                            </Link>
+                        )}
+                    </div>
+                    {rankScore !== undefined && (
+                        <p className="text-sm">Rank Score: {rankScore.toFixed(2)}</p>
+                    )}
+                    <UserProfile
+                        isOwnProfile={false}
+                        recipient={recipient}
+                        onVouch={handleVouchConfirm}
+                        onCancel={() => setIsDialogOpen(false)}
+                        graphqlEndpoint={graphqlEndpoint}
+                        platform={platform}
+                        isAuthenticated={authStatus}
+                        name={displayName}
+                        bio={bio}
+                        twitter={twitter}
+                        farcaster={farcaster}
+                        rankScore={rankScore}
+                    />
+                </div>
             </DialogContent>
         </Dialog>
     );

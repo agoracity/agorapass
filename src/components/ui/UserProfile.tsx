@@ -71,6 +71,14 @@ export function UserProfile({
     showCopySuccessAlert();
   };
 
+  const handleVouchClick = () => {
+    if (isAuthenticated) {
+      onVouch?.();
+    } else {
+      onVouch?.(); // This will trigger the login process in the parent component
+    }
+  };
+
   if (!formattedAddress) {
     return (
       <DialogContent>
@@ -159,7 +167,7 @@ export function UserProfile({
           </div>
           {!isOwnProfile && (
             <div className="flex justify-end space-x-2">
-              <Button onClick={isAuthenticated ? onVouch : () => onVouch?.()} variant={isAuthenticated ? "default" : "outline"} className='rounded-xl bg-[#19473f] hover:bg-[#19473f]/90'>
+              <Button onClick={handleVouchClick} variant="default" className='rounded-xl bg-[#19473f] hover:bg-[#19473f]/90'>
                 {isAuthenticated ? "Vouch" : "Login to Vouch"}
               </Button>
               <Button variant="secondary" onClick={onCancel} className='rounded-xl'>
