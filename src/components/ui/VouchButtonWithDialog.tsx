@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Button } from '@/components/ui/button';
 import { handleVouch } from '@/utils/handleAttestation';
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { UserProfile } from './UserProfile';
 import { Twitter, Zap } from 'lucide-react';
 import Link from 'next/link';
