@@ -2,7 +2,8 @@
 
 import { useCallback, useMemo, useEffect, useState } from "react"
 import Link from 'next/link'
-import { User, LogOut, UserCircle, HelpCircle } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { User, LogOut, UserCircle, HelpCircle, Menu, Home, Info, GitBranch } from 'lucide-react'
 import { usePrivy, useLogin } from '@privy-io/react-auth'
 import ProfileAvatar from "@/components/ui/ProfileAvatar"
 import { Button } from "@/components/ui/button"
@@ -24,21 +25,31 @@ import {
 import Image from "next/image"
 import AgoraLogo from "@/../public/agora.png"
 import { siteName } from "@/config/site"
-import { useWallets } from '@privy-io/react-auth';
-import ZupassButton from "@/components/zupass/ui/ZupassButton";
+import { useWallets } from '@privy-io/react-auth'
+import ZupassButton from "@/components/zupass/ui/ZupassButton"
 import Swal from "sweetalert2"
 import createUser from "@/utils/API/createUser"
 import PODWrapper from "@/components/zupass/POD/Wrapper"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
 export default function MainNavigation() {
   const { ready, authenticated, user, logout, getAccessToken } = usePrivy()
   const [hasZupass, setHasZupass] = useState(false)
   const [accessToken, setAccessToken] = useState<string | null>(null)
-  const isClient = typeof window !== 'undefined';
-  const wallet = user?.wallet?.address || 'Unknown';
-  const { wallets } = useWallets();
-  const avatar = useMemo(() => isClient ? ProfileAvatar(wallet) : null, [wallet, isClient]);
+  const isClient = typeof window !== 'undefined'
+  const wallet = user?.wallet?.address || 'Unknown'
+  const { wallets } = useWallets()
+  const avatar = useMemo(() => isClient ? ProfileAvatar(wallet) : null, [wallet, isClient])
   const [rankScore, setRankScore] = useState<number | null>(null)
   const neededScore = Number(process.env.NEXT_PUBLIC_NEEDED_SCORE) || 0
+  const pathname = usePathname()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -120,15 +131,73 @@ export default function MainNavigation() {
     },
   });
 
+  const menuItems = [
+    { href: "/", icon: Home, label: "Home" },
+    { href: "/about", icon: Info, label: "About" },
+    { href: "/graph", icon: GitBranch, label: "Graph" },
+  ]
+
+  const handleLinkClick = useCallback(() => {
+    setIsSheetOpen(false)
+  }, [])
+
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-transparent backdrop-blur-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b">
         <Link href="/">
           <div className="flex items-center space-x-2">
             <Image src={AgoraLogo} alt={siteName} width={40} height={40} />
             <span className="text-xl font-bold text-primary hidden sm:inline">{siteName}</span>
           </div>
         </Link>
+        
+        {/* Mobile Menu */}
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="lg:hidden">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col space-y-4 mt-4">
+              {menuItems.map((item) => (
+                <Link 
+                  key={item.href} 
+                  href={item.href} 
+                  className={`flex items-center space-x-2 text-lg ${pathname === item.href ? 'text-[#19473f] font-semibold' : 'text-foreground'}`}
+                  onClick={handleLinkClick}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-4">
+          {menuItems.map((item) => (
+            <Button 
+              key={item.href} 
+              variant={pathname === item.href ? "default" : "ghost"} 
+              asChild
+            >
+              <Link 
+                href={item.href} 
+                className={`flex items-center space-x-2 ${pathname === item.href ? 'bg-[#19473f] text-white' : ''}`}
+              >
+                <item.icon className="h-5 w-5" />
+                <span>{item.label}</span>
+              </Link>
+            </Button>
+          ))}
+        </div>
+
+        {/* User Actions */}
         <div className="flex items-center space-x-4">
           {ready && authenticated && user && (
             <ZupassButton
@@ -166,34 +235,35 @@ export default function MainNavigation() {
                   </Avatar>
                 )}
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white text-gray-800 shadow-lg rounded-md border border-gray-200">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuItem asChild>
-                  <Link href={`/address/${wallet}`} className="flex items-center hover:bg-gray-100 cursor-pointer">
-                    <UserCircle className="mr-2 h-4 w-4 text-[#19473f]" />
+                  <Link href={`/address/${wallet}`} className="flex items-center">
+                    <UserCircle className="mr-2 h-4 w-4" />
                     <span>View Profile</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer flex items-center hover:bg-gray-100'>
-                    <HelpCircle className="mr-2 h-4 w-4 text-[#19473f]" />
+                  <a href={"mailto:" + process.env.NEXT_PUBLIC_MAIL_SUPPORT} className='cursor-pointer flex items-center'>
+                    <HelpCircle className="mr-2 h-4 w-4" />
                     <span>Support</span>
                   </a>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gray-200" />
-                <DropdownMenuItem onClick={logout} className="flex items-center text-[#19473f] hover:text-white hover:bg-[#19473f] cursor-pointer">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="flex items-center text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log Out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={login} disabled={!ready || (ready && authenticated)} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button onClick={login} disabled={!ready || (ready && authenticated)}>
               Sign In
             </Button>
           )}
         </div>
       </nav>
-      <div className="h-16"></div> {/* This div creates space for the fixed navbar */}
+
+      <div className="h-16"></div> {/* Spacer for the fixed navbar */}
     </>
   )
 }
