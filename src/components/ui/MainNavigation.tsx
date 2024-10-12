@@ -21,7 +21,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 
 const menuItems = [
   { href: "/", icon: Home, label: "Home" },
-  { href: "/about", icon: Info, label: "About" },
+  // { href: "/about", icon: Info, label: "About" },
   { href: "/graph", icon: GitBranch, label: "Graph" },
 ]
 
