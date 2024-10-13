@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useZuAuth } from '@/components/zupass/zuauthLogic';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { showSuccessAlertWithoutRedirect, showErrorAlertWithSpace } from '@/utils/alertUtils';
 import { matchTicketToType } from '../zupass-config';
 import { saveZupassTicket } from '@/utils/zupassUtils';
