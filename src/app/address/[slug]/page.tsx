@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useAttestationsMade, useAttestationsReceived } from '@/graphql/queries/UserProfile/Attestations';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EAS_CONFIG } from '@/config/site';
+import { useContract } from '@/utils/hooks/useContract';
 
 const CyberpunkProfilePage = () => {
   const { slug } = useParams();
@@ -28,6 +29,7 @@ const CyberpunkProfilePage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAttestationsDialogOpen, setIsAttestationsDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<'received' | 'made'>('received');
+  const [remainingVouches, setRemainingVouches] = useState<number | null>(null);
 
   const formattedAddress = slug as string;
 
@@ -44,6 +46,8 @@ const CyberpunkProfilePage = () => {
 
   const { user } = usePrivy();
   const isOwnProfile = user?.wallet?.address?.toLowerCase() === formattedAddress.toLowerCase();
+
+  const { getCurrentSeason, getVouchingSeason, getAccountVouches } = useContract();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -66,6 +70,29 @@ const CyberpunkProfilePage = () => {
       fetchUserData();
     }
   }, [slug]);
+
+  useEffect(() => {
+    const fetchRemainingVouches = async () => {
+      try {
+        const currentSeason = await getCurrentSeason();
+        if (currentSeason !== null) {
+          const seasonInfo = await getVouchingSeason(currentSeason);
+          const accountVouches = await getAccountVouches(formattedAddress, currentSeason);
+          
+          if (seasonInfo && accountVouches) {
+            const remaining = seasonInfo.maxAccountVouches - accountVouches.totalVouches;
+            setRemainingVouches(remaining);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching remaining vouches:', error);
+      }
+    };
+
+    if (formattedAddress) {
+      fetchRemainingVouches();
+    }
+  }, [formattedAddress, getCurrentSeason, getVouchingSeason, getAccountVouches]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -131,7 +158,7 @@ const CyberpunkProfilePage = () => {
               <p className="text-base sm:text-lg mb-6 text-cyan-200">{userData.bio}</p>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div 
                 className="bg-gray-800 rounded-lg p-4 border border-cyan-400 cursor-pointer hover:bg-gray-700 transition-colors"
                 onClick={() => handleOpenAttestationsDialog('received')}
@@ -145,6 +172,10 @@ const CyberpunkProfilePage = () => {
               >
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-fuchsia-400">Vouches Made</h2>
                 <p className="text-2xl sm:text-3xl">{madeCount}</p>
+              </div>
+              <div className="bg-gray-800 rounded-lg p-4 border border-cyan-400">
+                <h2 className="text-lg sm:text-xl font-semibold mb-2 text-fuchsia-400">Remaining Vouches</h2>
+                <p className="text-2xl sm:text-3xl">{remainingVouches !== null ? remainingVouches : 'Loading...'}</p>
               </div>
             </div>
 
