@@ -17,7 +17,7 @@ const WhatIsAgoraPass = () => {
                 <FeatureCard className="col-span-1">
                     <FeatureTitle>Why vouching?</FeatureTitle>
                     <FeatureDescription>
-                        Vouching is a way to build a Web of Trust within the Zuzalu ecosystem. By vouching for new members, you are inviting them to take part on the forum as a first step, and other benefits are expected to follow. Vouching is as important as
+                        Vouching is a way to build a Web of Trust within the Zuzalu ecosystem. By vouching for new members, you are inviting them to take part on the forum as a first step, and other benefits are expected to follow. Vouching should be
                     </FeatureDescription>
                 </FeatureCard>
             </div>
@@ -29,9 +29,6 @@ const WebOfTrust = () => {
     return (
         <FeatureCard className="col-span-1 lg:col-span-12 flex flex-col h-full">
             <FeatureTitle>Let's build a Web of Trust</FeatureTitle>
-            <FeatureDescription>
-                Engage with other members of the Zuzalu community and build meaningful connections.
-            </FeatureDescription>
             <div className="flex-grow">
                 <SkeletonTwo />
             </div>
@@ -106,8 +103,8 @@ const SkeletonOne = () => {
 
 const SkeletonTwo = () => {
     return (
-        <div className="h-60 md:h-60 flex flex-col items-center relative bg-transparent mt-10">
-            <Globe className="absolute -right-10 md:-right-10 -bottom-80 md:-bottom-72" />
+        <div className="flex flex-col items-center relative bg-transparent mt-10">
+            <Globe className="md:-bottom-72" />
         </div>
     );
 };
