@@ -1,27 +1,45 @@
 "use client";
 import React from "react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 
+const WhatIsAgoraPass = () => {
+    return (
+        <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <FeatureCard className="col-span-1">
+                    <FeatureTitle>What is Agora Pass?</FeatureTitle>
+                    <FeatureDescription>
+                        Agora Pass is a digital pass that enables community members to vouch for each other and increase their trust score within the Zuzalu community. By vouching for new members, you are inviting them to become part of the ecosystem. Once you get over a certain trust score you will be able to get an Agora Pass Zupass enabled. This pass will grant you access to the Agora.City forum and other perks.
+                    </FeatureDescription>
+                </FeatureCard>
+                <FeatureCard className="col-span-1">
+                    <FeatureTitle>Why vouching?</FeatureTitle>
+                    <FeatureDescription>
+                        Vouching is a way to build a Web of Trust within the Zuzalu ecosystem. By vouching for new members, you are inviting them to take part on the forum as a first step, and other benefits are expected to follow. Vouching is as important as
+                    </FeatureDescription>
+                </FeatureCard>
+            </div>
+        </>
+    );
+};
+
+const WebOfTrust = () => {
+    return (
+        <FeatureCard className="col-span-1 lg:col-span-12 flex flex-col h-full">
+            <FeatureTitle>Let's build a Web of Trust</FeatureTitle>
+            <FeatureDescription>
+                Engage with other members of the Zuzalu community and build meaningful connections.
+            </FeatureDescription>
+            <div className="flex-grow">
+                <SkeletonTwo />
+            </div>
+        </FeatureCard>
+    );
+};
+
 const FeaturesSection = () => {
-    const features = [
-        {
-            title: "Why vouching?",
-            description:
-                "Agora Pass enables community members to vouch for each other and increase their trust score within the Zuzalu community. By vouching for new members, you are inviting them to become part of the ecosystem. Once you get over a certain trust score you will be able to get an Agora Pass Zupass enabled. This pass will grant you access to the Agora.City forum and other perks.",
-            skeleton: <SkeletonOne />,
-            className: "col-span-1 lg:col-span-6 border-b",
-        },
-        {
-            title: "Let's build a Web of Trust",
-            description:
-                "Engage with other members of the Zuzalu community and build meaningful connections",
-            skeleton: <SkeletonFour />,
-            className: "col-span-1 lg:col-span-6",
-        },
-    ];
     return (
         <div className="relative z-20 pb-10 max-w-7xl mx-auto">
             <div className="p-8">
@@ -35,14 +53,9 @@ const FeaturesSection = () => {
             </div>
 
             <div className="relative">
-                <div className="grid grid-cols-1 lg:grid-cols-12 mt-12 xl:border rounded-md">
-                    {features.map((feature) => (
-                        <FeatureCard key={feature.title} className={feature.className}>
-                            <FeatureTitle>{feature.title}</FeatureTitle>
-                            <FeatureDescription>{feature.description}</FeatureDescription>
-                            <div className="h-full w-full">{feature.skeleton}</div>
-                        </FeatureCard>
-                    ))}
+                <div>
+                    <WhatIsAgoraPass />
+                    <WebOfTrust />
                 </div>
             </div>
         </div>
@@ -87,26 +100,11 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
 
 const SkeletonOne = () => {
     return (
-        <div className="relative flex py-8 px-2 gap-10 h-full">
-            <div className="w-full p-5 mx-auto bg-white shadow-2xl group h-full">
-                <div className="flex flex-1 w-full h-full flex-col space-y-2">
-                    <Image
-                        src="/feature-1.webp"
-                        alt="header"
-                        width={800}
-                        height={800}
-                        className="h-full w-full aspect-square object-cover object-left-top rounded-sm"
-                    />
-                </div>
-            </div>
-
-            <div className="absolute bottom-0 z-40 inset-x-0 h-60 bg-gradient-to-t from-white via-white to-transparent w-full pointer-events-none" />
-            <div className="absolute top-0 z-40 inset-x-0 h-60 bg-gradient-to-b from-white via-transparent to-transparent w-full pointer-events-none" />
-        </div>
+        <div />
     );
 };
 
-const SkeletonFour = () => {
+const SkeletonTwo = () => {
     return (
         <div className="h-60 md:h-60 flex flex-col items-center relative bg-transparent mt-10">
             <Globe className="absolute -right-10 md:-right-10 -bottom-80 md:-bottom-72" />
