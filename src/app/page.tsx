@@ -9,14 +9,14 @@ function page() {
     <div className="pt-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <SeasonInfo />
-      <EnsNameSearch
-                  graphql={communityData.graphql}
-                  platform={communityData.platform}
-                  schema={communityData.schema}
-                  chain={communityData.chainId}
-                  verifyingContract={communityData.verifyingContract}
-                />
-        <UserGrid communityData={communityData}/>
+        <EnsNameSearch
+          graphql={communityData.graphql}
+          platform={communityData.platform}
+          schema={communityData.schema}
+          chain={communityData.chainId}
+          verifyingContract={communityData.verifyingContract}
+        />
+        <UserGrid communityData={communityData} />
       </div>
     </div>
   )

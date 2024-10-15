@@ -21,8 +21,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 
 const menuItems = [
   { href: "/", icon: Home, label: "Home" },
-  // { href: "/about", icon: Info, label: "About" },
   { href: "/graph", icon: GitBranch, label: "Graph" },
+  { href: "/about", icon: Info, label: "About" },
 ]
 
 export default function MainNavigation() {
@@ -136,9 +136,9 @@ export default function MainNavigation() {
         </SheetHeader>
         <div className="flex flex-col space-y-4 mt-4">
           {menuItems.map((item) => (
-            <Link 
-              key={item.href} 
-              href={item.href} 
+            <Link
+              key={item.href}
+              href={item.href}
               className={`flex items-center space-x-2 text-lg ${pathname === item.href ? 'text-[#19473f] font-semibold' : 'text-foreground'}`}
               onClick={handleLinkClick}
             >
@@ -154,13 +154,13 @@ export default function MainNavigation() {
   const renderDesktopMenu = () => (
     <div className="hidden lg:flex items-center space-x-4">
       {menuItems.map((item) => (
-        <Button 
-          key={item.href} 
-          variant={pathname === item.href ? "default" : "ghost"} 
+        <Button
+          key={item.href}
+          variant={pathname === item.href ? "default" : "ghost"}
           asChild
         >
-          <Link 
-            href={item.href} 
+          <Link
+            href={item.href}
             className={`flex items-center space-x-2 ${pathname === item.href ? 'bg-[#19473f] text-white' : ''}`}
           >
             <item.icon className="h-5 w-5" />
@@ -239,12 +239,13 @@ export default function MainNavigation() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-sm border-b">
         <Link href="/">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 relative">
             <Image src={AgoraLogo} alt={siteName} width={40} height={40} />
             <span className="text-xl font-bold text-primary hidden sm:inline">{siteName}</span>
+            <span className="text-xs italic text-primary top-0 right-0 -mt-2">Beta</span>
           </div>
         </Link>
-        
+
         {renderMobileMenu()}
         {renderDesktopMenu()}
         {renderUserActions()}

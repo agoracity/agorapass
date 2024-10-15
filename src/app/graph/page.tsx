@@ -4,10 +4,14 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import * as d3 from 'd3';
+import { LoadingIcon } from '@/components/ui/LoadingIcon'
+
 // Dynamically import ForceGraph3D with ssr option set to false
 const ForceGraph3D = dynamic(() => import('react-force-graph').then(mod => mod.ForceGraph3D), {
     ssr: false,
-    loading: () => <p>Loading 3D Graph...</p>
+    loading: () => <div className="flex items-center justify-center h-screen">
+        <LoadingIcon />
+    </div>
 });
 import { useAttestationDetails } from '@/utils/hooks/useAttestationGraph';
 
@@ -118,8 +122,20 @@ const RankingsGraph: React.FC = () => {
         setGraphData({ nodes, links });
     }, [attestations, isLoading, isError]);
 
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Error loading data...</p>;
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <LoadingIcon />
+            </div>
+        );
+    }
+    if (isError) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p className="text-red-500 text-xl">Error loading data. Please try again.</p>
+            </div>
+        );
+    }
     if (!graphData) return null;
 
     const nodeColorScale = d3.scaleOrdinal(d3.schemeRdYlGn[4]);

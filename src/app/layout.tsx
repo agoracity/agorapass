@@ -4,7 +4,7 @@ import { IBM_Plex_Sans } from 'next/font/google';
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
 import MainNavigation from '@/components/ui/MainNavigation'
-import { BackgroundBeams } from '@/components/ui/background-beams'
+// import { BackgroundBeams } from '@/components/ui/background-beams'
 import { siteName } from '@/config/site';
 
 const Plex_Sans = IBM_Plex_Sans({
@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className={`${Plex_Sans.className} antialiased bg-background text-foreground`}>
         <Providers>
           <div className="min-h-screen flex flex-col bg-white relative">{/* Changed from bg-black to bg-white */}
-            <BackgroundBeams />
+            {/* <BackgroundBeams /> */}
             <MainNavigation />
             <main className="flex-grow z-10">
               {children}

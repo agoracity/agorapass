@@ -1,4 +1,4 @@
-export const siteName = "Agorapass";
+export const siteName = "AgoraPass";
 
 export const EAS_CONFIG = {
     EAS_CONTRACT_ADDRESS: "0x4200000000000000000000000000000000000021",

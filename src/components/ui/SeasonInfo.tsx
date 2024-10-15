@@ -41,7 +41,7 @@ function SeasonInfo() {
       const now = new Date().getTime();
       const timeElapsed = now - startTimestamp;
       const timeRemaining = endTimestamp - now;
-      
+
       // Calculate progress
       const currentProgress = Math.min(100, (timeElapsed / totalDuration) * 100);
       setProgress(currentProgress);
@@ -65,14 +65,14 @@ function SeasonInfo() {
   return (
     <div className='w-full space-y-2 pb-4'>
       <div className='w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700'>
-        <div 
-          className='bg-blue-600 h-2.5 rounded-full' 
+        <div
+          className='bg-green-600 h-2.5 rounded-full'
           style={{ width: `${progress}%` }}
         ></div>
       </div>
       <div className='flex justify-between text-sm'>
-      <p>Season ends in</p>
-      <p>{remainingTime}</p>
+        <p>Season ends in</p>
+        <p>{remainingTime}</p>
       </div>
     </div>
   )

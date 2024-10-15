@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { UserCard } from './UserCard';
 import { useInView } from 'react-intersection-observer';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { LoadingIcon } from '@/components/ui/LoadingIcon'
 
 interface User {
   wallet: string;
@@ -59,7 +59,7 @@ export function UserGrid({ communityData }: UserGridProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
           {isLoading ? (
             Array(12).fill(null).map((_, index) => (
-              <Skeleton key={index} className="h-[200px] w-full" />
+              <SkeletonCard key={index} className="h-[200px] w-full" />
             ))
           ) : (
             data?.pages.map((page, pageIndex) => (
@@ -82,11 +82,9 @@ export function UserGrid({ communityData }: UserGridProps) {
         </div>
         {hasNextPage && (
           <div ref={ref} className="flex justify-center mt-4">
-            {isFetchingNextPage ? (
-              <Skeleton className="h-10 w-[200px]" />
-            ) : (
-              <Button onClick={() => fetchNextPage()}>Load More</Button>
-            )}
+            <div className="flex items-center justify-center">
+              <LoadingIcon />
+            </div>
           </div>
         )}
         {!hasNextPage && data?.pages[0].users.length === 0 && (
