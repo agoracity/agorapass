@@ -15,26 +15,6 @@ const ForceGraph3D = dynamic(() => import('react-force-graph').then(mod => mod.F
 });
 import { useAttestationDetails } from '@/utils/hooks/useAttestationGraph';
 
-const useWindowSize = () => {
-    const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return windowSize;
-};
-
 interface Attestation {
     attester: string;
     recipient: string;
@@ -48,12 +28,6 @@ interface Node {
 interface Link {
     source: string;
     target: string;
-}
-
-interface Coords {
-    x: number;
-    y: number;
-    z: number;
 }
 
 const RankingsGraph: React.FC = () => {

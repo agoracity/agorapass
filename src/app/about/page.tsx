@@ -5,7 +5,7 @@ import Image from "next/image";
 import createGlobe from "cobe";
 import { useEffect, useRef } from "react";
 
-export default function FeaturesSection() {
+const FeaturesSection = () => {
     const features = [
         {
             title: "Why vouching?",
@@ -85,7 +85,7 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
     );
 };
 
-export const SkeletonOne = () => {
+const SkeletonOne = () => {
     return (
         <div className="relative flex py-8 px-2 gap-10 h-full">
             <div className="w-full p-5 mx-auto bg-white shadow-2xl group h-full">
@@ -106,7 +106,7 @@ export const SkeletonOne = () => {
     );
 };
 
-export const SkeletonFour = () => {
+const SkeletonFour = () => {
     return (
         <div className="h-60 md:h-60 flex flex-col items-center relative bg-transparent mt-10">
             <Globe className="absolute -right-10 md:-right-10 -bottom-80 md:-bottom-72" />
@@ -114,7 +114,7 @@ export const SkeletonFour = () => {
     );
 };
 
-export const Globe = ({ className }: { className?: string }) => {
+const Globe = ({ className }: { className?: string }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -168,3 +168,15 @@ export const Globe = ({ className }: { className?: string }) => {
         />
     );
 };
+
+const AboutPage: React.FC = () => {
+    return (
+        <div className="min-h-screen bg-white">
+            <main>
+                <FeaturesSection />
+            </main>
+        </div>
+    );
+};
+
+export default AboutPage;
