@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ethers } from 'ethers';
-import { Copy, Twitter, Zap } from 'lucide-react';
+import { Copy, Twitter } from 'lucide-react';
+import WarpcastIcon from '@/components/ui/WarpcastIcon';
 import { usePrivy } from '@privy-io/react-auth';
 import { useAttestationCounts } from '@/utils/hooks/useAttestationCount';
 import { useEnsName } from '@/utils/hooks/useEnsName';
@@ -88,7 +89,7 @@ export function UserProfile({
     );
   }
   const avatar = getAvatar(formattedAddress, "w-16 h-16");
-  
+
   return (
     <DialogContent className="rounded-xl p-0 overflow-hidden">
       <div className="p-6">
@@ -139,7 +140,7 @@ export function UserProfile({
             )}
             {farcaster && (
               <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
-                <Zap className="w-5 h-5 text-purple-600" />
+                <WarpcastIcon className="w-5 h-5 text-purple-600" />
               </Link>
             )}
           </div>

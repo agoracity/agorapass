@@ -211,7 +211,7 @@ export default function MainNavigation() {
             <DropdownMenuItem asChild>
               <Link href={`/address/${wallet}`} className="flex items-center">
                 <UserCircle className="mr-2 h-4 w-4" />
-                <span>View Profile</span>
+                <span>Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

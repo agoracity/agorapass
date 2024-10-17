@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { handleVouch } from '@/utils/handleAttestation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { UserProfile } from './UserProfile';
-import { Twitter, Zap } from 'lucide-react';
+import { Twitter } from 'lucide-react';
+import WarpcastIcon from '@/components/ui/WarpcastIcon';
 import Link from 'next/link';
 import getAvatar from '@/components/ui/ProfileAvatar';
 
@@ -24,26 +25,26 @@ interface VouchButtonCustomProps {
     twitter?: string;
     farcaster?: string;
     rankScore?: number;
-    directVouch?: boolean; 
+    directVouch?: boolean;
 }
 
-const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({ 
-    recipient, 
-    className, 
-    graphqlEndpoint, 
-    schema, 
-    chain, 
-    platform, 
+const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
+    recipient,
+    className,
+    graphqlEndpoint,
+    schema,
+    chain,
+    platform,
     verifyingContract,
-    buttonText = 'View', 
+    buttonText = 'View',
     name,
     bio,
     twitter,
     farcaster,
     rankScore,
-    directVouch = false 
+    directVouch = false
 }) => {
-    
+
     const { getAccessToken, user, login, authenticated, ready } = usePrivy();
     const [authStatus, setAuthStatus] = useState(false);
     const { wallets } = useWallets();
@@ -110,7 +111,7 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
                         )}
                         {farcaster && (
                             <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
-                                <Zap className="w-5 h-5 text-purple-600" />
+                                <WarpcastIcon className="w-5 h-5 text-purple-600" />
                             </Link>
                         )}
                     </div>

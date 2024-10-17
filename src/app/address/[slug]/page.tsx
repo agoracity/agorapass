@@ -8,7 +8,7 @@ import { useEnsName } from '@/utils/hooks/useEnsName';
 import Link from 'next/link';
 import getAvatar from '@/components/ui/ProfileAvatar';
 import { Button } from "@/components/ui/button";
-import { Twitter, Zap, Copy } from 'lucide-react';
+import { Twitter, Copy } from 'lucide-react';
 import { showCopySuccessAlert } from '@/utils/alertUtils';
 import { truncateAddress } from '@/utils/ui/truncateAddress';
 import { communityData } from '@/config/site';
@@ -21,6 +21,8 @@ import { useAttestationsMade, useAttestationsReceived } from '@/graphql/queries/
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { EAS_CONFIG } from '@/config/site';
 import { useContract } from '@/utils/hooks/useContract';
+import { LoadingIcon } from '@/components/ui/LoadingIcon';
+import WarpcastIcon from '@/components/ui/WarpcastIcon';
 
 const CyberpunkProfilePage = () => {
   const { slug } = useParams();
@@ -78,7 +80,7 @@ const CyberpunkProfilePage = () => {
         if (currentSeason !== null) {
           const seasonInfo = await getVouchingSeason(currentSeason);
           const accountVouches = await getAccountVouches(formattedAddress, currentSeason);
-          
+
           if (seasonInfo && accountVouches) {
             const remaining = seasonInfo.maxAccountVouches - accountVouches.totalVouches;
             setRemainingVouches(remaining);
@@ -102,7 +104,9 @@ const CyberpunkProfilePage = () => {
   const avatar = getAvatar(formattedAddress, "w-24 h-24 sm:w-32 sm:h-32");
 
   if (isLoading) {
-    return <div className="min-h-screen bg-white text-cyan-400 flex items-center justify-center">Loading...</div>;
+    return <div className="min-h-screen bg-white text-cyan-400 flex items-center justify-center">
+      <LoadingIcon />
+    </div>;
   }
 
   const receivedCount = vouchesReceived?.data?.aggregateAttestation?._count?.recipient ?? 0;
@@ -159,14 +163,14 @@ const CyberpunkProfilePage = () => {
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div 
+              <div
                 className="bg-gray-800 rounded-lg p-4 border border-cyan-400 cursor-pointer hover:bg-gray-700 transition-colors"
                 onClick={() => handleOpenAttestationsDialog('received')}
               >
                 <h2 className="text-lg sm:text-xl font-semibold mb-2 text-fuchsia-400">Vouches Received</h2>
                 <p className="text-2xl sm:text-3xl">{receivedCount}</p>
               </div>
-              <div 
+              <div
                 className="bg-gray-800 rounded-lg p-4 border border-cyan-400 cursor-pointer hover:bg-gray-700 transition-colors"
                 onClick={() => handleOpenAttestationsDialog('made')}
               >
@@ -187,15 +191,43 @@ const CyberpunkProfilePage = () => {
             )}
 
             <div className="flex justify-center sm:justify-start gap-4 mb-6">
-              {userData.twitter && (
+              {userData.twitter ? (
                 <Link href={`https://twitter.com/${userData.twitter}`} target="_blank" rel="noopener noreferrer">
                   <Twitter className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
                 </Link>
+              ) : (
+                isOwnProfile ? (
+                  <>
+                    <Button
+                      onClick={() => {/* Add logic to link Twitter */ }}
+                      className="ml-2 px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                    >
+                      <Twitter className="w-4 h-4 mr-2" />
+                      Link Twitter
+                    </Button>
+                  </>
+                ) : (
+                  <Twitter className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
+                )
               )}
-              {userData.farcaster && (
+              {userData.farcaster ? (
                 <Link href={`https://warpcast.com/${userData.farcaster}`} target="_blank" rel="noopener noreferrer">
-                  <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-fuchsia-400 hover:text-fuchsia-300" />
+                  <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
                 </Link>
+              ) : (
+                isOwnProfile ? (
+                  <>
+                    <Button
+                      onClick={() => {/* Add logic to link Farcaster */ }}
+                      className="ml-2 px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                    >
+                      <WarpcastIcon className="w-4 h-4 mr-2" />
+                      Link Farcaster
+                    </Button>
+                  </>
+                ) : (
+                  <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
+                )
               )}
             </div>
 
@@ -222,7 +254,7 @@ const CyberpunkProfilePage = () => {
                 farcaster={userData.farcaster}
                 buttonText="Vouch for User"
                 className="w-full py-3 text-lg bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
-                directVouch={true} 
+                directVouch={true}
               />
             )}
           </div>
@@ -246,14 +278,13 @@ const CyberpunkProfilePage = () => {
           <ScrollArea className="h-[60vh] mt-4">
             {dialogType === 'received' ? (
               attestationsReceived?.map((attestation: any) => (
-                <a 
-                  href={getAttestationViewUrl(attestation.id)} 
-                  target="_blank" 
+                <a
+                  href={getAttestationViewUrl(attestation.id)}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  key={attestation.id} 
-                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${
-                    attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
-                  }`}
+                  key={attestation.id}
+                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
+                    }`}
                 >
                   <p>{`${truncateAddress(attestation.attester)} vouched for this user`}</p>
                   <p className="text-xs text-gray-400">{new Date(attestation.timeCreated * 1000).toLocaleString()}</p>
@@ -261,14 +292,13 @@ const CyberpunkProfilePage = () => {
               ))
             ) : (
               attestationsMade?.map((attestation: any) => (
-                <a 
-                  href={getAttestationViewUrl(attestation.id)} 
-                  target="_blank" 
+                <a
+                  href={getAttestationViewUrl(attestation.id)}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  key={attestation.id} 
-                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${
-                    attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
-                  }`}
+                  key={attestation.id}
+                  className={`mb-4 p-3 rounded-lg block hover:opacity-80 transition-opacity ${attestation.revoked ? 'bg-red-900' : 'bg-gray-800'
+                    }`}
                 >
                   <p>{`Vouched for ${truncateAddress(attestation.recipient)}`}</p>
                   <p className="text-xs text-gray-400">{new Date(attestation.timeCreated * 1000).toLocaleString()}</p>

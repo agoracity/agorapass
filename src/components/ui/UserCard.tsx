@@ -3,12 +3,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import getAvatar from '@/components/ui/ProfileAvatar';
 import Link from 'next/link';
 import VouchButtonCustom from './VouchButtonWithDialog';
-import { Twitter, Zap } from 'lucide-react';
+import { Twitter } from 'lucide-react';
+import WarpcastIcon from '@/components/ui/WarpcastIcon';
 import { truncateAddress } from '@/utils/ui/truncateAddress';
 interface UserCardProps {
   recipient: string;
   communityData: any;
-  name?: string; 
+  name?: string;
   bio?: string;
   twitter?: string;
   farcaster?: string;
@@ -44,7 +45,7 @@ export function UserCard({ recipient, communityData, name, bio, twitter, farcast
             )}
             {farcaster && (
               <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
-                <Zap className="w-5 h-5 text-purple-600" />
+                <WarpcastIcon className="w-5 h-5 text-blue-400" />
               </Link>
             )}
           </div>
