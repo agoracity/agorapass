@@ -23,6 +23,7 @@ import { EAS_CONFIG } from '@/config/site';
 import { useContract } from '@/utils/hooks/useContract';
 import { LoadingIcon } from '@/components/ui/LoadingIcon';
 import WarpcastIcon from '@/components/ui/WarpcastIcon';
+import Swal from "sweetalert2"
 
 const CyberpunkProfilePage = () => {
   const { slug } = useParams();
@@ -134,7 +135,16 @@ const CyberpunkProfilePage = () => {
   };
 
   const handleLinkTwitter = () => {
-    linkTwitter();
+    try {
+      linkTwitter();
+    } catch (error) {
+      console.error('Error linking Twitter:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error linking Twitter:',
+      });
+    }
   };
 
   const handleUnlinkTwitter = async () => {
@@ -143,11 +153,25 @@ const CyberpunkProfilePage = () => {
       setUserData({ ...userData, twitter: null });
     } catch (error) {
       console.error('Error unlinking Twitter:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error unlinking Twitter:',
+      });
     }
   };
 
-  const handleLinkFarcaster = () => {
-    linkFarcaster();
+  const handleLinkFarcaster = async () => {
+    try {
+      await linkFarcaster();
+    } catch (error) {
+      console.error('Error linking Farcaster:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error linking Farcaster:',
+      });
+    }
   };
 
   const handleUnlinkFarcaster = async () => {
@@ -156,6 +180,11 @@ const CyberpunkProfilePage = () => {
       setUserData({ ...userData, farcaster: null });
     } catch (error) {
       console.error('Error unlinking Farcaster:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error unlinking Farcaster:',
+      });
     }
   };
 
@@ -218,7 +247,7 @@ const CyberpunkProfilePage = () => {
             )}
 
             <div className="flex justify-center sm:justify-start gap-4 mb-6">
-              {userData.twitter ? (
+              {userData.twitter && isOwnProfile ? (
                 <div className="flex items-center">
                   {isOwnProfile && (
                     <Button
@@ -231,17 +260,16 @@ const CyberpunkProfilePage = () => {
                   )}
                 </div>
               ) : (
-                isOwnProfile && (
-                  <Button
-                    onClick={handleLinkTwitter}
-                    className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
-                  >
-                    <Twitter className="w-4 h-4 mr-2" />
-                    Link Twitter
-                  </Button>
-                )
-              )}
-              {userData.farcaster ? (
+                <Button
+                  onClick={handleLinkTwitter}
+                  className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                >
+                  <Twitter className="w-4 h-4 mr-2" />
+                  Link Twitter
+                </Button>
+              )
+              }
+              {userData.farcaster && isOwnProfile ? (
                 <div className="flex items-center">
                   <Link href={`https://warpcast.com/${userData.farcaster}`} target="_blank" rel="noopener noreferrer">
                     <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
@@ -252,20 +280,18 @@ const CyberpunkProfilePage = () => {
                       className="ml-2 px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded"
                     >
                       <WarpcastIcon className="w-4 h-4 mr-2" />
-                      Unlink
+                      Unlink Farcaster
                     </Button>
                   )}
                 </div>
               ) : (
-                isOwnProfile && (
-                  <Button
-                    onClick={handleLinkFarcaster}
-                    className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
-                  >
-                    <WarpcastIcon className="w-4 h-4 mr-2" />
-                    Link Farcaster
-                  </Button>
-                )
+                <Button
+                  onClick={handleLinkFarcaster}
+                  className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                >
+                  <WarpcastIcon className="w-4 h-4 mr-2" />
+                  Link Farcaster
+                </Button>
               )}
             </div>
 

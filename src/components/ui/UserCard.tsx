@@ -20,7 +20,11 @@ export function UserCard({ recipient, communityData, name, bio, twitter, farcast
   const avatar = getAvatar(recipient, "w-8 h-8");
 
   const truncateBio = (text: string) => {
-    return text.length > 20 ? text.slice(0, 20) + '...' : text;
+    return text.length > 40 ? text.slice(0, 40) + '...' : text;
+  };
+
+  const truncateName = (text: string) => {
+    return text.length > 30 ? text.slice(0, 30) + '...' : text;
   };
 
   const displayName = name || truncateAddress(recipient);
@@ -30,7 +34,7 @@ export function UserCard({ recipient, communityData, name, bio, twitter, farcast
         <div className="flex items-center mb-2">
           {avatar}
           <Link href={`/address/${recipient}`} className="text-sm font-medium truncate hover:underline ml-2">
-            {displayName}
+            {displayName ? truncateName(displayName) : ''}
           </Link>
         </div>
         <div className="h-6 mb-2 text-sm text-gray-600">
@@ -38,16 +42,20 @@ export function UserCard({ recipient, communityData, name, bio, twitter, farcast
         </div>
         <div className="flex-grow">
           <div className="flex space-x-2 mb-2">
-            {twitter && (
-              <Link href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer">
-                <Twitter className="w-5 h-5 text-blue-400" />
-              </Link>
-            )}
-            {farcaster && (
-              <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer">
-                <WarpcastIcon className="w-5 h-5 text-blue-400" />
-              </Link>
-            )}
+            <div className="flex space-x-4">
+              {twitter && (
+                <Link href={`https://twitter.com/${twitter}`} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                  <Twitter className="w-5 h-5 text-blue-400 mr-1" />
+                  <span className="text-sm font-medium italic">{twitter}</span>
+                </Link>
+              )}
+              {farcaster && (
+                <Link href={`https://warpcast.com/${farcaster}`} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                  <WarpcastIcon className="w-5 h-5 text-blue-400 mr-1" />
+                  <span className="text-sm font-medium italic">{farcaster}</span>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
         <VouchButtonCustom
