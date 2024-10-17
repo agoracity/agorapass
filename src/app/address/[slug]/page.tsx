@@ -14,7 +14,7 @@ import { truncateAddress } from '@/utils/ui/truncateAddress';
 import { communityData } from '@/config/site';
 import VouchButtonCustom from '@/components/ui/VouchButtonWithDialog';
 import displayRanking from '@/utils/ui/displayRanking';
-import { usePrivy } from '@privy-io/react-auth';
+import { usePrivy, useLinkAccount } from '@privy-io/react-auth';
 import EditProfileDialog from '@/components/ui/EditProfileDialog';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAttestationsMade, useAttestationsReceived } from '@/graphql/queries/UserProfile/Attestations';
@@ -46,7 +46,8 @@ const CyberpunkProfilePage = () => {
   const { data: attestationsMade, refetch: refetchMade } = useAttestationsMade(communityData.schema, formattedAddress, 100);
   const { data: attestationsReceived, refetch: refetchReceived } = useAttestationsReceived(communityData.schema, formattedAddress, 100);
 
-  const { user } = usePrivy();
+  const { user, linkTwitter, linkFarcaster, unlinkTwitter, unlinkFarcaster } = usePrivy();
+
   const isOwnProfile = user?.wallet?.address?.toLowerCase() === formattedAddress.toLowerCase();
 
   const { getCurrentSeason, getVouchingSeason, getAccountVouches } = useContract();
@@ -132,6 +133,32 @@ const CyberpunkProfilePage = () => {
     return `${baseUrl}/attestation/view/${id}`;
   };
 
+  const handleLinkTwitter = () => {
+    linkTwitter();
+  };
+
+  const handleUnlinkTwitter = async () => {
+    try {
+      await unlinkTwitter(userData.twitter);
+      setUserData({ ...userData, twitter: null });
+    } catch (error) {
+      console.error('Error unlinking Twitter:', error);
+    }
+  };
+
+  const handleLinkFarcaster = () => {
+    linkFarcaster();
+  };
+
+  const handleUnlinkFarcaster = async () => {
+    try {
+      await unlinkFarcaster(userData.farcaster);
+      setUserData({ ...userData, farcaster: null });
+    } catch (error) {
+      console.error('Error unlinking Farcaster:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-transparent text-cyan-400 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
@@ -192,41 +219,52 @@ const CyberpunkProfilePage = () => {
 
             <div className="flex justify-center sm:justify-start gap-4 mb-6">
               {userData.twitter ? (
-                <Link href={`https://twitter.com/${userData.twitter}`} target="_blank" rel="noopener noreferrer">
-                  <Twitter className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
-                </Link>
-              ) : (
-                isOwnProfile ? (
-                  <>
+                <div className="flex items-center">
+                  {isOwnProfile && (
                     <Button
-                      onClick={() => {/* Add logic to link Twitter */ }}
-                      className="ml-2 px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                      onClick={handleUnlinkTwitter}
+                      className="ml-2 px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded"
                     >
                       <Twitter className="w-4 h-4 mr-2" />
-                      Link Twitter
+                      Unlink Twitter
                     </Button>
-                  </>
-                ) : (
-                  <Twitter className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
+                  )}
+                </div>
+              ) : (
+                isOwnProfile && (
+                  <Button
+                    onClick={handleLinkTwitter}
+                    className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                  >
+                    <Twitter className="w-4 h-4 mr-2" />
+                    Link Twitter
+                  </Button>
                 )
               )}
               {userData.farcaster ? (
-                <Link href={`https://warpcast.com/${userData.farcaster}`} target="_blank" rel="noopener noreferrer">
-                  <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
-                </Link>
-              ) : (
-                isOwnProfile ? (
-                  <>
+                <div className="flex items-center">
+                  <Link href={`https://warpcast.com/${userData.farcaster}`} target="_blank" rel="noopener noreferrer">
+                    <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
+                  </Link>
+                  {isOwnProfile && (
                     <Button
-                      onClick={() => {/* Add logic to link Farcaster */ }}
-                      className="ml-2 px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                      onClick={handleUnlinkFarcaster}
+                      className="ml-2 px-3 py-1 text-sm bg-red-600 hover:bg-red-700 text-white rounded"
                     >
                       <WarpcastIcon className="w-4 h-4 mr-2" />
-                      Link Farcaster
+                      Unlink
                     </Button>
-                  </>
-                ) : (
-                  <WarpcastIcon className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 hover:text-cyan-300" />
+                  )}
+                </div>
+              ) : (
+                isOwnProfile && (
+                  <Button
+                    onClick={handleLinkFarcaster}
+                    className="px-3 py-1 text-sm bg-cyan-600 hover:bg-cyan-700 text-white rounded flex items-center"
+                  >
+                    <WarpcastIcon className="w-4 h-4 mr-2" />
+                    Link Farcaster
+                  </Button>
                 )
               )}
             </div>
