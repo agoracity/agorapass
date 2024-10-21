@@ -57,7 +57,7 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
 
     const handleVouchConfirm = () => {
         if (authStatus) {
-            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, platform, verifyingContract);
+            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, verifyingContract);
         } else {
             login();
         }
@@ -66,7 +66,7 @@ const VouchButtonCustom: React.FC<VouchButtonCustomProps> = ({
 
     const handleDirectVouch = () => {
         if (authStatus) {
-            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, platform, verifyingContract);
+            handleVouch(recipient, user, wallets, getAccessToken, schema, chain, verifyingContract);
         } else {
             login();
         }

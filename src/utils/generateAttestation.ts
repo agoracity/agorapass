@@ -1,4 +1,4 @@
-async function generateAttestation(token: string, platform: string, recipient: string, attester: string, signature: string, ) {
+async function generateAttestation(token: string, platform: string, recipient: string, attester: string, signature: string, category: string, subcategory: string) {
     const url = process.env.NEXT_PUBLIC_STAMP_API_URL + '/attestation';
 
 
@@ -6,7 +6,9 @@ async function generateAttestation(token: string, platform: string, recipient: s
         platform,
         recipient,
         attester,
-        signature
+        signature,
+        category,
+        subcategory
     });
 
     const response = await fetch(url, {

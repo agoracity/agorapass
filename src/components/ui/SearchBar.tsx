@@ -94,7 +94,6 @@ export function EnsNameSearch({ graphql, platform, schema, chain, verifyingContr
         getAccessToken,
         schema,
         chain,
-        platform,
         verifyingContract
       );
     } else if (isEthAddress) {
@@ -105,7 +104,6 @@ export function EnsNameSearch({ graphql, platform, schema, chain, verifyingContr
         getAccessToken,
         schema,
         chain,
-        platform,
         verifyingContract
       );
     }
